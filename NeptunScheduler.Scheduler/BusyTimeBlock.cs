@@ -1,7 +1,6 @@
 namespace NeptunScheduler.Scheduler
 {
-    class BusyTimeBlock : TimeBlock
+    public class BusyTimeBlock : TimeBlock
     {
-
     }
 }

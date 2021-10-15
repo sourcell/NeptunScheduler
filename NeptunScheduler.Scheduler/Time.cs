@@ -1,6 +1,6 @@
 namespace NeptunScheduler.Scheduler
 {
-    class Time
+    public class Time
     {
         public int Hour { get; set; }
         public int Minute { get; set; }

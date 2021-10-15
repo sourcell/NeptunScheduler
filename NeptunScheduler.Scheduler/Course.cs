@@ -1,6 +1,6 @@
 namespace NeptunScheduler.Scheduler
 {
-    class Course : TimeBlock
+    public class Course : TimeBlock
     {
         public string SubjectName { get; set; }
         public string ID { get; set; }
