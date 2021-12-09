@@ -9,5 +9,15 @@ namespace NeptunScheduler.Scheduler
         public bool CanCollide { get; set; }
         public int Priority { get; set; }
         public bool Ignored { get; set; }
+
+        public override bool CollideWith(TimeBlock other)
+        {
+            if (CanCollide && other is Course && (other as Course).CanCollide)
+            {
+                return false;
+            }
+
+            return !(other.EndTime < this.StartTime || other.StartTime > this.EndTime) && other.Day == this.Day;
+        }
     }
 }
