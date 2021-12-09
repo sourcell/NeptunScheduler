@@ -6,35 +6,38 @@ namespace NeptunScheduler.Scheduler
 {
     public class Backtracking
     {
-        public List<List<Course>> PossibleResults(List<Subject> subjects, List<BusyTimeBlock> busies)
+        List<List<Course>> finalResults;
+        List<Subject> subjects;
+        List<TimeBlock> fixes;
+
+        public Backtracking(List<Subject> subjects, List<BusyTimeBlock> busies)
         {
-            // This list will contain all the possible schedules
-            List<List<Course>> finalResults = new List<List<Course>>();
+            this.finalResults = new List<List<Course>>();
+            this.subjects = subjects;
+            this.fixes = new List<TimeBlock>();
 
-            // Accumulate all the fix courses and busy timeblocks into this list
-            List<TimeBlock> fixes = new List<TimeBlock>();
-
-            subjects.ForEach(s => {
+            this.subjects.ForEach(s => {
                 s.Courses.ForEach(c => {
                     if (c.Fix)
-                    {
                         fixes.Add(c);
-                    }
                 });
             });
 
             busies.ForEach(b => fixes.Add(b));
+        }
 
+        public List<List<Course>> PossibleResults()
+        {
             // Check if there is collision between fix timeblocks
             if (CheckCollisions(fixes).Count > 0)
             {
                 throw new ArgumentException("There are collisions.");
             }
 
-            // Temporary result to work with
+            // Temporary result array to work with
             Course[] result = new Course[subjects.Count];
 
-            Backtrack(subjects, fixes, result, 0, finalResults);
+            Backtrack(result, 0);
 
             return finalResults;
         }
@@ -58,7 +61,7 @@ namespace NeptunScheduler.Scheduler
             return colliders;
         }
 
-        private void Backtrack(List<Subject> subjects, List<TimeBlock> fixes, Course[] result, int level, List<List<Course>> finalResults)
+        private void Backtrack(Course[] result, int level)
         {
             // Optional Courses of the current Subject
             List<Course> courses = subjects[level].Courses.Where(c => !c.Fix).ToList();
@@ -75,7 +78,7 @@ namespace NeptunScheduler.Scheduler
                     }
                     else
                     {
-                        Backtrack(subjects, fixes, result, level + 1, finalResults);
+                        Backtrack(result, level + 1);
                     }
                 }
             }
