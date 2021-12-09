@@ -26,7 +26,7 @@ namespace NeptunScheduler.Scheduler
             busies.ForEach(b => fixes.Add(b));
 
             // Check if there is collision between fix timeblocks
-            if (CheckCollision(fixes))
+            if (CheckCollisions(fixes).Count > 0)
             {
                 throw new ArgumentException("There are collisions.");
             }
@@ -39,20 +39,23 @@ namespace NeptunScheduler.Scheduler
             return finalResults;
         }
 
-        private bool CheckCollision(List<TimeBlock> timeBlocks)
+        private List<TimeBlock> CheckCollisions(List<TimeBlock> timeBlocks)
         {
-            int collisions = 0;
+            List<TimeBlock> colliders = new List<TimeBlock>();
 
             timeBlocks.ForEach(x => {
                 timeBlocks.ForEach(y => {
                     if (x != y && x.CollideWith(y))
                     {
-                        collisions++;
+                        if (!colliders.Contains(x))
+                        {
+                            colliders.Add(x);
+                        }
                     }
                 });
             });
 
-            return collisions / 2 > 0;
+            return colliders;
         }
 
         private void Backtrack(List<Subject> subjects, List<TimeBlock> fixes, Course[] result, int level, List<List<Course>> finalResults)
