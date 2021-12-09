@@ -90,11 +90,20 @@ namespace NeptunScheduler.Scheduler
 
         private bool IsValid(Course[] result, int level)
         {
+            // Check collision with lower levels
             for (int i = 0; i < level; i++)
-            {
                 if (result[i].CollideWith(result[level]))
                     return false;
-            }
+
+            // Check collision with the fix courses
+            foreach (Course fixCourse in fixCourses)
+                if (fixCourse.CollideWith(result[level]))
+                    return false;
+
+            // Check collision with the busy timeblocks
+            foreach (BusyTimeBlock busyTimeBlock in busyTimeBlocks)
+                if (busyTimeBlock.CollideWith(result[level]))
+                    return false;
 
             return true;
         }
