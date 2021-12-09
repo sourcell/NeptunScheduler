@@ -8,28 +8,28 @@ namespace NeptunScheduler.Scheduler
     {
         List<List<Course>> finalResults;
         List<Subject> subjects;
-        List<TimeBlock> fixes;
+        List<BusyTimeBlock> busyTimeBlocks;
+        List<Course> fixCourses;
 
         public Backtracking(List<Subject> subjects, List<BusyTimeBlock> busies)
         {
             this.finalResults = new List<List<Course>>();
             this.subjects = subjects;
-            this.fixes = new List<TimeBlock>();
+            this.busyTimeBlocks = busies;
+            this.fixCourses = new List<Course>();
 
             this.subjects.ForEach(s => {
                 s.Courses.ForEach(c => {
                     if (c.Fix)
-                        fixes.Add(c);
+                        fixCourses.Add(c);
                 });
             });
-
-            busies.ForEach(b => fixes.Add(b));
         }
 
         public List<List<Course>> PossibleResults()
         {
             // Check if there is collision between fix timeblocks
-            if (CheckCollisions(fixes).Count > 0)
+            if (CheckCollisions().Count > 0)
             {
                 throw new ArgumentException("There are collisions.");
             }
@@ -42,8 +42,12 @@ namespace NeptunScheduler.Scheduler
             return finalResults;
         }
 
-        private List<TimeBlock> CheckCollisions(List<TimeBlock> timeBlocks)
+        private List<TimeBlock> CheckCollisions()
         {
+            List<TimeBlock> timeBlocks = new List<TimeBlock>();
+            fixCourses.ForEach(c => timeBlocks.Add(c));
+            busyTimeBlocks.ForEach(b => timeBlocks.Add(b));
+
             List<TimeBlock> colliders = new List<TimeBlock>();
 
             timeBlocks.ForEach(x => {
