@@ -10,5 +10,18 @@ namespace NeptunScheduler.Scheduler
             this.Hour = hour;
             this.Minute = minute;
         }
+
+        public override string ToString()
+        {
+            string hourPrefix = "";
+            string minutePrefix = "";
+
+            if (Hour < 10)
+                hourPrefix = "0";
+            if (Minute < 10)
+                minutePrefix = "0";
+
+            return $"{hourPrefix}{Hour}:{minutePrefix}{Minute}";
+        }
     }
 }

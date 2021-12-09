@@ -19,5 +19,10 @@ namespace NeptunScheduler.Scheduler
 
             return !(other.EndTime < this.StartTime || other.StartTime > this.EndTime) && other.Day == this.Day;
         }
+
+        public override string ToString()
+        {
+            return $"{SubjectName} | day: {Day} | {Start} - {End}";
+        }
     }
 }
