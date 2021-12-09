@@ -67,15 +67,29 @@ namespace NeptunScheduler.Scheduler
             {
                 result[level] = courses[i];
 
-                if (level == result.Length - 1)
+                if (IsValid(result, level))
                 {
-                    finalResults.Add(result.ToList());
-                }
-                else
-                {
-                    Backtrack(subjects, fixes, result, level + 1, finalResults);
+                    if (level == result.Length - 1)
+                    {
+                        finalResults.Add(result.ToList());
+                    }
+                    else
+                    {
+                        Backtrack(subjects, fixes, result, level + 1, finalResults);
+                    }
                 }
             }
+        }
+
+        private bool IsValid(Course[] result, int level)
+        {
+            for (int i = 0; i < level; i++)
+            {
+                if (result[i].CollideWith(result[level]))
+                    return false;
+            }
+
+            return true;
         }
     }
 }
