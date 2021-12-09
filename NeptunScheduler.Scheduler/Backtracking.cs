@@ -18,8 +18,10 @@ namespace NeptunScheduler.Scheduler
             this.busyTimeBlocks = busies;
             this.fixCourses = new List<Course>();
 
-            this.subjects.ForEach(s => {
-                s.Courses.ForEach(c => {
+            this.subjects.ForEach(s =>
+            {
+                s.Courses.ForEach(c =>
+                {
                     if (c.Fix)
                         fixCourses.Add(c);
                 });
@@ -31,7 +33,7 @@ namespace NeptunScheduler.Scheduler
             // Check if there is collision between fix timeblocks
             if (CheckCollisions().Count > 0)
             {
-                throw new ArgumentException("There are collisions.");
+                throw new ArgumentException("There are initial collisions between the fix timeblocks (fix courses + busy timeblocks).");
             }
 
             // Temporary result array to work with
@@ -50,15 +52,13 @@ namespace NeptunScheduler.Scheduler
 
             List<TimeBlock> colliders = new List<TimeBlock>();
 
-            timeBlocks.ForEach(x => {
-                timeBlocks.ForEach(y => {
+            timeBlocks.ForEach(x =>
+            {
+                timeBlocks.ForEach(y =>
+                {
                     if (x != y && x.CollideWith(y))
-                    {
                         if (!colliders.Contains(x))
-                        {
                             colliders.Add(x);
-                        }
-                    }
                 });
             });
 
@@ -77,13 +77,9 @@ namespace NeptunScheduler.Scheduler
                 if (IsValid(result, level))
                 {
                     if (level == result.Length - 1)
-                    {
                         finalResults.Add(result.ToList());
-                    }
                     else
-                    {
                         Backtrack(result, level + 1);
-                    }
                 }
             }
         }
