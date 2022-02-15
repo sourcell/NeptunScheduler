@@ -69,6 +69,9 @@ namespace NeptunScheduler.Scheduler
         {
             // Optional Courses of the current Subject
             List<Course> courses = subjects[level].Courses.Where(c => !c.Fix).ToList();
+
+            if (courses.Count == 0)
+                courses.Add(new Course() { Day = -1, Start = new Time(0, 0), End = new Time(0, 0), CanCollide = true });
             
             for (int i = 0; i < courses.Count; i++)
             {
