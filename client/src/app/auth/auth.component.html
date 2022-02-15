@@ -1,0 +1,61 @@
+<div class="container mt-5 pt-5" style="max-width: 720px;">
+    <div class="row">
+        <div class="col-sm">
+            <div class="card text-dark bg-light mb-5">
+                <div class="card-header text-center fw-bold">Login</div>
+                <div class="card-body">
+                    <div class="alert alert-danger small" role="alert" *ngIf="true">
+                        login error message
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control">
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary" disabled *ngIf="false">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Login
+                        </button>
+                        <button type="submit" class="btn btn-primary" *ngIf="true">Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card text-dark bg-light mb-5">
+                <div class="card-header text-center fw-bold">Register</div>
+                <div class="card-body">
+                    <div class="alert alert-success small" role="alert" *ngIf="true">
+                        Successfully registered as <b>...</b>
+                    </div>
+                    <div class="alert alert-danger small" role="alert" *ngIf="false">
+                        register error message
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password confirmation</label>
+                        <input type="password" class="form-control">
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary" disabled *ngIf="false">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Register
+                        </button>
+                        <button type="submit" class="btn btn-primary" *ngIf="true">Register</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
