@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+
 namespace NeptunScheduler.Scheduler
 {
-    class Subject
+    public class Subject
     {
         public string Title { get; set; }
-        public Course[] Courses { get; set; }
+        public List<Course> Courses { get; set; }
     }
 }

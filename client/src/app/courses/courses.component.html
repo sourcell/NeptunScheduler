@@ -1,0 +1,87 @@
+<div class="container mt-5 pt-5" style="max-width: 1000px">
+    <ul class="list-group shadow">
+        <li class="list-group-item p-4">
+            <div class="row align-items-center">
+                <div class="col-md text-start">
+                    <h5 class="mb-0">Subject #42</h5>
+                </div>
+                <div class="col-md text-end">
+                    <a class="btn btn-link" routerLink="/subjects">Back to Subjects!</a>
+                    <a class="btn btn-primary" routerLink="/add-subject">Add Course!</a>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item p-4">
+            <div class="alert alert-danger text-center small" role="alert" *ngIf="false">
+                error message
+            </div>
+            <div class="text-center" *ngIf="false">
+                <span class="spinner-border"></span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm small">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Slots</th>
+                            <th>Day</th>
+                            <th>Time</th>
+                            <th>Teacher(s)</th>
+                            <th>Fix</th>
+                            <th>Collidable</th>
+                            <th>Priority</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xxxx_yyyy_zzzz</td>
+                            <td>10</td>
+                            <td>Monday</td>
+                            <td>08:00-09:40</td>
+                            <td>Dr. Szénási Sándor</td>
+                            <td>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                                </svg>
+                            </td>
+                            <td>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                                </svg>
+                            </td>
+                            <td>5</td>
+                            <td><a href="#">edit</a></td>
+                        </tr>
+                        <tr>
+                            <td>xxxx_yyyy_zzzz</td>
+                            <td>9</td>
+                            <td>Tuesday</td>
+                            <td>08:00-09:40</td>
+                            <td>Dr Kovács Levente Adalbert</td>
+                            <td>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                                </svg>
+                            </td>
+                            <td></td>
+                            <td>5</td>
+                            <td><a href="#">edit</a></td>
+                        </tr>
+                        <tr>
+                            <td>xxxx_yyyy_zzzz</td>
+                            <td>8</td>
+                            <td>Wednesday</td>
+                            <td>08:00-09:40</td>
+                            <td>Dr. Szénási Sándor</td>
+                            <td></td>
+                            <td></td>
+                            <td>5</td>
+                            <td><a href="#">edit</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </li>
+    </ul>
+</div>
