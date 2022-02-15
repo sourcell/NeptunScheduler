@@ -3,10 +3,10 @@
         <li class="list-group-item p-4">
             <div class="row align-items-center">
                 <div class="col text-start">
-                    <h4 class="mb-0">Subjects</h4>
+                    <h5 class="mb-0">Subjects</h5>
                 </div>
                 <div class="col text-end">
-                    <a class="btn btn-primary" routerLink="/add-subject">Add Subject!</a>
+                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubjectModal">Add Subject!</a>
                 </div>
             </div>
         </li>
@@ -22,7 +22,7 @@
                     <div class="row">
                         <div class="col-md text-start">Subject I. [4]</div>
                         <div class="col-md text-end">
-                            <a href="#">Edit subject</a> | <a href="#">Add Course</a>
+                            <a href="#">Edit Subject</a> | <a routerLink="/subjects/some_id">Courses</a>
                         </div>
                     </div>
                 </li>
@@ -30,7 +30,7 @@
                     <div class="row">
                         <div class="col-md text-start">Subject II. [3]</div>
                         <div class="col-md text-end">
-                            <a href="#">Edit subject</a> | <a href="#">Add Course</a>
+                            <a href="#">Edit Subject</a> | <a routerLink="/subjects/some_id">Courses</a>
                         </div>
                     </div>
                 </li>
@@ -38,11 +38,37 @@
                     <div class="row">
                         <div class="col-md text-start">Subject III. [2]</div>
                         <div class="col-md text-end">
-                            <a href="#">Edit subject</a> | <a href="#">Add Course</a>
+                            <a href="#">Edit Subject</a> | <a routerLink="/subjects/some_id">Courses</a>
                         </div>
                     </div>
                 </li>
             </ul>
         </li>
     </ul>
+</div>
+
+
+<div class="modal fade" id="addSubjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adding Subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-control">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Credits</label>
+                    <input type="number" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Add!</button>
+            </div>
+        </div>
+    </div>
 </div>
