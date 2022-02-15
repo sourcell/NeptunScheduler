@@ -1,0 +1,45 @@
+<div class="container mt-5 pt-5" style="max-width: 1000px">
+    <div class="row align-items-center">
+        <div class="col text-start">
+            <h4 class="mb-0">Subjects</h4>
+        </div>
+        <div class="col text-end">
+            <a routerLink="/add-loan">Add new Subject!</a>
+        </div>
+    </div>
+    <hr class="mb-4">
+    <div class="alert alert-danger text-center small" role="alert" *ngIf="true">
+        error message
+    </div>
+    <div class="text-center" *ngIf="false">
+        <span class="spinner-border"></span>
+    </div>
+
+    <ul class="list-group">
+        <li class="list-group-item p-3">
+            <div class="row">
+                <div class="col-md text-start">Subject I. [4]</div>
+                <div class="col-md text-end">
+                    <a href="#">Edit subject</a> | <a href="#">Add Course</a>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item p-3">
+            <div class="row">
+                <div class="col-md text-start">Subject II. [3]</div>
+                <div class="col-md text-end">
+                    <a href="#">Edit subject</a> | <a href="#">Add Course</a>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item p-3">
+            <div class="row">
+                <div class="col-md text-start">Subject III. [2]</div>
+                <div class="col-md text-end">
+                    <a href="#">Edit subject</a> | <a href="#">Add Course</a>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+</div>
