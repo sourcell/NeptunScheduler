@@ -73,8 +73,24 @@ export class CoursesComponent implements OnInit {
         this.loading = false;
     }
 
-    public addCourse(): void {
-        console.log(this.courseToBeAdded.getCourse());
+    public reset(): void {
+        this.courseToBeAdded = new CourseVM();
+    }
+
+    public async addCourse(): Promise<void> {
+        this.loading = true;
+
+        // HTTP POST -> result: added Course
+        await this.rest.post<Course>('', this.courseToBeAdded.getCourse())
+            .then(res => {
+                const result = Object.assign(new Course(), res);
+                this.subject.courses.push(result);
+            })
+            .catch(err => {
+                this.errorMsg = 'Failed to add Course.';
+            });
+
+        this.loading = false;
     }
 
 }
