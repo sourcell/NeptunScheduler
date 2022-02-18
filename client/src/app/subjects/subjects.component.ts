@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Course } from '../courses/courses.component';
 import { RestService } from '../rest.service';
 
 @Component({
@@ -107,6 +108,7 @@ export class Subject {
     public id: string = '';
     public title: string = '';
     public credits: number = 0;
+    public courses: Array<Course> = new Array<Course>();
 
     public copy(): Subject {
         let res = new Subject();
