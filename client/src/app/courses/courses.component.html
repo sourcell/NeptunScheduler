@@ -27,7 +27,7 @@
                             <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addAllModal">Add all</button>
                         </li>
                         <li>
-                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addOneModal" (click)="this.reset()">Add one</button>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addOneModal" (click)="this.aboutToAdd()">Add one</button>
                         </li>
                     </ul>
                 </div>
@@ -73,7 +73,11 @@
                                 <svg *ngIf="course.ignored" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
                             </td>
                             <td>{{ course.priority }}</td>
-                            <td><a href="#">edit</a></td>
+                            <td>
+                                <a role="button" data-bs-toggle="modal" data-bs-target="#addOneModal" (click)="this.aboutToEdit(course)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>
+                                </a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -104,29 +108,41 @@
     </div>
 </div>
 
-<!-- Add-one modal -->
+<!-- Add-one modal / Edit modal -->
 <div class="modal fade" id="addOneModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Adding one Course</h5>
+                <h5 class="modal-title" *ngIf="this.intention == 'add'">Adding one Course</h5>
+                <h5 class="modal-title" *ngIf="this.intention == 'edit'">Editing Course</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row mb-3">
                     <div class="col">
                         <label class="form-label">Code</label>
-                        <input type="text" class="form-control" [(ngModel)]="this.courseToBeAdded.code">
+                        <input type="text" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.courseToBeAdded.code">
+                        <input type="text" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.courseToBeEdited.code">
                     </div>
                     <div class="col">
                         <label class="form-label">Free slots</label>
-                        <input type="number" class="form-control" [(ngModel)]="this.courseToBeAdded.slots">
+                        <input type="number" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.courseToBeAdded.slots">
+                        <input type="number" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.courseToBeEdited.slots">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
                         <label class="form-label">Day</label>
-                        <select class="form-select" [(ngModel)]="this.courseToBeAdded.day">
+                        <select class="form-select" *ngIf="this.intention == 'add'" [(ngModel)]="this.courseToBeAdded.day">
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                        <select class="form-select" *ngIf="this.intention == 'edit'" [(ngModel)]="this.courseToBeEdited.day">
                             <option value="Monday">Monday</option>
                             <option value="Tuesday">Tuesday</option>
                             <option value="Wednesday">Wednesday</option>
@@ -138,41 +154,53 @@
                     </div>
                     <div class="col">
                         <label class="form-label">Start</label>
-                        <input type="time" class="form-control" [(ngModel)]="this.courseToBeAdded.start">
+                        <input type="time" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.courseToBeAdded.start">
+                        <input type="time" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.courseToBeEdited.start">
                     </div>
                     <div class="col">
                         <label class="form-label">End</label>
-                        <input type="time" class="form-control" [(ngModel)]="this.courseToBeAdded.end">
+                        <input type="time" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.courseToBeAdded.end">
+                        <input type="time" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.courseToBeEdited.end">
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Teachers</label>
-                    <input type="text" class="form-control" [(ngModel)]="this.courseToBeAdded.teachers">
+                    <input type="text" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.courseToBeAdded.teachers">
+                    <input type="text" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.courseToBeEdited.teachers">
                 </div>
-                <div class="row align-items-center mb-3">
+                <div class="row align-items-center mb-5">
                     <div class="col">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="fixCheck" [(ngModel)]="this.courseToBeAdded.fix">
+                            <input class="form-check-input" type="checkbox" id="fixCheck" *ngIf="this.intention == 'add'" [(ngModel)]="this.courseToBeAdded.fix">
+                            <input class="form-check-input" type="checkbox" id="fixCheck" *ngIf="this.intention == 'edit'" [(ngModel)]="this.courseToBeEdited.fix">
                             <label class="form-check-label" for="fixCheck">Fix</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="collidableCheck" [(ngModel)]="this.courseToBeAdded.collidable">
+                            <input class="form-check-input" type="checkbox" id="collidableCheck" *ngIf="this.intention == 'add'" [(ngModel)]="this.courseToBeAdded.collidable">
+                            <input class="form-check-input" type="checkbox" id="collidableCheck" *ngIf="this.intention == 'edit'" [(ngModel)]="this.courseToBeEdited.collidable">
                             <label class="form-check-label" for="collidableCheck">Collideable</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="ignoredCheck" [(ngModel)]="this.courseToBeAdded.ignored">
+                            <input class="form-check-input" type="checkbox" id="ignoredCheck" *ngIf="this.intention == 'add'" [(ngModel)]="this.courseToBeAdded.ignored">
+                            <input class="form-check-input" type="checkbox" id="ignoredCheck" *ngIf="this.intention == 'edit'" [(ngModel)]="this.courseToBeEdited.ignored">
                             <label class="form-check-label" for="ignoredCheck">Ignored</label>
                         </div>
                     </div>
                     <div class="col">
                         <label class="form-label">Priority</label>
-                        <input type="number" class="form-control" [(ngModel)]="this.courseToBeAdded.priority">
+                        <input type="number" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.courseToBeAdded.priority">
+                        <input type="number" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.courseToBeEdited.priority">
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="this.addCourse()">Add!</button>
+                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" (click)="this.addCourse()" *ngIf="this.intention == 'add'">Add!</button>
+                <div class="row" *ngIf="this.intention == 'edit'">
+                    <div class="col">
+                        <button type="button" class="btn btn-warning w-100">Delete!</button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">Update!</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

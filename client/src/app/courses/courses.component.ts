@@ -11,10 +11,12 @@ export class CoursesComponent implements OnInit {
 
     public subject: Subject = new Subject();
     public courseToBeAdded: CourseVM = new CourseVM();
+    public courseToBeEdited: CourseVM = new CourseVM();
 
     public loading: boolean = false;
     public errorMsg: string = '';
     public clickedDelete: boolean = false;
+    public intention: string = '';
 
     private readonly rest: RestService;
 
@@ -33,7 +35,7 @@ export class CoursesComponent implements OnInit {
             .then(res => {
                 // Objects for testing
                 res.id = 'subject_id';
-                res.title = 'Simulated subject result';
+                res.title = 'simulated result from the server';
 
                 let c1 = new Course();
                 c1.code = 'ABC-123';
@@ -73,7 +75,8 @@ export class CoursesComponent implements OnInit {
         this.loading = false;
     }
 
-    public reset(): void {
+    public aboutToAdd(): void {
+        this.intention = 'add';
         this.courseToBeAdded = new CourseVM();
     }
 
@@ -93,6 +96,10 @@ export class CoursesComponent implements OnInit {
         this.loading = false;
     }
 
+    public aboutToEdit(course: Course): void {
+        this.intention = 'edit';
+        this.courseToBeEdited = course.getCourseVM();
+    }
 }
 
 export class CourseVM {
