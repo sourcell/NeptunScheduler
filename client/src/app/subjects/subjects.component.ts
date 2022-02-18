@@ -12,7 +12,7 @@ export class SubjectsComponent implements OnInit {
     public subjectToBeAdded: Subject = new Subject();
     public subjectToBeEdited: Subject = new Subject();
 
-    public loading: boolean = true;
+    public loading: boolean = false;
     public errorMsg: string = '';
     public clickedDelete: boolean = false;
 
@@ -23,14 +23,20 @@ export class SubjectsComponent implements OnInit {
     }
 
     public async ngOnInit(): Promise<void> {
-        await this.rest.get<Array<Subject>>('', this.subjects)
+        await this.fetchSubjects();
+    }
+
+    public async fetchSubjects(): Promise<void> {
+        this.loading = true;
+
+        await this.rest.get<Array<Subject>>('', new Array<Subject>())
             .then(res => {
                 let x = new Subject();
                 x.id = 'some_id';
                 x.title = 'simulated result from the server';
                 x.credits = 4;
                 res.push(x);
-                this.subjects.map(s => Object.assign(new Subject(), res));
+                this.subjects = res.map(s => Object.assign(new Subject(), s));
             })
             .catch(err => {
                 this.errorMsg = 'Failed to load Subjects.'
