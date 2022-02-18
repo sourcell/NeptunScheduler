@@ -17,8 +17,8 @@
             </div>
         </li>
         <li class="list-group-item p-4">
-            <div class="alert alert-danger text-center small" role="alert" *ngIf="false">
-                error message
+            <div class="alert alert-danger text-center small" role="alert" *ngIf="this.errorMsg != ''">
+                {{ this.errorMsg }}
             </div>
             <div class="text-center" *ngIf="false">
                 <span class="spinner-border"></span>
@@ -84,14 +84,19 @@
                     <label class="form-label">Title</label>
                     <input type="text" class="form-control" [(ngModel)]="this.subjectToBeEdited.title">
                 </div>
-                <div class="mb-4">
+                <div class="mb-5">
                     <label class="form-label">Credits</label>
                     <input type="number" class="form-control" [(ngModel)]="this.subjectToBeEdited.credits">
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="this.updateSubject()">Update!</button>
+                <div class="row">
+                    <div class="col text-start">
+                        <button type="button" class="btn btn-warning w-100" *ngIf="!this.clickedDelete" (click)="this.clickedDelete = true">Delete!</button>
+                        <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal" *ngIf="this.clickedDelete" (click)="this.delete()">Confirm Delete!</button>
+                    </div>
+                    <div class="col text-end">
+                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" (click)="this.updateSubject()">Update!</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

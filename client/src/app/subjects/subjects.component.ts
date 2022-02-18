@@ -12,7 +12,9 @@ export class SubjectsComponent implements OnInit {
     public subjectToBeAdded: Subject = new Subject();
     public subjectToBeEdited: Subject = new Subject();
 
-    public loading: boolean = false;
+    public loading: boolean = true;
+    public errorMsg: string = '';
+    public clickedDelete: boolean = false;
 
     private readonly rest: RestService;
 
@@ -72,7 +74,23 @@ export class SubjectsComponent implements OnInit {
                 this.errorMsg = 'Failed to edit the Subject.';
             });
 
-        this.subjects = this.subjects.map(s => s.id == result.id ? result : s);
+        this.loading = false;
+    }
+
+    public async delete(): Promise<void> {
+        this.loading = true;
+        this.clickedDelete = false;
+
+        // HTTP DELETE -> result: deleted Subject
+        await this.rest.delete<Subject>('', this.subjectToBeEdited)
+            .then(res => {
+                let result = new Subject();
+                Object.assign(result, res);
+                this.subjects = this.subjects.filter(s => s.id != result.id);
+            })
+            .catch(err => {
+                this.errorMsg = 'Failed to delete Subject.'
+            });
 
         this.loading = false;
     }
