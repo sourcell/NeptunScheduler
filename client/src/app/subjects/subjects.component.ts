@@ -80,8 +80,7 @@ export class SubjectsComponent implements OnInit {
         // HTTP PUT -> result: updated Subject
         await this.rest.put<Subject>('', this.subjectToBeEdited)
             .then(res => {
-                let result = new Subject();
-                Object.assign(result, res);
+                const result = Object.assign(new Subject(), res);
                 this.subjects = this.subjects.map(s => s.id == result.id ? result : s);
             })
             .catch(err => {
