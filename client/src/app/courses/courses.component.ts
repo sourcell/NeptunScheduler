@@ -118,6 +118,24 @@ export class CoursesComponent implements OnInit {
 
         this.loading = false;
     }
+
+    public async delete(): Promise<void> {
+        this.loading = true;
+        this.clickedDelete = false;
+
+        // HTTP DELETE -> result: deleted Course
+        await this.rest.delete<Course>('', this.courseToBeEdited.getCourse())
+            .then(res => {
+                const result = Object.assign(new Course(), res);
+                this.subject.courses = this.subject.courses.filter(c => c.id != result.id);
+            })
+            .catch(err => {
+                this.errorMsg = 'Failed to delete Subject.'
+            });
+
+        this.loading = false;
+    }
+
 }
 
 export class CourseVM {
