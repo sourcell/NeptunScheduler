@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RestService } from '../rest.service';
 
 @Component({
     selector: 'app-subjects',
@@ -13,9 +14,27 @@ export class SubjectsComponent implements OnInit {
 
     public loading: boolean = false;
 
-    constructor() { }
+    private readonly rest: RestService;
 
-    public ngOnInit(): void {
+    constructor(rest: RestService) {
+        this.rest = rest;
+    }
+
+    public async ngOnInit(): Promise<void> {
+        await this.rest.get<Array<Subject>>('', this.subjects)
+            .then(res => {
+                let x = new Subject();
+                x.id = 'some_id';
+                x.title = 'simulated result from the server';
+                x.credits = 4;
+                res.push(x);
+                this.subjects.map(s => Object.assign(new Subject(), res));
+            })
+            .catch(err => {
+                this.errorMsg = 'Failed to load Subjects.'
+            });
+
+        this.loading = false;
     }
 
     public reset(): void {
@@ -26,11 +45,15 @@ export class SubjectsComponent implements OnInit {
         this.loading = true;
 
         // HTTP POST -> result: added Subject
-        await new Promise(r => setTimeout(r, 1000));
-        let result = this.subjectToBeAdded;
-        // ---
-
-        this.subjects.push(result);
+        await this.rest.post<Subject>('', this.subjectToBeAdded)
+            .then(res => {
+                let result = new Subject();
+                Object.assign(result, res);
+                this.subjects.push(result);
+            })
+            .catch(err => {
+                this.errorMsg = 'Failed to add the Subject.';
+            });
 
         this.loading = false;
     }
@@ -39,9 +62,15 @@ export class SubjectsComponent implements OnInit {
         this.loading = true;
 
         // HTTP PUT -> result: updated Subject
-        await new Promise(r => setTimeout(r, 1000));
-        let result = this.subjectToBeEdited;
-        // ---
+        await this.rest.put<Subject>('', this.subjectToBeEdited)
+            .then(res => {
+                let result = new Subject();
+                Object.assign(result, res);
+                this.subjects = this.subjects.map(s => s.id == result.id ? result : s);
+            })
+            .catch(err => {
+                this.errorMsg = 'Failed to edit the Subject.';
+            });
 
         this.subjects = this.subjects.map(s => s.id == result.id ? result : s);
 
