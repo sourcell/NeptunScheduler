@@ -3,17 +3,39 @@
         <li class="list-group-item p-4">
             <div class="row align-items-center">
                 <div class="col-md text-start">
-                    <h5 class="mb-0">Subject #42</h5>
+                    <h5 class="mb-0">
+                        {{ this.subject.title }}
+                        <span class="spinner-border spinner-border-sm" *ngIf="this.loading"></span>
+                    </h5>
                 </div>
                 <div class="col-md text-end">
                     <a class="btn btn-link" routerLink="/subjects">Back to Subjects!</a>
-                    <a class="btn btn-primary" routerLink="/add-subject">Add Course!</a>
+                    <button class="btn btn-primary mx-2" *ngIf="!this.loading" (click)="this.fetchSubject()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
+                    </button>
+                    <button class="btn btn-primary mx-2" disabled *ngIf="this.loading">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
+                    </button>
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" *ngIf="!this.loading">
+                        Add Courses
+                    </button>
+                    <button class="btn btn-primary dropdown-toggle" type="button" disabled *ngIf="this.loading">
+                        Add Courses
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addAllModal">Add all</button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addOneModal">Add one</button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </li>
         <li class="list-group-item p-4">
-            <div class="alert alert-danger text-center small" role="alert" *ngIf="false">
-                error message
+            <div class="alert alert-danger text-center small" role="alert" *ngIf="this.errorMsg != ''">
+                {{ this.errorMsg }}
             </div>
             <div class="text-center" *ngIf="false">
                 <span class="spinner-border"></span>
@@ -29,54 +51,28 @@
                             <th>Teacher(s)</th>
                             <th>Fix</th>
                             <th>Collidable</th>
+                            <th>Ignored</th>
                             <th>Priority</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>xxxx_yyyy_zzzz</td>
-                            <td>10</td>
-                            <td>Monday</td>
-                            <td>08:00-09:40</td>
-                            <td>Dr. Szénási Sándor</td>
+                        <tr *ngFor="let course of this.subject.courses">
+                            <td>{{ course.code }}</td>
+                            <td>{{ course.slots }}</td>
+                            <td>{{ course.getCourseVM().day }}</td>
+                            <td>{{ course.getCourseVM().start }}-{{ course.getCourseVM().end }}</td>
+                            <td>{{ course.teachers }}</td>
                             <td>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                                </svg>
+                                <svg *ngIf="course.fix" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
                             </td>
                             <td>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                                </svg>
+                                <svg *ngIf="course.collidable" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
                             </td>
-                            <td>5</td>
-                            <td><a href="#">edit</a></td>
-                        </tr>
-                        <tr>
-                            <td>xxxx_yyyy_zzzz</td>
-                            <td>9</td>
-                            <td>Tuesday</td>
-                            <td>08:00-09:40</td>
-                            <td>Dr Kovács Levente Adalbert</td>
                             <td>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                                </svg>
+                                <svg *ngIf="course.ignored" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
                             </td>
-                            <td></td>
-                            <td>5</td>
-                            <td><a href="#">edit</a></td>
-                        </tr>
-                        <tr>
-                            <td>xxxx_yyyy_zzzz</td>
-                            <td>8</td>
-                            <td>Wednesday</td>
-                            <td>08:00-09:40</td>
-                            <td>Dr. Szénási Sándor</td>
-                            <td></td>
-                            <td></td>
-                            <td>5</td>
+                            <td>{{ course.priority }}</td>
                             <td><a href="#">edit</a></td>
                         </tr>
                     </tbody>
@@ -84,4 +80,100 @@
             </div>
         </li>
     </ul>
+</div>
+
+<!-- Add-all modal -->
+<div class="modal fade" id="addAllModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adding all Courses</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Copy the table from the .xlsx file!</label>
+                    <textarea class="form-control" value="sample..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Add!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add-one modal -->
+<div class="modal fade" id="addOneModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adding one Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label">Code</label>
+                        <input type="text" class="form-control" [(ngModel)]="this.courseToBeAdded.code">
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Free slots</label>
+                        <input type="number" class="form-control" [(ngModel)]="this.courseToBeAdded.slots">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label">Day</label>
+                        <select class="form-select" [(ngModel)]="this.courseToBeAdded.day">
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Start</label>
+                        <input type="time" class="form-control" [(ngModel)]="this.courseToBeAdded.start">
+                    </div>
+                    <div class="col">
+                        <label class="form-label">End</label>
+                        <input type="time" class="form-control" [(ngModel)]="this.courseToBeAdded.end">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Teachers</label>
+                    <input type="text" class="form-control" [(ngModel)]="this.courseToBeAdded.teachers">
+                </div>
+                <div class="row align-items-center mb-3">
+                    <div class="col">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="fixCheck" [(ngModel)]="this.courseToBeAdded.fix">
+                            <label class="form-check-label" for="fixCheck">Fix</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="collidableCheck" [(ngModel)]="this.courseToBeAdded.collidable">
+                            <label class="form-check-label" for="collidableCheck">Collideable</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="ignoredCheck" [(ngModel)]="this.courseToBeAdded.ignored">
+                            <label class="form-check-label" for="ignoredCheck">Ignored</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Priority</label>
+                        <input type="number" class="form-control" [(ngModel)]="this.courseToBeAdded.priority">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="this.addCourse()">Add!</button>
+            </div>
+        </div>
+    </div>
 </div>
