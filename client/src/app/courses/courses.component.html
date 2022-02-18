@@ -118,6 +118,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <label class="form-label text-danger">id (only for testing)</label>
+                <input type="text" class="form-control mb-3" *ngIf="this.intention == 'add'" [(ngModel)]="this.courseToBeAdded.id">
+                <input type="text" class="form-control mb-3" *ngIf="this.intention == 'edit'" [(ngModel)]="this.courseToBeEdited.id">
                 <div class="row mb-3">
                     <div class="col">
                         <label class="form-label">Code</label>
@@ -198,7 +201,7 @@
                         <button type="button" class="btn btn-warning w-100">Delete!</button>
                     </div>
                     <div class="col">
-                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">Update!</button>
+                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" (click)="this.updateCourse()">Update!</button>
                     </div>
                 </div>
             </div>

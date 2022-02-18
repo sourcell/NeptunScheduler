@@ -38,6 +38,7 @@ export class CoursesComponent implements OnInit {
                 res.title = 'simulated result from the server';
 
                 let c1 = new Course();
+                c1.id = 'id1';
                 c1.code = 'ABC-123';
                 c1.slots = 4;
                 c1.day = 1;
@@ -50,6 +51,7 @@ export class CoursesComponent implements OnInit {
                 c1.priority = 5;
 
                 let c2 = new Course();
+                c2.id = 'id2';
                 c2.code = 'XZY-456';
                 c2.slots = 2;
                 c2.day = 2;
@@ -99,6 +101,22 @@ export class CoursesComponent implements OnInit {
     public aboutToEdit(course: Course): void {
         this.intention = 'edit';
         this.courseToBeEdited = course.getCourseVM();
+    }
+
+    public async updateCourse(): Promise<void> {
+        this.loading = true;
+
+        // HTTP PUT -> result: edited Course
+        await this.rest.put<Course>('', this.courseToBeEdited.getCourse())
+            .then(res => {
+                const result = Object.assign(new Course(), res);
+                this.subject.courses = this.subject.courses.map(c => c.id == result.id ? result : c);
+            })
+            .catch(err => {
+                this.errorMsg = 'Failed to edit the Course.';
+            });
+
+        this.loading = false;
     }
 }
 
