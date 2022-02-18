@@ -15,8 +15,8 @@
                     <button class="btn btn-primary mx-2" disabled *ngIf="this.loading">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
                     </button>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal" (click)="this.reset()" *ngIf="!this.loading">Add Subject!</button>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal" disabled *ngIf="this.loading">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal" (click)="this.aboutToAdd()" *ngIf="!this.loading">Add Subject!</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal" disabled *ngIf="this.loading">
                         Add Subject!
                     </button>
                 </div>
@@ -34,7 +34,7 @@
                     <div class="row">
                         <div class="col-md text-start">{{ subject.title }} [{{ subject.credits }}]</div>
                         <div class="col-md text-end">
-                            <a class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#editModal" (click)="this.subjectToBeEdited = subject.copy()">Edit Subject</a> | <a class="btn btn-link p-0" [routerLink]="['/subjects', subject.id]">Courses</a>
+                            <a class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#modal" (click)="this.aboutToEdit(subject.copy())">Edit Subject</a> | <a class="btn btn-link p-0" [routerLink]="['/subjects', subject.id]">Courses</a>
                         </div>
                     </div>
                 </li>
@@ -43,58 +43,33 @@
     </ul>
 </div>
 
-<!-- Add modal -->
-<div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
+<!-- Add modal / Edit modal -->
+<div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Adding Subject</h5>
+                <h5 class="modal-title" *ngIf="this.intention == 'add'">Adding Subject</h5>
+                <h5 class="modal-title" *ngIf="this.intention == 'edit'">Editing Subject</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label text-danger">id (only for testing)</label>
-                    <input type="text" class="form-control" [(ngModel)]="this.subjectToBeAdded.id">
+                    <input type="text" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.subjectToBeAdded.id">
+                    <input type="text" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.subjectToBeEdited.id">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Title</label>
-                    <input type="text" class="form-control" [(ngModel)]="this.subjectToBeAdded.title">
-                </div>
-                <div class="mb-4">
-                    <label class="form-label">Credits</label>
-                    <input type="number" class="form-control" [(ngModel)]="this.subjectToBeAdded.credits">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="this.addSubject()">Add!</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Edit modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Editing Subject</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label text-danger">id (only for testing)</label>
-                    <input type="text" class="form-control" [(ngModel)]="this.subjectToBeEdited.id">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Title</label>
-                    <input type="text" class="form-control" [(ngModel)]="this.subjectToBeEdited.title">
+                    <input type="text" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.subjectToBeAdded.title">
+                    <input type="text" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.subjectToBeEdited.title">
                 </div>
                 <div class="mb-5">
                     <label class="form-label">Credits</label>
-                    <input type="number" class="form-control" [(ngModel)]="this.subjectToBeEdited.credits">
+                    <input type="number" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.subjectToBeAdded.credits">
+                    <input type="number" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.subjectToBeEdited.credits">
                 </div>
-                <div class="row">
+                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'add'" (click)="this.addSubject()">Add!</button>
+                <div class="row" *ngIf="this.intention == 'edit'">
                     <div class="col text-start">
                         <button type="button" class="btn btn-warning w-100" *ngIf="!this.clickedDelete" (click)="this.clickedDelete = true">Delete!</button>
                         <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal" *ngIf="this.clickedDelete" (click)="this.delete()">Confirm Delete!</button>

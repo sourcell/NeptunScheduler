@@ -16,6 +16,7 @@ export class SubjectsComponent implements OnInit {
     public loading: boolean = false;
     public errorMsg: string = '';
     public clickedDelete: boolean = false;
+    public intention: string = '';
 
     private readonly rest: RestService;
 
@@ -46,7 +47,8 @@ export class SubjectsComponent implements OnInit {
         this.loading = false;
     }
 
-    public reset(): void {
+    public aboutToAdd(): void {
+        this.intention = 'add';
         this.subjectToBeAdded = new Subject();
     }
 
@@ -65,6 +67,11 @@ export class SubjectsComponent implements OnInit {
             });
 
         this.loading = false;
+    }
+
+    public aboutToEdit(subject: Subject): void {
+        this.intention = 'edit';
+        this.subjectToBeEdited = subject;
     }
 
     public async updateSubject(): Promise<void> {
