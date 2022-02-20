@@ -8,9 +8,9 @@ import { RestService } from '../rest.service';
 })
 export class BusyTimeblocksComponent implements OnInit {
 
-    public busyTimeBlocks: Array<BusyTimeBlockVM> = new Array<BusyTimeBlockVM>();
-    public busyTimeblockToBeAdded: BusyTimeBlockVM = new BusyTimeBlockVM();
-    public busyTimeblockToBeEdited: BusyTimeBlockVM = new BusyTimeBlockVM();
+    public busyTimeblocks: Array<BusyTimeblockVm> = new Array<BusyTimeblockVm>();
+    public busyTimeblockToBeAdded: BusyTimeblockVm = new BusyTimeblockVm();
+    public busyTimeblockToBeEdited: BusyTimeblockVm = new BusyTimeblockVm();
 
     public loading: boolean = false;
     public errorMsg: string = '';
@@ -30,21 +30,21 @@ export class BusyTimeblocksComponent implements OnInit {
     public async fetch(): Promise<void> {
         this.loading = true;
 
-        await this.rest.get<Array<BusyTimeBlockVM>>('', new Array<BusyTimeBlockVM>())
+        await this.rest.get<Array<BusyTimeblockVm>>('', new Array<BusyTimeblockVm>())
             .then(res => {
-                let btb1 = new BusyTimeBlockVM();
+                let btb1 = new BusyTimeblockVm();
                 btb1.id = 'first_id';
                 btb1.day = 'Monday';
                 btb1.start = '15:00';
                 btb1.end = '23:59';
-                let btb2 = new BusyTimeBlockVM();
+                let btb2 = new BusyTimeblockVm();
                 btb2.id = 'second_id';
                 btb2.day = 'Friday';
                 btb2.start = '08:00';
                 btb2.end = '10:00';
 
                 res.push(btb1, btb2);
-                this.busyTimeBlocks = res.map(b => Object.assign(new BusyTimeBlockVM(), b));
+                this.busyTimeblocks = res.map(b => Object.assign(new BusyTimeblockVm(), b));
             })
             .catch(err => {
                 this.errorMsg = 'Failed to fetch your Busy Time Blocks.';
@@ -55,16 +55,16 @@ export class BusyTimeblocksComponent implements OnInit {
 
     public aboutToAdd(): void {
         this.intention = 'add';
-        this.busyTimeblockToBeAdded = new BusyTimeBlockVM();
+        this.busyTimeblockToBeAdded = new BusyTimeblockVm();
     }
 
     public async add(): Promise<void> {
         this.loading = true;
 
-        await this.rest.post<BusyTimeBlock>('', this.busyTimeblockToBeAdded.toDto())
+        await this.rest.post<BusyTimeblock>('', this.busyTimeblockToBeAdded.toDto())
             .then(res => {
-                const result = Object.assign(new BusyTimeBlock(), res);
-                this.busyTimeBlocks.push(result.toVm());
+                const result = Object.assign(new BusyTimeblock(), res);
+                this.busyTimeblocks.push(result.toVm());
             })
             .catch(err => {
                 this.errorMsg = 'Failed to add Busy Block.';
@@ -73,7 +73,7 @@ export class BusyTimeblocksComponent implements OnInit {
         this.loading = false;
     }
 
-    public aboutToEdit(busyTimeblock: BusyTimeBlockVM): void {
+    public aboutToEdit(busyTimeblock: BusyTimeblockVm): void {
         this.intention = 'edit';
         this.busyTimeblockToBeEdited = busyTimeblock;
     }
@@ -81,10 +81,10 @@ export class BusyTimeblocksComponent implements OnInit {
     public async update(): Promise<void> {
         this.loading = true;
 
-        await this.rest.put<BusyTimeBlock>('', this.busyTimeblockToBeEdited.toDto())
+        await this.rest.put<BusyTimeblock>('', this.busyTimeblockToBeEdited.toDto())
             .then(res => {
-                const result = Object.assign(new BusyTimeBlock(), res);
-                this.busyTimeBlocks = this.busyTimeBlocks.map(b => b.id == result.id ? result.toVm() : b);
+                const result = Object.assign(new BusyTimeblock(), res);
+                this.busyTimeblocks = this.busyTimeblocks.map(b => b.id == result.id ? result.toVm() : b);
             })
             .catch(err => {
                 this.errorMsg = 'Failed to edit the Busy timeblock.';
@@ -97,10 +97,10 @@ export class BusyTimeblocksComponent implements OnInit {
         this.loading = true;
         this.clickedDelete = false;
 
-        await this.rest.delete<BusyTimeBlock>('', this.busyTimeblockToBeEdited.toDto())
+        await this.rest.delete<BusyTimeblock>('', this.busyTimeblockToBeEdited.toDto())
             .then(res => {
-                const result = Object.assign(new BusyTimeBlock(), res);
-                this.busyTimeBlocks = this.busyTimeBlocks.filter(b => b.id != result.id);
+                const result = Object.assign(new BusyTimeblock(), res);
+                this.busyTimeblocks = this.busyTimeblocks.filter(b => b.id != result.id);
             })
             .catch(err => {
                 this.errorMsg = 'Failed to delete Busy timeblock.';
@@ -111,14 +111,14 @@ export class BusyTimeblocksComponent implements OnInit {
 
 }
 
-export class BusyTimeBlock {
+export class BusyTimeblock {
     public id: string = '';
     public day: number = 0;
     public start: number = 0;
     public end: number = 0;
 
-    public toVm(): BusyTimeBlockVM {
-        let res: BusyTimeBlockVM = new BusyTimeBlockVM();
+    public toVm(): BusyTimeblockVm {
+        let res: BusyTimeblockVm = new BusyTimeblockVm();
         Object.assign(res, this);
 
         res.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][this.day];
@@ -137,14 +137,14 @@ export class BusyTimeBlock {
     }
 }
 
-export class BusyTimeBlockVM {
+export class BusyTimeblockVm {
     public id: string = '';
     public day: string = '';
     public start: string = '';
     public end: string = '';
 
-    public toDto(): BusyTimeBlock {
-        let res = new BusyTimeBlock();
+    public toDto(): BusyTimeblock {
+        let res = new BusyTimeblock();
 
         Object.assign(res, this);
 
@@ -159,8 +159,8 @@ export class BusyTimeBlockVM {
         return res;
     }
 
-    public copy(): BusyTimeBlockVM {
-        let res = new BusyTimeBlockVM();
+    public copy(): BusyTimeblockVm {
+        let res = new BusyTimeblockVm();
         res.id = this.id;
         res.day = this.day;
         res.start = this.start;
