@@ -30,21 +30,21 @@ export class BusyTimeblocksComponent implements OnInit {
     public async fetch(): Promise<void> {
         this.loading = true;
 
-        await this.rest.get<Array<BusyTimeblockVm>>('', new Array<BusyTimeblockVm>())
+        await this.rest.get<Array<BusyTimeblock>>('', new Array<BusyTimeblock>())
             .then(res => {
-                let btb1 = new BusyTimeblockVm();
+                let btb1 = new BusyTimeblock();
                 btb1.id = 'first_id';
-                btb1.day = 'Monday';
-                btb1.start = '15:00';
-                btb1.end = '23:59';
-                let btb2 = new BusyTimeblockVm();
+                btb1.day = 1;
+                btb1.start = 900;
+                btb1.end = 1439;
+                let btb2 = new BusyTimeblock();
                 btb2.id = 'second_id';
-                btb2.day = 'Friday';
-                btb2.start = '08:00';
-                btb2.end = '10:00';
+                btb2.day = 5;
+                btb2.start = 480;
+                btb2.end = 600;
 
                 res.push(btb1, btb2);
-                this.busyTimeblocks = res.map(b => Object.assign(new BusyTimeblockVm(), b));
+                this.busyTimeblocks = res.map(b => Object.assign(new BusyTimeblockVm(), b.toVm()));
             })
             .catch(err => {
                 this.errorMsg = 'Failed to fetch your Busy Time Blocks.';
