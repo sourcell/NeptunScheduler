@@ -93,6 +93,22 @@ export class BusyTimeblocksComponent implements OnInit {
         this.loading = false;
     }
 
+    public async delete(): Promise<void> {
+        this.loading = true;
+        this.clickedDelete = false;
+
+        await this.rest.delete<BusyTimeBlock>('', this.busyTimeblockToBeEdited.toDto())
+            .then(res => {
+                const result = Object.assign(new BusyTimeBlock(), res);
+                this.busyTimeBlocks = this.busyTimeBlocks.filter(b => b.id != result.id);
+            })
+            .catch(err => {
+                this.errorMsg = 'Failed to delete Busy timeblock.';
+            });
+
+        this.loading = false;
+    }
+
 }
 
 export class BusyTimeBlock {
