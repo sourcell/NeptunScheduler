@@ -33,7 +33,7 @@
                     <div class="row">
                         <div class="col-md text-start">{{ btb.day }} {{ btb.start }}-{{ btb.end }}</div>
                         <div class="col-md text-end">
-                            <a class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#modal">Edit</a>
+                            <a class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#modal" (click)="this.aboutToEdit(btb.copy())">Edit</a>
                         </div>
                     </div>
                 </li>
@@ -47,17 +47,28 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" *ngIf="this.intention == 'add'">Adding Busy Block</h5>
+                <h5 class="modal-title" *ngIf="this.intention == 'add'">Adding Busy timeblock</h5>
+                <h5 class="modal-title" *ngIf="this.intention == 'edit'">Editing Busy timeblock</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label text-danger">id (only for testing)</label>
                     <input type="text" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.busyTimeblockToBeAdded.id">
+                    <input type="text" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.busyTimeblockToBeEdited.id">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Day</label>
                     <select class="form-select" *ngIf="this.intention == 'add'" [(ngModel)]="this.busyTimeblockToBeAdded.day">
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
+                    <select class="form-select" *ngIf="this.intention == 'edit'" [(ngModel)]="this.busyTimeblockToBeEdited.day">
                         <option value="Monday">Monday</option>
                         <option value="Tuesday">Tuesday</option>
                         <option value="Wednesday">Wednesday</option>
@@ -71,13 +82,21 @@
                     <div class="col">
                         <label class="form-label">Start</label>
                         <input type="time" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.busyTimeblockToBeAdded.start">
+                        <input type="time" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.busyTimeblockToBeEdited.start">
                     </div>
                     <div class="col">
                         <label class="form-label">End</label>
                         <input type="time" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.busyTimeblockToBeAdded.end">
+                        <input type="time" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.busyTimeblockToBeEdited.end">
                     </div>
                 </div>
                 <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'add'" (click)="this.add()">Add!</button>
+                <div class="row">
+                    <div class="col"></div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'edit'" (click)="this.update()">Update!</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -10,6 +10,7 @@ export class BusyTimeblocksComponent implements OnInit {
 
     public busyTimeBlocks: Array<BusyTimeBlockVM> = new Array<BusyTimeBlockVM>();
     public busyTimeblockToBeAdded: BusyTimeBlockVM = new BusyTimeBlockVM();
+    public busyTimeblockToBeEdited: BusyTimeBlockVM = new BusyTimeBlockVM();
 
     public loading: boolean = false;
     public errorMsg: string = '';
@@ -32,10 +33,12 @@ export class BusyTimeblocksComponent implements OnInit {
         await this.rest.get<Array<BusyTimeBlockVM>>('', new Array<BusyTimeBlockVM>())
             .then(res => {
                 let btb1 = new BusyTimeBlockVM();
+                btb1.id = 'first_id';
                 btb1.day = 'Monday';
                 btb1.start = '15:00';
-                btb1.end = '24:00';
+                btb1.end = '23:59';
                 let btb2 = new BusyTimeBlockVM();
+                btb2.id = 'second_id';
                 btb2.day = 'Friday';
                 btb2.start = '08:00';
                 btb2.end = '10:00';
@@ -65,6 +68,26 @@ export class BusyTimeblocksComponent implements OnInit {
             })
             .catch(err => {
                 this.errorMsg = 'Failed to add Busy Block.';
+            });
+
+        this.loading = false;
+    }
+
+    public aboutToEdit(busyTimeblock: BusyTimeBlockVM): void {
+        this.intention = 'edit';
+        this.busyTimeblockToBeEdited = busyTimeblock;
+    }
+
+    public async update(): Promise<void> {
+        this.loading = true;
+
+        await this.rest.put<BusyTimeBlock>('', this.busyTimeblockToBeEdited.toDto())
+            .then(res => {
+                const result = Object.assign(new BusyTimeBlock(), res);
+                this.busyTimeBlocks = this.busyTimeBlocks.map(b => b.id == result.id ? result.toVm() : b);
+            })
+            .catch(err => {
+                this.errorMsg = 'Failed to edit the Busy timeblock.';
             });
 
         this.loading = false;
@@ -117,6 +140,12 @@ export class BusyTimeBlockVM {
         tmp = this.end.split(':');
         res.end = +tmp[0] * 60 + +tmp[1];
 
+    public copy(): BusyTimeBlockVM {
+        let res = new BusyTimeBlockVM();
+        res.id = this.id;
+        res.day = this.day;
+        res.start = this.start;
+        res.end = this.end;
         return res;
     }
 }
