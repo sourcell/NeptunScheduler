@@ -3,10 +3,10 @@ import { RestService } from '../rest.service';
 
 @Component({
     selector: 'app-busy-time-blocks',
-    templateUrl: './busy-time-blocks.component.html',
-    styleUrls: ['./busy-time-blocks.component.css']
+    templateUrl: './busy-timeblocks.component.html',
+    styleUrls: ['./busy-timeblocks.component.css']
 })
-export class BusyTimeBlocksComponent implements OnInit {
+export class BusyTimeblocksComponent implements OnInit {
 
     public busyTimeBlocks: Array<BusyTimeBlockVM> = new Array<BusyTimeBlockVM>();
 
