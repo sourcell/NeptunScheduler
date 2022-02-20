@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from '../rest.service';
-import { Subject } from '../subjects/subjects.component';
+import { Subject, SubjectVm } from '../subjects/subjects.component';
 
 @Component({
     selector: 'app-courses',
@@ -9,7 +9,7 @@ import { Subject } from '../subjects/subjects.component';
 })
 export class CoursesComponent implements OnInit {
 
-    public subject: Subject = new Subject();
+    public subject: SubjectVm = new SubjectVm();
     public courseToBeAdded: CourseVM = new CourseVM();
     public courseToBeEdited: CourseVM = new CourseVM();
 
@@ -67,11 +67,11 @@ export class CoursesComponent implements OnInit {
                 res.courses.push(c2);
                 // ----
 
-                this.subject = Object.assign(new Subject(), res);
-                this.subject.courses = this.subject.courses.map(c => Object.assign(new Course(), c));
+                this.subject = Object.assign(new SubjectVm(), res);
+                this.subject.courses = res.courses.map(c => Object.assign(new CourseVM(), c.getCourseVM()));
             })
             .catch(err => {
-                this.errorMsg = 'Failed to load Courses.'
+                this.errorMsg = 'Failed to load Courses.';
             });
 
         this.loading = false;
@@ -89,7 +89,7 @@ export class CoursesComponent implements OnInit {
         await this.rest.post<Course>('', this.courseToBeAdded.getCourse())
             .then(res => {
                 const result = Object.assign(new Course(), res);
-                this.subject.courses.push(result);
+                this.subject.courses.push(result.getCourseVM());
             })
             .catch(err => {
                 this.errorMsg = 'Failed to add Course.';
@@ -98,9 +98,9 @@ export class CoursesComponent implements OnInit {
         this.loading = false;
     }
 
-    public aboutToEdit(course: Course): void {
+    public aboutToEdit(course: CourseVM): void {
         this.intention = 'edit';
-        this.courseToBeEdited = course.getCourseVM();
+        this.courseToBeEdited = course;
     }
 
     public async updateCourse(): Promise<void> {
@@ -110,7 +110,7 @@ export class CoursesComponent implements OnInit {
         await this.rest.put<Course>('', this.courseToBeEdited.getCourse())
             .then(res => {
                 const result = Object.assign(new Course(), res);
-                this.subject.courses = this.subject.courses.map(c => c.id == result.id ? result : c);
+                this.subject.courses = this.subject.courses.map(c => c.id == result.id ? result.getCourseVM() : c);
             })
             .catch(err => {
                 this.errorMsg = 'Failed to edit the Course.';
@@ -130,7 +130,7 @@ export class CoursesComponent implements OnInit {
                 this.subject.courses = this.subject.courses.filter(c => c.id != result.id);
             })
             .catch(err => {
-                this.errorMsg = 'Failed to delete Subject.'
+                this.errorMsg = 'Failed to delete Course.';
             });
 
         this.loading = false;

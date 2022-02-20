@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Course } from '../courses/courses.component';
+import { Course, CourseVM } from '../courses/courses.component';
 import { RestService } from '../rest.service';
 
 @Component({
@@ -121,6 +121,23 @@ export class Subject {
         res.id = this.id;
         res.title = this.title;
         res.credits = this.credits;
+        res.courses = this.courses;
+        return res;
+    }
+}
+
+export class SubjectVm {
+    public id: string = '';
+    public title: string = '';
+    public credits: number = 0;
+    public courses: Array<CourseVM> = new Array<CourseVM>();
+
+    public copy(): SubjectVm {
+        let res = new SubjectVm();
+        res.id = this.id;
+        res.title = this.title;
+        res.credits = this.credits;
+        res.courses = this.courses;
         return res;
     }
 }
