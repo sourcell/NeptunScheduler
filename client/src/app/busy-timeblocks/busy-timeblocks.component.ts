@@ -9,6 +9,7 @@ import { RestService } from '../rest.service';
 export class BusyTimeblocksComponent implements OnInit {
 
     public busyTimeBlocks: Array<BusyTimeBlockVM> = new Array<BusyTimeBlockVM>();
+    public busyTimeblockToBeAdded: BusyTimeBlockVM = new BusyTimeBlockVM();
 
     public loading: boolean = false;
     public errorMsg: string = '';
@@ -44,6 +45,26 @@ export class BusyTimeblocksComponent implements OnInit {
             })
             .catch(err => {
                 this.errorMsg = 'Failed to fetch your Busy Time Blocks.';
+            });
+
+        this.loading = false;
+    }
+
+    public aboutToAdd(): void {
+        this.intention = 'add';
+        this.busyTimeblockToBeAdded = new BusyTimeBlockVM();
+    }
+
+    public async add(): Promise<void> {
+        this.loading = true;
+
+        await this.rest.post<BusyTimeBlock>('', this.busyTimeblockToBeAdded.toDto())
+            .then(res => {
+                const result = Object.assign(new BusyTimeBlock(), res);
+                this.busyTimeBlocks.push(result.toVm());
+            })
+            .catch(err => {
+                this.errorMsg = 'Failed to add Busy Block.';
             });
 
         this.loading = false;
