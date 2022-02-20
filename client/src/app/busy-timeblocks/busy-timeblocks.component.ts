@@ -140,6 +140,9 @@ export class BusyTimeBlockVM {
         tmp = this.end.split(':');
         res.end = +tmp[0] * 60 + +tmp[1];
 
+        return res;
+    }
+
     public copy(): BusyTimeBlockVM {
         let res = new BusyTimeBlockVM();
         res.id = this.id;
