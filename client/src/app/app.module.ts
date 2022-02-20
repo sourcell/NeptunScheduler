@@ -8,13 +8,15 @@ import { AppComponent } from './app.component';
 import { AuthComponent } from './auth/auth.component';
 import { SubjectsComponent } from './subjects/subjects.component';
 import { CoursesComponent } from './courses/courses.component';
+import { BusyTimeBlocksComponent } from './busy-time-blocks/busy-time-blocks.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthComponent,
     SubjectsComponent,
-    CoursesComponent
+    CoursesComponent,
+    BusyTimeBlocksComponent
   ],
   imports: [
     BrowserModule,
