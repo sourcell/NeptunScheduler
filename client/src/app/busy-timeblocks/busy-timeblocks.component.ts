@@ -52,13 +52,50 @@ export class BusyTimeblocksComponent implements OnInit {
 }
 
 export class BusyTimeBlock {
+    public id: string = '';
     public day: number = 0;
     public start: number = 0;
     public end: number = 0;
+
+    public toVm(): BusyTimeBlockVM {
+        let res: BusyTimeBlockVM = new BusyTimeBlockVM();
+        Object.assign(res, this);
+
+        res.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][this.day];
+
+        let startHours = Math.floor(this.start / 60);
+        let startMinutes = this.start - startHours * 60;
+        res.start = (startHours < 10 ? '0'+startHours : startHours) + ':';
+        res.start += startMinutes < 10 ? '0'+startMinutes : startMinutes;
+
+        let endHours = Math.floor(this.end / 60);
+        let endMinutes = this.end - endHours * 60;
+        res.end = (endHours < 10 ? '0'+endHours : endHours) + ':';
+        res.end += endMinutes < 10 ? '0'+endMinutes : endMinutes;
+
+        return res;
+    }
 }
 
 export class BusyTimeBlockVM {
+    public id: string = '';
     public day: string = '';
     public start: string = '';
     public end: string = '';
+
+    public toDto(): BusyTimeBlock {
+        let res = new BusyTimeBlock();
+
+        Object.assign(res, this);
+
+        res.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(this.day);
+
+        let tmp = this.start.split(':');
+        res.start = +tmp[0] * 60 + +tmp[1];
+
+        tmp = this.end.split(':');
+        res.end = +tmp[0] * 60 + +tmp[1];
+
+        return res;
+    }
 }
