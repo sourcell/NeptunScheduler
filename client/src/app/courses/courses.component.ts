@@ -10,8 +10,8 @@ import { Subject, SubjectVm } from '../subjects/subjects.component';
 export class CoursesComponent implements OnInit {
 
     public subject: SubjectVm = new SubjectVm();
-    public courseToBeAdded: CourseVM = new CourseVM();
-    public courseToBeEdited: CourseVM = new CourseVM();
+    public courseToBeAdded: CourseVm = new CourseVm();
+    public courseToBeEdited: CourseVm = new CourseVm();
 
     public loading: boolean = false;
     public errorMsg: string = '';
@@ -68,7 +68,7 @@ export class CoursesComponent implements OnInit {
                 // ----
 
                 this.subject = Object.assign(new SubjectVm(), res);
-                this.subject.courses = res.courses.map(c => Object.assign(new CourseVM(), c.getCourseVM()));
+                this.subject.courses = res.courses.map(c => Object.assign(new CourseVm(), c.toVm()));
             })
             .catch(err => {
                 this.errorMsg = 'Failed to load Courses.';
@@ -79,17 +79,17 @@ export class CoursesComponent implements OnInit {
 
     public aboutToAdd(): void {
         this.intention = 'add';
-        this.courseToBeAdded = new CourseVM();
+        this.courseToBeAdded = new CourseVm();
     }
 
     public async addCourse(): Promise<void> {
         this.loading = true;
 
         // HTTP POST -> result: added Course
-        await this.rest.post<Course>('', this.courseToBeAdded.getCourse())
+        await this.rest.post<Course>('', this.courseToBeAdded.toDto())
             .then(res => {
                 const result = Object.assign(new Course(), res);
-                this.subject.courses.push(result.getCourseVM());
+                this.subject.courses.push(result.toVm());
             })
             .catch(err => {
                 this.errorMsg = 'Failed to add Course.';
@@ -98,7 +98,7 @@ export class CoursesComponent implements OnInit {
         this.loading = false;
     }
 
-    public aboutToEdit(course: CourseVM): void {
+    public aboutToEdit(course: CourseVm): void {
         this.intention = 'edit';
         this.courseToBeEdited = course;
     }
@@ -107,10 +107,10 @@ export class CoursesComponent implements OnInit {
         this.loading = true;
 
         // HTTP PUT -> result: edited Course
-        await this.rest.put<Course>('', this.courseToBeEdited.getCourse())
+        await this.rest.put<Course>('', this.courseToBeEdited.toDto())
             .then(res => {
                 const result = Object.assign(new Course(), res);
-                this.subject.courses = this.subject.courses.map(c => c.id == result.id ? result.getCourseVM() : c);
+                this.subject.courses = this.subject.courses.map(c => c.id == result.id ? result.toVm() : c);
             })
             .catch(err => {
                 this.errorMsg = 'Failed to edit the Course.';
@@ -124,7 +124,7 @@ export class CoursesComponent implements OnInit {
         this.clickedDelete = false;
 
         // HTTP DELETE -> result: deleted Course
-        await this.rest.delete<Course>('', this.courseToBeEdited.getCourse())
+        await this.rest.delete<Course>('', this.courseToBeEdited.toDto())
             .then(res => {
                 const result = Object.assign(new Course(), res);
                 this.subject.courses = this.subject.courses.filter(c => c.id != result.id);
@@ -138,7 +138,7 @@ export class CoursesComponent implements OnInit {
 
 }
 
-export class CourseVM {
+export class CourseVm {
     public id: string = '';
     public code: string = '';
     public slots: number = 0;
@@ -151,7 +151,7 @@ export class CourseVM {
     public priority: number = 0;
     public ignored: boolean =  false;
 
-    public getCourse(): Course {
+    public toDto(): Course {
         let course: Course = new Course();
         Object.assign(course, this);
 
@@ -180,8 +180,8 @@ export class Course {
     public priority: number = 0;
     public ignored: boolean =  false;
 
-    public getCourseVM(): CourseVM {
-        let courseVM: CourseVM = new CourseVM();
+    public toVm(): CourseVm {
+        let courseVM: CourseVm = new CourseVm();
         Object.assign(courseVM, this);
 
         courseVM.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][this.day];
