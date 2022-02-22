@@ -48,12 +48,12 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, Subject> impleme
         this.tempModel = subjectVm;
     }
 
-    public async processPutResult(res: Subject): Promise<void> {
+    public processPutResult(res: Subject): void {
         const result = Object.assign(new Subject(), res);
         this.models = this.models.map(s => s.id == res.id ? result.toVm() : s);
     }
 
-    public async processDeleteResult(res: Subject): Promise<void> {
+    public processDeleteResult(res: Subject): void {
         const result = Object.assign(new Subject(), res);
         this.models = this.models.filter(s => s.id != result.id);
     }

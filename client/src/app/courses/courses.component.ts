@@ -85,12 +85,12 @@ export class CoursesComponent extends CrudComponent<CourseVm, Course> implements
         this.tempModel = courseVm;
     }
 
-    public async processPutResult(res: Course): Promise<void> {
+    public processPutResult(res: Course): void {
         const result = Object.assign(new Course(), res);
         this.models = this.models.map(c => c.id == result.id ? result.toVm() : c);
     }
 
-    public async processDeleteResult(res: Course): Promise<void> {
+    public processDeleteResult(res: Course): void {
         const result = Object.assign(new Course(), res);
         this.models = this.models.filter(s => s.id != result.id);
     }

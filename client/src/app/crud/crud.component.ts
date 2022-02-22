@@ -77,7 +77,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
         this.loading = false;
     }
 
-    public abstract processPutResult(res: DTO): Promise<void>;
+    public abstract processPutResult(res: DTO): void;
     
     public async delete(model: DTO): Promise<void> {
         this.loading = true;
@@ -94,6 +94,6 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
         this.loading = false;
     }
 
-    public abstract processDeleteResult(res: DTO): Promise<void>;
+    public abstract processDeleteResult(res: DTO): void;
 
 }
