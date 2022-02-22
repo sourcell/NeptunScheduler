@@ -4,20 +4,18 @@
             <div class="row align-items-center">
                 <div class="col-md text-start">
                     <h5 class="mb-0">
-                        Busy Timeblocks
+                        Daily Active Times
                         <span class="spinner-border spinner-border-sm" *ngIf="this.loading"></span>
                     </h5>
                 </div>
                 <div class="col-md text-end text-nowrap">
-                    <a class="btn btn-link" routerLink="/preferences/dailyactivetimes">Go to Daily Active Times!</a>
+                    <a class="btn btn-link" routerLink="/preferences/busytimeblocks">Go to Busy Timeblocks!</a>
                     <button class="btn btn-primary mx-2" *ngIf="!this.loading" (click)="this.fetch()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
                     </button>
                     <button class="btn btn-primary mx-2" disabled *ngIf="this.loading">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
                     </button>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal" *ngIf="!this.loading" (click)="this.aboutToAdd()">Add Busy Timeblock!</button>
-                    <button class="btn btn-primary" disabled *ngIf="this.loading">Add Busy Timeblock!</button>
                 </div>
             </div>
         </li>
@@ -29,11 +27,11 @@
                 <span class="spinner-border"></span>
             </div> -->
             <ul class="list-group list-group-flush">
-                <li class="list-group-item" *ngFor="let btb of this.models">
+                <li class="list-group-item" *ngFor="let x of this.models">
                     <div class="row">
-                        <div class="col-md text-start">{{ btb.day }} {{ btb.start }}-{{ btb.end }}</div>
+                        <div class="col-md text-start">{{ x.day }}: {{ x.min }}-{{ x.max }} minutes</div>
                         <div class="col-md text-end">
-                            <a class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#modal" (click)="this.aboutToEdit(btb.copy())">Edit</a>
+                            <a class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#modal" (click)="this.aboutToEdit(x.copy())">Edit</a>
                         </div>
                     </div>
                 </li>
@@ -42,13 +40,12 @@
     </ul>
 </div>
 
-<!-- Add modal / Edit modal -->
+<!-- Edit modal -->
 <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" *ngIf="this.intention == 'add'">Adding Busy timeblock</h5>
-                <h5 class="modal-title" *ngIf="this.intention == 'edit'">Editing Busy timeblock</h5>
+                <h5 class="modal-title">Editing Daily Active Time</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -70,24 +67,15 @@
                 </div>
                 <div class="row mb-5">
                     <div class="col">
-                        <label class="form-label">Start</label>
-                        <input type="time" class="form-control" [(ngModel)]="this.tempModel.start">
+                        <label class="form-label">Min</label>
+                        <input type="number" class="form-control" [(ngModel)]="this.tempModel.min">
                     </div>
                     <div class="col">
-                        <label class="form-label">End</label>
-                        <input type="time" class="form-control" [(ngModel)]="this.tempModel.end">
+                        <label class="form-label">Max</label>
+                        <input type="max" class="form-control" [(ngModel)]="this.tempModel.max">
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'add'" (click)="this.add(this.tempModel.toDto())">Add!</button>
-                <div class="row" *ngIf="this.intention == 'edit'">
-                    <div class="col">
-                        <button type="button" class="btn btn-warning w-100" *ngIf="!this.clickedDelete" (click)="this.clickedDelete = true">Delete!</button>
-                        <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal" *ngIf="this.clickedDelete" (click)="this.delete(this.tempModel.toDto())">Confirm Delete!</button>
-                    </div>
-                    <div class="col">
-                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'edit'" (click)="this.update(this.tempModel.toDto())">Update!</button>
-                    </div>
-                </div>
+                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'edit'" (click)="this.update(this.tempModel.toDto())">Update!</button>
             </div>
         </div>
     </div>
