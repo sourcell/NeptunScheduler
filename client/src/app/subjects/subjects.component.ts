@@ -80,12 +80,7 @@ export class SubjectVm implements ViewModel {
     public courses: Array<CourseVm> = new Array<CourseVm>();
 
     public copy(): SubjectVm {
-        let res = new SubjectVm();
-        res.id = this.id;
-        res.title = this.title;
-        res.credits = this.credits;
-        res.courses = this.courses;
-        return res;
+        return Object.assign(new SubjectVm(), this);
     }
 
     public toDto(): Subject {
