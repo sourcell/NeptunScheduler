@@ -1,132 +1,79 @@
 import { Component, OnInit } from '@angular/core';
 import { Course, CourseVm } from '../courses/courses.component';
+import { CrudComponent } from '../crud/crud.component';
+import { DataTransferObject } from '../data-transfer-objects/data-transfer-object';
 import { RestService } from '../rest.service';
+import { ViewModel } from '../view-models/view-model';
 
 @Component({
     selector: 'app-subjects',
     templateUrl: './subjects.component.html',
     styleUrls: ['./subjects.component.css']
 })
-export class SubjectsComponent implements OnInit {
+export class SubjectsComponent extends CrudComponent<SubjectVm, Subject> implements OnInit {
 
-    public subjects: Array<Subject> = new Array<Subject>();
-    public subjectToBeAdded: Subject = new Subject();
-    public subjectToBeEdited: Subject = new Subject();
-
-    public loading: boolean = false;
-    public errorMsg: string = '';
-    public clickedDelete: boolean = false;
-    public intention: string = '';
-
-    private readonly rest: RestService;
+    public models: Array<SubjectVm> = new Array<SubjectVm>();
+    public model: SubjectVm = new SubjectVm();
+    public tempModel: SubjectVm = new SubjectVm();
 
     constructor(rest: RestService) {
-        this.rest = rest;
+        super(rest);
     }
 
-    public async ngOnInit(): Promise<void> {
-        await this.fetchSubjects();
-    }
+    // public async ngOnInit(): Promise<void> {
+    //     await this.fetch();
+    // }
 
-    public async fetchSubjects(): Promise<void> {
-        this.loading = true;
-
-        await this.rest.get<Array<Subject>>('', new Array<Subject>())
-            .then(res => {
-                let x = new Subject();
-                x.id = 'some_id';
-                x.title = 'simulated result from the server';
-                x.credits = 4;
-                res.push(x);
-                this.subjects = res.map(s => Object.assign(new Subject(), s));
-            })
-            .catch(err => {
-                this.errorMsg = 'Failed to load Subjects.'
-            });
-
-        this.loading = false;
+    public processGetResult(res: Array<Subject>): void {
+        let x = new Subject();
+        x.id = 'some_id';
+        x.title = 'simulated result from the server';
+        x.credits = 4;
+        res.push(x);
+        this.models = res.map(s => Object.assign(new Subject(), s).toVm());
     }
 
     public aboutToAdd(): void {
         this.intention = 'add';
-        this.subjectToBeAdded = new Subject();
+        this.tempModel = new SubjectVm();
     }
 
-    public async addSubject(): Promise<void> {
-        this.loading = true;
-
-        // HTTP POST -> result: added Subject
-        await this.rest.post<Subject>('', this.subjectToBeAdded)
-            .then(res => {
-                let result = new Subject();
-                Object.assign(result, res);
-                this.subjects.push(result);
-            })
-            .catch(err => {
-                this.errorMsg = 'Failed to add the Subject.';
-            });
-
-        this.loading = false;
+    public processPostResult(res: Subject): void {
+        const result = Object.assign(new Subject(), res);
+        this.models.push(result.toVm());
     }
 
-    public aboutToEdit(subject: Subject): void {
+    public aboutToEdit(subjectVm: SubjectVm): void {
         this.intention = 'edit';
-        this.subjectToBeEdited = subject;
+        this.tempModel = subjectVm;
     }
 
-    public async updateSubject(): Promise<void> {
-        this.loading = true;
-
-        // HTTP PUT -> result: updated Subject
-        await this.rest.put<Subject>('', this.subjectToBeEdited)
-            .then(res => {
-                const result = Object.assign(new Subject(), res);
-                this.subjects = this.subjects.map(s => s.id == result.id ? result : s);
-            })
-            .catch(err => {
-                this.errorMsg = 'Failed to edit the Subject.';
-            });
-
-        this.loading = false;
+    public async processPutResult(res: Subject): Promise<void> {
+        const result = Object.assign(new Subject(), res);
+        this.models = this.models.map(s => s.id == res.id ? result.toVm() : s);
     }
 
-    public async delete(): Promise<void> {
-        this.loading = true;
-        this.clickedDelete = false;
-
-        // HTTP DELETE -> result: deleted Subject
-        await this.rest.delete<Subject>('', this.subjectToBeEdited)
-            .then(res => {
-                let result = new Subject();
-                Object.assign(result, res);
-                this.subjects = this.subjects.filter(s => s.id != result.id);
-            })
-            .catch(err => {
-                this.errorMsg = 'Failed to delete Subject.'
-            });
-
-        this.loading = false;
+    public async processDeleteResult(res: Subject): Promise<void> {
+        const result = Object.assign(new Subject(), res);
+        this.models = this.models.filter(s => s.id != result.id);
     }
 
 }
 
-export class Subject {
+export class Subject implements DataTransferObject {
     public id: string = '';
     public title: string = '';
     public credits: number = 0;
     public courses: Array<Course> = new Array<Course>();
 
-    public copy(): Subject {
-        let res = new Subject();
-        res.id = this.id;
-        res.title = this.title;
-        res.credits = this.credits;
-        res.courses = this.courses;
-        return res;
+    public toVm(): SubjectVm {
+        let vm = Object.assign(new SubjectVm(), this);
+        vm.courses = this.courses.map(c => Object.assign(new CourseVm(), c));;
+        return vm;
     }
 }
 
-export class SubjectVm {
+export class SubjectVm implements ViewModel {
     public id: string = '';
     public title: string = '';
     public credits: number = 0;
@@ -139,5 +86,11 @@ export class SubjectVm {
         res.credits = this.credits;
         res.courses = this.courses;
         return res;
+    }
+
+    public toDto(): Subject {
+        let dto = Object.assign(new Subject(), this);
+        dto.courses = this.courses.map(c => Object.assign(new Course(), c));;
+        return dto;
     }
 }
