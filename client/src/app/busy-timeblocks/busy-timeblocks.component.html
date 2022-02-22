@@ -9,7 +9,7 @@
                     </h5>
                 </div>
                 <div class="col-md text-end text-nowrap">
-                    <a class="btn btn-link" routerLink="/subjects">Go to Daily Active Times!</a>
+                    <a class="btn btn-link" routerLink="/preferences/dailyactivetimes">Go to Daily Active Times!</a>
                     <button class="btn btn-primary mx-2" *ngIf="!this.loading" (click)="this.fetch()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
                     </button>
@@ -29,7 +29,7 @@
                 <span class="spinner-border"></span>
             </div> -->
             <ul class="list-group list-group-flush">
-                <li class="list-group-item" *ngFor="let btb of this.busyTimeblocks">
+                <li class="list-group-item" *ngFor="let btb of this.models">
                     <div class="row">
                         <div class="col-md text-start">{{ btb.day }} {{ btb.start }}-{{ btb.end }}</div>
                         <div class="col-md text-end">
@@ -54,21 +54,11 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label text-danger">id (only for testing)</label>
-                    <input type="text" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.busyTimeblockToBeAdded.id">
-                    <input type="text" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.busyTimeblockToBeEdited.id">
+                    <input type="text" class="form-control" [(ngModel)]="this.tempModel.id">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Day</label>
-                    <select class="form-select" *ngIf="this.intention == 'add'" [(ngModel)]="this.busyTimeblockToBeAdded.day">
-                        <option value="Monday">Monday</option>
-                        <option value="Tuesday">Tuesday</option>
-                        <option value="Wednesday">Wednesday</option>
-                        <option value="Thursday">Thursday</option>
-                        <option value="Friday">Friday</option>
-                        <option value="Saturday">Saturday</option>
-                        <option value="Sunday">Sunday</option>
-                    </select>
-                    <select class="form-select" *ngIf="this.intention == 'edit'" [(ngModel)]="this.busyTimeblockToBeEdited.day">
+                    <select class="form-select" [(ngModel)]="this.tempModel.day">
                         <option value="Monday">Monday</option>
                         <option value="Tuesday">Tuesday</option>
                         <option value="Wednesday">Wednesday</option>
@@ -81,23 +71,21 @@
                 <div class="row mb-5">
                     <div class="col">
                         <label class="form-label">Start</label>
-                        <input type="time" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.busyTimeblockToBeAdded.start">
-                        <input type="time" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.busyTimeblockToBeEdited.start">
+                        <input type="time" class="form-control" [(ngModel)]="this.tempModel.start">
                     </div>
                     <div class="col">
                         <label class="form-label">End</label>
-                        <input type="time" class="form-control" *ngIf="this.intention == 'add'" [(ngModel)]="this.busyTimeblockToBeAdded.end">
-                        <input type="time" class="form-control" *ngIf="this.intention == 'edit'" [(ngModel)]="this.busyTimeblockToBeEdited.end">
+                        <input type="time" class="form-control" [(ngModel)]="this.tempModel.end">
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'add'" (click)="this.add()">Add!</button>
+                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'add'" (click)="this.add(this.tempModel.toDto())">Add!</button>
                 <div class="row" *ngIf="this.intention == 'edit'">
                     <div class="col">
                         <button type="button" class="btn btn-warning w-100" *ngIf="!this.clickedDelete" (click)="this.clickedDelete = true">Delete!</button>
-                        <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal" *ngIf="this.clickedDelete" (click)="this.delete()">Confirm Delete!</button>
+                        <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal" *ngIf="this.clickedDelete" (click)="this.delete(this.tempModel.toDto())">Confirm Delete!</button>
                     </div>
                     <div class="col">
-                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'edit'" (click)="this.update()">Update!</button>
+                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'edit'" (click)="this.update(this.tempModel.toDto())">Update!</button>
                     </div>
                 </div>
             </div>

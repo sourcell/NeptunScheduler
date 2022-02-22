@@ -9,6 +9,7 @@ import { AuthComponent } from './auth/auth.component';
 import { SubjectsComponent } from './subjects/subjects.component';
 import { CoursesComponent } from './courses/courses.component';
 import { BusyTimeblocksComponent } from './busy-timeblocks/busy-timeblocks.component';
+import { DailyActiveTimesComponent } from './daily-active-times/daily-active-times.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { BusyTimeblocksComponent } from './busy-timeblocks/busy-timeblocks.compo
     AuthComponent,
     SubjectsComponent,
     CoursesComponent,
-    BusyTimeblocksComponent
+    BusyTimeblocksComponent,
+    DailyActiveTimesComponent
   ],
   imports: [
     BrowserModule,

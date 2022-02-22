@@ -1,117 +1,72 @@
 import { Component, OnInit } from '@angular/core';
+import { CrudComponent } from '../crud/crud.component';
+import { DataTransferObject } from '../data-transfer-objects/data-transfer-object';
 import { RestService } from '../rest.service';
+import { ViewModel } from '../view-models/view-model';
 
 @Component({
     selector: 'app-busy-time-blocks',
     templateUrl: './busy-timeblocks.component.html',
     styleUrls: ['./busy-timeblocks.component.css']
 })
-export class BusyTimeblocksComponent implements OnInit {
-
-    public busyTimeblocks: Array<BusyTimeblockVm> = new Array<BusyTimeblockVm>();
-    public busyTimeblockToBeAdded: BusyTimeblockVm = new BusyTimeblockVm();
-    public busyTimeblockToBeEdited: BusyTimeblockVm = new BusyTimeblockVm();
-
-    public loading: boolean = false;
-    public errorMsg: string = '';
-    public clickedDelete: boolean = false;
-    public intention: string = '';
-
-    private readonly rest: RestService;
+export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, BusyTimeblock> implements OnInit {
+    
+    public models: Array<BusyTimeblockVm> = new Array<BusyTimeblockVm>();
+    public model: BusyTimeblockVm = new BusyTimeblockVm();
+    public tempModel: BusyTimeblockVm = new BusyTimeblockVm();
 
     constructor(rest: RestService) {
-        this.rest = rest;
+        super(rest);
     }
 
-    public async ngOnInit(): Promise<void> {
-        await this.fetch();
-    }
+    // public async ngOnInit(): Promise<void> {
+    //     await this.fetch();
+    // }
 
-    public async fetch(): Promise<void> {
-        this.loading = true;
+    public processGetResult(res: Array<BusyTimeblock>): void {
+        let btb1 = new BusyTimeblock();
+        btb1.id = 'first_id';
+        btb1.day = 1;
+        btb1.start = 900;
+        btb1.end = 1439;
+        let btb2 = new BusyTimeblock();
+        btb2.id = 'second_id';
+        btb2.day = 5;
+        btb2.start = 480;
+        btb2.end = 600;
 
-        await this.rest.get<Array<BusyTimeblock>>('', new Array<BusyTimeblock>())
-            .then(res => {
-                let btb1 = new BusyTimeblock();
-                btb1.id = 'first_id';
-                btb1.day = 1;
-                btb1.start = 900;
-                btb1.end = 1439;
-                let btb2 = new BusyTimeblock();
-                btb2.id = 'second_id';
-                btb2.day = 5;
-                btb2.start = 480;
-                btb2.end = 600;
-
-                res.push(btb1, btb2);
-                this.busyTimeblocks = res.map(b => Object.assign(new BusyTimeblockVm(), b.toVm()));
-            })
-            .catch(err => {
-                this.errorMsg = 'Failed to fetch your Busy Time Blocks.';
-            });
-
-        this.loading = false;
+        res.push(btb1, btb2);
+        this.models = res.map(b => Object.assign(new BusyTimeblock(), b).toVm());
     }
 
     public aboutToAdd(): void {
         this.intention = 'add';
-        this.busyTimeblockToBeAdded = new BusyTimeblockVm();
+        this.tempModel = new BusyTimeblockVm();
     }
 
-    public async add(): Promise<void> {
-        this.loading = true;
-
-        await this.rest.post<BusyTimeblock>('', this.busyTimeblockToBeAdded.toDto())
-            .then(res => {
-                const result = Object.assign(new BusyTimeblock(), res);
-                this.busyTimeblocks.push(result.toVm());
-            })
-            .catch(err => {
-                this.errorMsg = 'Failed to add Busy Block.';
-            });
-
-        this.loading = false;
+    public processPostResult(res: BusyTimeblock): void {
+        const result = Object.assign(new BusyTimeblock(), res);
+        this.models.push(result.toVm());
     }
 
     public aboutToEdit(busyTimeblock: BusyTimeblockVm): void {
         this.intention = 'edit';
-        this.busyTimeblockToBeEdited = busyTimeblock;
+        this.tempModel = busyTimeblock;
     }
 
-    public async update(): Promise<void> {
-        this.loading = true;
-
-        await this.rest.put<BusyTimeblock>('', this.busyTimeblockToBeEdited.toDto())
-            .then(res => {
-                const result = Object.assign(new BusyTimeblock(), res);
-                this.busyTimeblocks = this.busyTimeblocks.map(b => b.id == result.id ? result.toVm() : b);
-            })
-            .catch(err => {
-                this.errorMsg = 'Failed to edit the Busy timeblock.';
-            });
-
-        this.loading = false;
+    public processPutResult(res: BusyTimeblock): void {
+        const result = Object.assign(new BusyTimeblock(), res);
+        this.models = this.models.map(b => b.id == result.id ? result.toVm() : b);
     }
 
-    public async delete(): Promise<void> {
-        this.loading = true;
-        this.clickedDelete = false;
-
-        await this.rest.delete<BusyTimeblock>('', this.busyTimeblockToBeEdited.toDto())
-            .then(res => {
-                const result = Object.assign(new BusyTimeblock(), res);
-                this.busyTimeblocks = this.busyTimeblocks.filter(b => b.id != result.id);
-            })
-            .catch(err => {
-                this.errorMsg = 'Failed to delete Busy timeblock.';
-            });
-
-        this.loading = false;
+    public processDeleteResult(res: BusyTimeblock): void {
+        const result = Object.assign(new BusyTimeblock(), res);
+        this.models = this.models.filter(b => b.id != result.id);
     }
 
 }
 
-export class BusyTimeblock {
+export class BusyTimeblock implements DataTransferObject {
     public id: string = '';
     public day: number = 0;
     public start: number = 0;
@@ -137,7 +92,7 @@ export class BusyTimeblock {
     }
 }
 
-export class BusyTimeblockVm {
+export class BusyTimeblockVm implements ViewModel {
     public id: string = '';
     public day: string = '';
     public start: string = '';
@@ -160,11 +115,6 @@ export class BusyTimeblockVm {
     }
 
     public copy(): BusyTimeblockVm {
-        let res = new BusyTimeblockVm();
-        res.id = this.id;
-        res.day = this.day;
-        res.start = this.start;
-        res.end = this.end;
-        return res;
+        return Object.assign(new BusyTimeblockVm(), this);
     }
 }
