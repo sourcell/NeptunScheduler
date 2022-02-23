@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
 import { DataTransferObject } from '../data-transfer-objects/data-transfer-object';
 import { RestService } from '../rest.service';
-import { Subject, SubjectVm } from '../subjects/subjects.component';
+import { SubjectDto, SubjectVm } from '../subjects/subjects.component';
 import { ViewModel } from '../view-models/view-model';
 
 @Component({
@@ -28,10 +28,10 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     }
 
     public async fetchSubject(): Promise<void> {
-        await this.rest.get<Subject>('', new Subject())
+        await this.rest.get<SubjectDto>('', new SubjectDto())
             .then(res => {
                 res.title = 'subject name';
-                const result = Object.assign(new Subject(), res);
+                const result = Object.assign(new SubjectDto(), res);
                 this.subject = result.toVm();
             })
             .catch(err => {

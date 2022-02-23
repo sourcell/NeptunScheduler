@@ -10,7 +10,7 @@ import { ViewModel } from '../view-models/view-model';
     templateUrl: './subjects.component.html',
     styleUrls: ['./subjects.component.css']
 })
-export class SubjectsComponent extends CrudComponent<SubjectVm, Subject> implements OnInit {
+export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> implements OnInit {
 
     public models: Array<SubjectVm> = new Array<SubjectVm>();
     public model: SubjectVm = new SubjectVm();
@@ -24,13 +24,13 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, Subject> impleme
     //     await this.fetch();
     // }
 
-    public processGetResult(res: Array<Subject>): void {
-        let x = new Subject();
+    public processGetResult(res: Array<SubjectDto>): void {
+        let x = new SubjectDto();
         x.id = 'some_id';
         x.title = 'simulated result from the server';
         x.credits = 4;
         res.push(x);
-        this.models = res.map(s => Object.assign(new Subject(), s).toVm());
+        this.models = res.map(s => Object.assign(new SubjectDto(), s).toVm());
     }
 
     public aboutToAdd(): void {
@@ -38,8 +38,8 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, Subject> impleme
         this.tempModel = new SubjectVm();
     }
 
-    public processPostResult(res: Subject): void {
-        const result = Object.assign(new Subject(), res);
+    public processPostResult(res: SubjectDto): void {
+        const result = Object.assign(new SubjectDto(), res);
         this.models.push(result.toVm());
     }
 
@@ -48,19 +48,19 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, Subject> impleme
         this.tempModel = subjectVm;
     }
 
-    public processPutResult(res: Subject): void {
-        const result = Object.assign(new Subject(), res);
+    public processPutResult(res: SubjectDto): void {
+        const result = Object.assign(new SubjectDto(), res);
         this.models = this.models.map(s => s.id == res.id ? result.toVm() : s);
     }
 
-    public processDeleteResult(res: Subject): void {
-        const result = Object.assign(new Subject(), res);
+    public processDeleteResult(res: SubjectDto): void {
+        const result = Object.assign(new SubjectDto(), res);
         this.models = this.models.filter(s => s.id != result.id);
     }
 
 }
 
-export class Subject implements DataTransferObject {
+export class SubjectDto implements DataTransferObject {
     public id: string = '';
     public title: string = '';
     public credits: number = 0;
@@ -83,8 +83,8 @@ export class SubjectVm implements ViewModel {
         return Object.assign(new SubjectVm(), this);
     }
 
-    public toDto(): Subject {
-        let dto = Object.assign(new Subject(), this);
+    public toDto(): SubjectDto {
+        let dto = Object.assign(new SubjectDto(), this);
         dto.courses = this.courses.map(c => Object.assign(new CourseDto(), c));;
         return dto;
     }
