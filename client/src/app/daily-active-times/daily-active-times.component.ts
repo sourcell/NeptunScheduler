@@ -9,7 +9,7 @@ import { ViewModel } from '../view-models/view-model';
     templateUrl: './daily-active-times.component.html',
     styleUrls: ['./daily-active-times.component.css']
 })
-export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, DailyActiveTime> implements OnInit {
+export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, DailyActiveTimeDto> implements OnInit {
     
     public models: Array<DailyActiveTimeVm> = new Array<DailyActiveTimeVm>();
     public model: DailyActiveTimeVm = new DailyActiveTimeVm();
@@ -22,20 +22,20 @@ export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, 
     // ngOnInit(): void {
     // }
 
-    public processGetResult(res: Array<DailyActiveTime>): void {
-        let x1 = new DailyActiveTime();
+    public processGetResult(res: Array<DailyActiveTimeDto>): void {
+        let x1 = new DailyActiveTimeDto();
         x1.id = '1';
         x1.day = 1;
         x1.min = 200;
         x1.max = 400;
-        let x2 = new DailyActiveTime();
+        let x2 = new DailyActiveTimeDto();
         x2.id = '2';
         x2.day = 2;
         x2.min = 200;
         x2.max = 400;
 
         res.push(x1, x2);
-        this.models = res.map(x => Object.assign(new DailyActiveTime(), x).toVm());
+        this.models = res.map(x => Object.assign(new DailyActiveTimeDto(), x).toVm());
     }
 
     public aboutToAdd(): void {
@@ -43,8 +43,8 @@ export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, 
         this.tempModel = new DailyActiveTimeVm();
     }
 
-    public processPostResult(res: DailyActiveTime): void {
-        const result = Object.assign(new DailyActiveTime(), res);
+    public processPostResult(res: DailyActiveTimeDto): void {
+        const result = Object.assign(new DailyActiveTimeDto(), res);
         this.models.push(result.toVm());
     }
 
@@ -53,18 +53,18 @@ export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, 
         this.tempModel = model;
     }
 
-    public processPutResult(res: DailyActiveTime): void {
-        const result = Object.assign(new DailyActiveTime(), res);
+    public processPutResult(res: DailyActiveTimeDto): void {
+        const result = Object.assign(new DailyActiveTimeDto(), res);
         this.models = this.models.map(b => b.id == result.id ? result.toVm() : b);
     }
 
-    public processDeleteResult(res: DailyActiveTime): void {
-        const result = Object.assign(new DailyActiveTime(), res);
+    public processDeleteResult(res: DailyActiveTimeDto): void {
+        const result = Object.assign(new DailyActiveTimeDto(), res);
         this.models = this.models.filter(b => b.id != result.id);
     }
 }
 
-export class DailyActiveTime implements DataTransferObject {
+export class DailyActiveTimeDto implements DataTransferObject {
     public id: string = '';
     public day: number = 0;
     public min: number = 0;
@@ -86,8 +86,8 @@ export class DailyActiveTimeVm implements ViewModel {
     public min: number = 0;
     public max: number = 0;
 
-    public toDto(): DailyActiveTime {
-        let res: DailyActiveTime = new DailyActiveTime();
+    public toDto(): DailyActiveTimeDto {
+        let res: DailyActiveTimeDto = new DailyActiveTimeDto();
         Object.assign(res, this);
 
         res.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(this.day);
