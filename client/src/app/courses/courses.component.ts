@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
-import { DataTransferObject } from '../data-transfer-objects/data-transfer-object';
+import { CourseDto } from '../x-dto/course-dto';
+import { DataTransferObject } from '../x-dto/data-transfer-object';
+import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
-import { SubjectDto, SubjectVm } from '../subjects/subjects.component';
-import { ViewModel } from '../view-models/view-model';
+import { CourseVm } from '../x-vm/course-vm';
+import { SubjectVm } from '../x-vm/subject-vm';
+import { ViewModel } from '../x-vm/view-model';
 
 @Component({
     selector: 'app-courses',
@@ -95,70 +98,4 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
         this.models = this.models.filter(s => s.id != result.id);
     }
 
-}
-
-export class CourseVm implements ViewModel {
-    public id: string = '';
-    public code: string = '';
-    public slots: number = 0;
-    public day: string = '';    // string because of the input form
-    public start: string = '';  // string because of the input form
-    public end: string = '';    // string because of the input form
-    public teachers: string = '';
-    public fix: boolean = false;
-    public collidable: boolean = false;
-    public priority: number = 0;
-    public ignored: boolean =  false;
-
-    public copy(): CourseVm {
-        return Object.assign(new CourseVm(), this);
-    }
-
-    public toDto(): CourseDto {
-        let course: CourseDto = new CourseDto();
-        Object.assign(course, this);
-
-        course.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(this.day);
-
-        let tmp = this.start.split(':');
-        course.start = +tmp[0] * 60 + +tmp[1];
-
-        tmp = this.end.split(':');
-        course.end = +tmp[0] * 60 + +tmp[1];
-
-        return course;
-    }
-}
-
-export class CourseDto implements DataTransferObject {
-    public id: string = '';
-    public code: string = '';
-    public slots: number = 0;
-    public day: number = 0;
-    public start: number = 0;
-    public end: number = 0;
-    public teachers: string = '';
-    public fix: boolean = false;
-    public collidable: boolean = false;
-    public priority: number = 0;
-    public ignored: boolean =  false;
-
-    public toVm(): CourseVm {
-        let courseVM: CourseVm = new CourseVm();
-        Object.assign(courseVM, this);
-
-        courseVM.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][this.day];
-
-        let startHours = Math.floor(this.start / 60);
-        let startMinutes = this.start - startHours * 60;
-        courseVM.start = (startHours < 10 ? '0'+startHours : startHours) + ':';
-        courseVM.start += startMinutes < 10 ? '0'+startMinutes : startMinutes;
-
-        let endHours = Math.floor(this.end / 60);
-        let endMinutes = this.end - endHours * 60;
-        courseVM.end = (endHours < 10 ? '0'+endHours : endHours) + ':';
-        courseVM.end += endMinutes < 10 ? '0'+endMinutes : endMinutes;
-
-        return courseVM;
-    }
 }

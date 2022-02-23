@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CourseDto, CourseVm } from '../courses/courses.component';
 import { CrudComponent } from '../crud/crud.component';
-import { DataTransferObject } from '../data-transfer-objects/data-transfer-object';
+import { CourseDto } from '../x-dto/course-dto';
+import { DataTransferObject } from '../x-dto/data-transfer-object';
+import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
-import { ViewModel } from '../view-models/view-model';
+import { CourseVm } from '../x-vm/course-vm';
+import { SubjectVm } from '../x-vm/subject-vm';
+import { ViewModel } from '../x-vm/view-model';
 
 @Component({
     selector: 'app-subjects',
@@ -58,34 +61,4 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
         this.models = this.models.filter(s => s.id != result.id);
     }
 
-}
-
-export class SubjectDto implements DataTransferObject {
-    public id: string = '';
-    public title: string = '';
-    public credits: number = 0;
-    public courses: Array<CourseDto> = new Array<CourseDto>();
-
-    public toVm(): SubjectVm {
-        let vm = Object.assign(new SubjectVm(), this);
-        vm.courses = this.courses.map(c => Object.assign(new CourseVm(), c));;
-        return vm;
-    }
-}
-
-export class SubjectVm implements ViewModel {
-    public id: string = '';
-    public title: string = '';
-    public credits: number = 0;
-    public courses: Array<CourseVm> = new Array<CourseVm>();
-
-    public copy(): SubjectVm {
-        return Object.assign(new SubjectVm(), this);
-    }
-
-    public toDto(): SubjectDto {
-        let dto = Object.assign(new SubjectDto(), this);
-        dto.courses = this.courses.map(c => Object.assign(new CourseDto(), c));;
-        return dto;
-    }
 }

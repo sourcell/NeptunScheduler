@@ -1,4 +1,4 @@
-import { DataTransferObject } from "../data-transfer-objects/data-transfer-object";
+import { DataTransferObject } from "../x-dto/data-transfer-object";
 
 export interface ViewModel {
     copy(): ViewModel;

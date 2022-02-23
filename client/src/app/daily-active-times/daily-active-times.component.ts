@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
-import { DataTransferObject } from '../data-transfer-objects/data-transfer-object';
+import { DailyActiveTimeDto } from '../x-dto/daily-active-time-dto';
+import { DataTransferObject } from '../x-dto/data-transfer-object';
 import { RestService } from '../rest.service';
-import { ViewModel } from '../view-models/view-model';
+import { DailyActiveTimeVm } from '../x-vm/daily-active-time-vm';
+import { ViewModel } from '../x-vm/view-model';
 
 @Component({
     selector: 'app-daily-active-times',
@@ -61,41 +63,5 @@ export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, 
     public processDeleteResult(res: DailyActiveTimeDto): void {
         const result = Object.assign(new DailyActiveTimeDto(), res);
         this.models = this.models.filter(b => b.id != result.id);
-    }
-}
-
-export class DailyActiveTimeDto implements DataTransferObject {
-    public id: string = '';
-    public day: number = 0;
-    public min: number = 0;
-    public max: number = 0;
-
-    public toVm(): DailyActiveTimeVm {
-        let res: DailyActiveTimeVm = new DailyActiveTimeVm();
-        Object.assign(res, this);
-
-        res.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][this.day];
-
-        return res;
-    }
-}
-
-export class DailyActiveTimeVm implements ViewModel {
-    public id: string = '';
-    public day: string = '';
-    public min: number = 0;
-    public max: number = 0;
-
-    public toDto(): DailyActiveTimeDto {
-        let res: DailyActiveTimeDto = new DailyActiveTimeDto();
-        Object.assign(res, this);
-
-        res.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(this.day);
-
-        return res;
-    }
-
-    public copy(): DailyActiveTimeVm {
-        return Object.assign(new DailyActiveTimeVm(), this);
     }
 }

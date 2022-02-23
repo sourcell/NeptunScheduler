@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
-import { DataTransferObject } from '../data-transfer-objects/data-transfer-object';
+import { BusyTimeblockDto } from '../x-dto/busy-timeblock-dto';
+import { DataTransferObject } from '../x-dto/data-transfer-object';
 import { RestService } from '../rest.service';
-import { ViewModel } from '../view-models/view-model';
+import { BusyTimeblockVm } from '../x-vm/busy-timeblock-vm';
+import { ViewModel } from '../x-vm/view-model';
 
 @Component({
     selector: 'app-busy-time-blocks',
@@ -64,57 +66,4 @@ export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, Busy
         this.models = this.models.filter(b => b.id != result.id);
     }
 
-}
-
-export class BusyTimeblockDto implements DataTransferObject {
-    public id: string = '';
-    public day: number = 0;
-    public start: number = 0;
-    public end: number = 0;
-
-    public toVm(): BusyTimeblockVm {
-        let res: BusyTimeblockVm = new BusyTimeblockVm();
-        Object.assign(res, this);
-
-        res.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][this.day];
-
-        let startHours = Math.floor(this.start / 60);
-        let startMinutes = this.start - startHours * 60;
-        res.start = (startHours < 10 ? '0'+startHours : startHours) + ':';
-        res.start += startMinutes < 10 ? '0'+startMinutes : startMinutes;
-
-        let endHours = Math.floor(this.end / 60);
-        let endMinutes = this.end - endHours * 60;
-        res.end = (endHours < 10 ? '0'+endHours : endHours) + ':';
-        res.end += endMinutes < 10 ? '0'+endMinutes : endMinutes;
-
-        return res;
-    }
-}
-
-export class BusyTimeblockVm implements ViewModel {
-    public id: string = '';
-    public day: string = '';
-    public start: string = '';
-    public end: string = '';
-
-    public toDto(): BusyTimeblockDto {
-        let res = new BusyTimeblockDto();
-
-        Object.assign(res, this);
-
-        res.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(this.day);
-
-        let tmp = this.start.split(':');
-        res.start = +tmp[0] * 60 + +tmp[1];
-
-        tmp = this.end.split(':');
-        res.end = +tmp[0] * 60 + +tmp[1];
-
-        return res;
-    }
-
-    public copy(): BusyTimeblockVm {
-        return Object.assign(new BusyTimeblockVm(), this);
-    }
 }
