@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Course, CourseVm } from '../courses/courses.component';
+import { CourseDto, CourseVm } from '../courses/courses.component';
 import { CrudComponent } from '../crud/crud.component';
 import { DataTransferObject } from '../data-transfer-objects/data-transfer-object';
 import { RestService } from '../rest.service';
@@ -64,7 +64,7 @@ export class Subject implements DataTransferObject {
     public id: string = '';
     public title: string = '';
     public credits: number = 0;
-    public courses: Array<Course> = new Array<Course>();
+    public courses: Array<CourseDto> = new Array<CourseDto>();
 
     public toVm(): SubjectVm {
         let vm = Object.assign(new SubjectVm(), this);
@@ -85,7 +85,7 @@ export class SubjectVm implements ViewModel {
 
     public toDto(): Subject {
         let dto = Object.assign(new Subject(), this);
-        dto.courses = this.courses.map(c => Object.assign(new Course(), c));;
+        dto.courses = this.courses.map(c => Object.assign(new CourseDto(), c));;
         return dto;
     }
 }

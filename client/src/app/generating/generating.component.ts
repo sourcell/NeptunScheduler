@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Course, CourseVm } from '../courses/courses.component';
+import { CourseDto, CourseVm } from '../courses/courses.component';
 import { CrudComponent } from '../crud/crud.component';
 import { RestService } from '../rest.service';
 
@@ -8,7 +8,7 @@ import { RestService } from '../rest.service';
     templateUrl: './generating.component.html',
     styleUrls: ['./generating.component.css']
 })
-export class GeneratingComponent extends CrudComponent<CourseVm, Course> implements OnInit {
+export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> implements OnInit {
 
     public models: Array<CourseVm> = new Array<CourseVm>();
     public model: CourseVm = new CourseVm();
@@ -35,10 +35,10 @@ export class GeneratingComponent extends CrudComponent<CourseVm, Course> impleme
         this.loading = true;
         this.isGenerating = true;
 
-        await this.rest.get<Array<Course>>('', new Array<Course>())
+        await this.rest.get<Array<CourseDto>>('', new Array<CourseDto>())
         .then(res => {
-            res.push(new Course());
-            const result = res.map(c => Object.assign(new Course(), c).toVm());
+            res.push(new CourseDto());
+            const result = res.map(c => Object.assign(new CourseDto(), c).toVm());
             this.models = result;
         })
         .catch(err => {
@@ -67,16 +67,16 @@ export class GeneratingComponent extends CrudComponent<CourseVm, Course> impleme
         }
     }
 
-    public processGetResult(res: Array<Course>): void {}
+    public processGetResult(res: Array<CourseDto>): void {}
 
     public aboutToAdd(): void {}
 
-    public processPostResult(res: Course): void {}
+    public processPostResult(res: CourseDto): void {}
 
     public aboutToEdit(viewModel: CourseVm): void {}
 
-    public processPutResult(res: Course): void {}
+    public processPutResult(res: CourseDto): void {}
 
-    public processDeleteResult(res: Course): void {}
+    public processDeleteResult(res: CourseDto): void {}
 
 }

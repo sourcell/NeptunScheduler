@@ -10,7 +10,7 @@ import { ViewModel } from '../view-models/view-model';
     templateUrl: './courses.component.html',
     styleUrls: ['./courses.component.css']
 })
-export class CoursesComponent extends CrudComponent<CourseVm, Course> implements OnInit {
+export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> implements OnInit {
 
     public models: Array<CourseVm> = new Array<CourseVm>();
     public model: CourseVm = new CourseVm();
@@ -39,8 +39,8 @@ export class CoursesComponent extends CrudComponent<CourseVm, Course> implements
             });
     }
 
-    public processGetResult(res: Array<Course>): void {
-        let c1 = new Course();
+    public processGetResult(res: Array<CourseDto>): void {
+        let c1 = new CourseDto();
         c1.id = 'id1';
         c1.code = 'ABC-123';
         c1.slots = 4;
@@ -53,7 +53,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, Course> implements
         c1.ignored = false;
         c1.priority = 5;
 
-        let c2 = new Course();
+        let c2 = new CourseDto();
         c2.id = 'id2';
         c2.code = 'XZY-456';
         c2.slots = 2;
@@ -67,7 +67,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, Course> implements
         c2.priority = 10;
 
         res.push(c1, c2);
-        this.models = res.map(c => Object.assign(new Course(), c).toVm());
+        this.models = res.map(c => Object.assign(new CourseDto(), c).toVm());
     }
 
     public aboutToAdd(): void {
@@ -75,8 +75,8 @@ export class CoursesComponent extends CrudComponent<CourseVm, Course> implements
         this.tempModel = new CourseVm();
     }
 
-    public processPostResult(res: Course): void {
-        const result = Object.assign(new Course(), res);
+    public processPostResult(res: CourseDto): void {
+        const result = Object.assign(new CourseDto(), res);
         this.models.push(result.toVm());
     }
 
@@ -85,13 +85,13 @@ export class CoursesComponent extends CrudComponent<CourseVm, Course> implements
         this.tempModel = courseVm;
     }
 
-    public processPutResult(res: Course): void {
-        const result = Object.assign(new Course(), res);
+    public processPutResult(res: CourseDto): void {
+        const result = Object.assign(new CourseDto(), res);
         this.models = this.models.map(c => c.id == result.id ? result.toVm() : c);
     }
 
-    public processDeleteResult(res: Course): void {
-        const result = Object.assign(new Course(), res);
+    public processDeleteResult(res: CourseDto): void {
+        const result = Object.assign(new CourseDto(), res);
         this.models = this.models.filter(s => s.id != result.id);
     }
 
@@ -114,8 +114,8 @@ export class CourseVm implements ViewModel {
         return Object.assign(new CourseVm(), this);
     }
 
-    public toDto(): Course {
-        let course: Course = new Course();
+    public toDto(): CourseDto {
+        let course: CourseDto = new CourseDto();
         Object.assign(course, this);
 
         course.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(this.day);
@@ -130,7 +130,7 @@ export class CourseVm implements ViewModel {
     }
 }
 
-export class Course implements DataTransferObject {
+export class CourseDto implements DataTransferObject {
     public id: string = '';
     public code: string = '';
     public slots: number = 0;
