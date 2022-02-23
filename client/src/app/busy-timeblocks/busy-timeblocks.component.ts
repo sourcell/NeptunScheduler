@@ -9,7 +9,7 @@ import { ViewModel } from '../view-models/view-model';
     templateUrl: './busy-timeblocks.component.html',
     styleUrls: ['./busy-timeblocks.component.css']
 })
-export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, BusyTimeblock> implements OnInit {
+export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, BusyTimeblockDto> implements OnInit {
     
     public models: Array<BusyTimeblockVm> = new Array<BusyTimeblockVm>();
     public model: BusyTimeblockVm = new BusyTimeblockVm();
@@ -23,20 +23,20 @@ export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, Busy
     //     await this.fetch();
     // }
 
-    public processGetResult(res: Array<BusyTimeblock>): void {
-        let btb1 = new BusyTimeblock();
+    public processGetResult(res: Array<BusyTimeblockDto>): void {
+        let btb1 = new BusyTimeblockDto();
         btb1.id = 'first_id';
         btb1.day = 1;
         btb1.start = 900;
         btb1.end = 1439;
-        let btb2 = new BusyTimeblock();
+        let btb2 = new BusyTimeblockDto();
         btb2.id = 'second_id';
         btb2.day = 5;
         btb2.start = 480;
         btb2.end = 600;
 
         res.push(btb1, btb2);
-        this.models = res.map(b => Object.assign(new BusyTimeblock(), b).toVm());
+        this.models = res.map(b => Object.assign(new BusyTimeblockDto(), b).toVm());
     }
 
     public aboutToAdd(): void {
@@ -44,8 +44,8 @@ export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, Busy
         this.tempModel = new BusyTimeblockVm();
     }
 
-    public processPostResult(res: BusyTimeblock): void {
-        const result = Object.assign(new BusyTimeblock(), res);
+    public processPostResult(res: BusyTimeblockDto): void {
+        const result = Object.assign(new BusyTimeblockDto(), res);
         this.models.push(result.toVm());
     }
 
@@ -54,19 +54,19 @@ export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, Busy
         this.tempModel = busyTimeblock;
     }
 
-    public processPutResult(res: BusyTimeblock): void {
-        const result = Object.assign(new BusyTimeblock(), res);
+    public processPutResult(res: BusyTimeblockDto): void {
+        const result = Object.assign(new BusyTimeblockDto(), res);
         this.models = this.models.map(b => b.id == result.id ? result.toVm() : b);
     }
 
-    public processDeleteResult(res: BusyTimeblock): void {
-        const result = Object.assign(new BusyTimeblock(), res);
+    public processDeleteResult(res: BusyTimeblockDto): void {
+        const result = Object.assign(new BusyTimeblockDto(), res);
         this.models = this.models.filter(b => b.id != result.id);
     }
 
 }
 
-export class BusyTimeblock implements DataTransferObject {
+export class BusyTimeblockDto implements DataTransferObject {
     public id: string = '';
     public day: number = 0;
     public start: number = 0;
@@ -98,8 +98,8 @@ export class BusyTimeblockVm implements ViewModel {
     public start: string = '';
     public end: string = '';
 
-    public toDto(): BusyTimeblock {
-        let res = new BusyTimeblock();
+    public toDto(): BusyTimeblockDto {
+        let res = new BusyTimeblockDto();
 
         Object.assign(res, this);
 
