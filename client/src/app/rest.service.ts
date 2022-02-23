@@ -49,9 +49,9 @@ export class RestService {
     }
 
     // 'item' parameter is only for the prototype
-    public async delete<T>(endpoint: string, item: T): Promise<T> {
+    public async delete<T>(endpoint: string, id: T): Promise<T> {
         await new Promise(r => setTimeout(r, 1000));
-        return item;
+        return id;
 
         // const result = await firstValueFrom(this.http.delete<T>(this.url + endpoint, {
         //     headers: { 'username': 'username', 'token': 'token' }

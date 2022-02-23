@@ -78,6 +78,6 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
 
     public processPutResult(res: CourseDto): void {}
 
-    public processDeleteResult(res: CourseDto): void {}
+    public processDeleteResult(res: string): void {}
 
 }

@@ -56,9 +56,8 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
         this.models = this.models.map(s => s.id == res.id ? result.toVm() : s);
     }
 
-    public processDeleteResult(res: SubjectDto): void {
-        const result = Object.assign(new SubjectDto(), res);
-        this.models = this.models.filter(s => s.id != result.id);
+    public processDeleteResult(res: string): void {
+        this.models = this.models.filter(s => s.id != res);
     }
 
 }

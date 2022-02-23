@@ -93,9 +93,8 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
         this.models = this.models.map(c => c.id == result.id ? result.toVm() : c);
     }
 
-    public processDeleteResult(res: CourseDto): void {
-        const result = Object.assign(new CourseDto(), res);
-        this.models = this.models.filter(s => s.id != result.id);
+    public processDeleteResult(res: string): void {
+        this.models = this.models.filter(s => s.id != res);
     }
 
 }
