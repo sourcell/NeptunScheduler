@@ -10,6 +10,7 @@ import { SubjectsComponent } from './subjects/subjects.component';
 import { CoursesComponent } from './courses/courses.component';
 import { BusyTimeblocksComponent } from './busy-timeblocks/busy-timeblocks.component';
 import { DailyActiveTimesComponent } from './daily-active-times/daily-active-times.component';
+import { GeneratingComponent } from './generating/generating.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { DailyActiveTimesComponent } from './daily-active-times/daily-active-tim
     SubjectsComponent,
     CoursesComponent,
     BusyTimeblocksComponent,
-    DailyActiveTimesComponent
+    DailyActiveTimesComponent,
+    GeneratingComponent
   ],
   imports: [
     BrowserModule,
