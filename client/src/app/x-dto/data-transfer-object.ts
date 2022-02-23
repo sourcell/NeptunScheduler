@@ -1,4 +1,4 @@
-import { ViewModel } from "../view-models/view-model";
+import { ViewModel } from "../x-vm/view-model";
 
 export interface DataTransferObject {
     toVm(): ViewModel;

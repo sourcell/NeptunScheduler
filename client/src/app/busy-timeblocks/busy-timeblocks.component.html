@@ -82,7 +82,7 @@
                 <div class="row" *ngIf="this.intention == 'edit'">
                     <div class="col">
                         <button type="button" class="btn btn-warning w-100" *ngIf="!this.clickedDelete" (click)="this.clickedDelete = true">Delete!</button>
-                        <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal" *ngIf="this.clickedDelete" (click)="this.delete(this.tempModel.toDto())">Confirm Delete!</button>
+                        <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal" *ngIf="this.clickedDelete" (click)="this.delete(this.tempModel.id)">Confirm Delete!</button>
                     </div>
                     <div class="col">
                         <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'edit'" (click)="this.update(this.tempModel.toDto())">Update!</button>

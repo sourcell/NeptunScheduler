@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { Course, CourseVm } from '../courses/courses.component';
 import { CrudComponent } from '../crud/crud.component';
-import { DataTransferObject } from '../data-transfer-objects/data-transfer-object';
+import { CourseDto } from '../x-dto/course-dto';
+import { DataTransferObject } from '../x-dto/data-transfer-object';
+import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
-import { ViewModel } from '../view-models/view-model';
+import { CourseVm } from '../x-vm/course-vm';
+import { SubjectVm } from '../x-vm/subject-vm';
+import { ViewModel } from '../x-vm/view-model';
 
 @Component({
     selector: 'app-subjects',
     templateUrl: './subjects.component.html',
     styleUrls: ['./subjects.component.css']
 })
-export class SubjectsComponent extends CrudComponent<SubjectVm, Subject> implements OnInit {
+export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> implements OnInit {
 
     public models: Array<SubjectVm> = new Array<SubjectVm>();
     public model: SubjectVm = new SubjectVm();
@@ -24,13 +27,13 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, Subject> impleme
     //     await this.fetch();
     // }
 
-    public processGetResult(res: Array<Subject>): void {
-        let x = new Subject();
+    public processGetResult(res: Array<SubjectDto>): void {
+        let x = new SubjectDto();
         x.id = 'some_id';
         x.title = 'simulated result from the server';
         x.credits = 4;
         res.push(x);
-        this.models = res.map(s => Object.assign(new Subject(), s).toVm());
+        this.models = res.map(s => Object.assign(new SubjectDto(), s).toVm());
     }
 
     public aboutToAdd(): void {
@@ -38,8 +41,8 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, Subject> impleme
         this.tempModel = new SubjectVm();
     }
 
-    public processPostResult(res: Subject): void {
-        const result = Object.assign(new Subject(), res);
+    public processPostResult(res: SubjectDto): void {
+        const result = Object.assign(new SubjectDto(), res);
         this.models.push(result.toVm());
     }
 
@@ -48,44 +51,13 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, Subject> impleme
         this.tempModel = subjectVm;
     }
 
-    public processPutResult(res: Subject): void {
-        const result = Object.assign(new Subject(), res);
+    public processPutResult(res: SubjectDto): void {
+        const result = Object.assign(new SubjectDto(), res);
         this.models = this.models.map(s => s.id == res.id ? result.toVm() : s);
     }
 
-    public processDeleteResult(res: Subject): void {
-        const result = Object.assign(new Subject(), res);
-        this.models = this.models.filter(s => s.id != result.id);
+    public processDeleteResult(res: string): void {
+        this.models = this.models.filter(s => s.id != res);
     }
 
-}
-
-export class Subject implements DataTransferObject {
-    public id: string = '';
-    public title: string = '';
-    public credits: number = 0;
-    public courses: Array<Course> = new Array<Course>();
-
-    public toVm(): SubjectVm {
-        let vm = Object.assign(new SubjectVm(), this);
-        vm.courses = this.courses.map(c => Object.assign(new CourseVm(), c));;
-        return vm;
-    }
-}
-
-export class SubjectVm implements ViewModel {
-    public id: string = '';
-    public title: string = '';
-    public credits: number = 0;
-    public courses: Array<CourseVm> = new Array<CourseVm>();
-
-    public copy(): SubjectVm {
-        return Object.assign(new SubjectVm(), this);
-    }
-
-    public toDto(): Subject {
-        let dto = Object.assign(new Subject(), this);
-        dto.courses = this.courses.map(c => Object.assign(new Course(), c));;
-        return dto;
-    }
 }
