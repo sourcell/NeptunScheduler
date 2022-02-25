@@ -48,7 +48,8 @@ namespace NeptunScheduler.API.Controllers
             this.context.Users.Add(newUser);
             this.context.SaveChanges();
 
-            return newUser;
+            // Return newly added user.
+            return this.context.Users.FirstOrDefault(u => u.Username == user.Username);
         }
 
         [HttpPost("login")]
