@@ -62,7 +62,7 @@ export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, 
         this.models = this.models.map(b => b.id == result.id ? result.toVm() : b);
     }
 
-    public processDeleteResult(res: string): void {
-        this.models = this.models.filter(b => b.id != res);
+    public processDeleteResult(res: DailyActiveTimeDto): void {
+        this.models = this.models.filter(b => b.id != res.id);
     }
 }

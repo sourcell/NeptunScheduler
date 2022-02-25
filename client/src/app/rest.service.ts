@@ -83,4 +83,12 @@ export class RestService {
 
         // return result;
     }
+
+    public async _delete<T>(endpoint: string): Promise<T> {
+        const result = await firstValueFrom(this.http.delete<T>(this.url + endpoint, {
+            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
+        }));
+
+        return result;
+    }
 }

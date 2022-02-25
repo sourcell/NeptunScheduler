@@ -85,7 +85,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
         this.loading = true;
         this.clickedDelete = false;
 
-        await this.rest.delete<string>('', id)
+        await this.rest._delete<DTO>(this.endpoint + '/' + id)
             .then(res => {
                 this.processDeleteResult(res);
             })
@@ -96,6 +96,6 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
         this.loading = false;
     }
 
-    public abstract processDeleteResult(res: string): void;
+    public abstract processDeleteResult(res: DTO): void;
 
 }
