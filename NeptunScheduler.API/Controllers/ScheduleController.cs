@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NeptunScheduler.API.Models;
@@ -20,20 +22,11 @@ namespace NeptunScheduler.API.Controllers
             _context = context;
         }
 
-        [HttpGet("init")]
-        public IActionResult Init()
+        private User GetUser()
         {
-            _context.Subjects.Add(new Subject() { Name = "Teszt tárgy" });
-            _context.SaveChanges();
-            
-            return Ok();
-        }
-
-        [HttpGet("getall")]
-        public IEnumerable<Subject> Get()
-        {
-            var subjects = _context.Subjects;
-            return subjects;
+            var identity = this.User.Identity as ClaimsIdentity;
+            string userId = identity?.FindFirst("userid")?.Value;
+            return _context.Users.FirstOrDefault(u => u.Id == userId);
         }
     }
 }
