@@ -50,7 +50,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     public async add(model: DTO): Promise<void> {
         this.loading = true;
 
-        await this.rest.post<DTO>('', model)
+        await this.rest._post<DTO>(this.endpoint, model)
             .then(res => {
                 this.processPostResult(res);
             })
