@@ -7,6 +7,8 @@ namespace NeptunScheduler.Data
     {
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Subject> Subjects { get; set; }
+
         public ScheduleDbContext(DbContextOptions<ScheduleDbContext> options)
             : base(options)
         {
