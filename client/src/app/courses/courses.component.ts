@@ -21,6 +21,8 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
 
     public subject: SubjectVm = new SubjectVm();
 
+    protected endpoint: string = '/schedule/courses';
+
     constructor(rest: RestService) {
         super(rest);
     }

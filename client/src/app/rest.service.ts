@@ -26,6 +26,14 @@ export class RestService {
         // return result;
     }
 
+    public async _get<T>(endpoint: string): Promise<T> {
+        const result = await firstValueFrom(this.http.get<T>(this.url + endpoint, {
+            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
+        }));
+
+        return result;
+    }
+
     public async post<T>(endpoint: string, item: T): Promise<T> {
         await new Promise(r => setTimeout(r, 1000));
         return item;

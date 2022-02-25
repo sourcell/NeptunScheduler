@@ -17,6 +17,8 @@ export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, Busy
     public model: BusyTimeblockVm = new BusyTimeblockVm();
     public tempModel: BusyTimeblockVm = new BusyTimeblockVm();
 
+    protected endpoint: string = '/schedule/busytimeblocks';
+
     constructor(rest: RestService) {
         super(rest);
     }

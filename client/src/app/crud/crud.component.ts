@@ -17,6 +17,8 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     public clickedDelete: boolean = false;
     public intention: string = '';
 
+    protected abstract endpoint: string;
+
     protected readonly rest: RestService;
 
     constructor(rest: RestService) {
@@ -30,7 +32,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     public async fetch(): Promise<void> {
         this.loading = true;
 
-        await this.rest.get<Array<DTO>>('', new Array<DTO>())
+        await this.rest._get<Array<DTO>>(this.endpoint)
             .then(res => {
                 this.processGetResult(res);
             })

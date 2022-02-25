@@ -12,10 +12,12 @@ import { ViewModel } from '../x-vm/view-model';
     styleUrls: ['./daily-active-times.component.css']
 })
 export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, DailyActiveTimeDto> implements OnInit {
-    
+
     public models: Array<DailyActiveTimeVm> = new Array<DailyActiveTimeVm>();
     public model: DailyActiveTimeVm = new DailyActiveTimeVm();
     public tempModel: DailyActiveTimeVm = new DailyActiveTimeVm();
+
+    protected endpoint: string = '/schedule/dailyactivetimes';
 
     constructor(rest: RestService) {
         super(rest);
