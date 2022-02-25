@@ -9,7 +9,11 @@ namespace NeptunScheduler.API.Models
 
         public string Name { get; set; }
 
+        public int Credits { get; set; }
+
         public List<Course> Courses { get; set; }
+
+        public User User { get; set; }
 
         public Subject()
         {
