@@ -13,6 +13,7 @@ namespace NeptunScheduler.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "user")]
     public class ScheduleController : ControllerBase
     {
         private ScheduleDbContext _context;
