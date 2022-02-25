@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace NeptunScheduler.API.Models
 {
@@ -8,6 +9,7 @@ namespace NeptunScheduler.API.Models
 
         public string Username { get; set; }
 
+        [JsonIgnore]
         public string PasswordHash { get; set; }
         
         public string Roles { get; set; }
