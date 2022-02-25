@@ -7,7 +7,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class RestService {
 
-    private url: string = '';
+    private url: string = 'http://localhost:5000';
     private readonly http: HttpClient;
 
     constructor(http: HttpClient) {
