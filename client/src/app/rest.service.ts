@@ -64,6 +64,14 @@ export class RestService {
         // return result;
     }
 
+    public async _put<T>(endpoint: string, item: any): Promise<T> {
+        const result = await firstValueFrom(this.http.put<T>(this.url + endpoint, item, {
+            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
+        }));
+
+        return result;
+    }
+
     // 'item' parameter is only for the prototype
     public async delete<T>(endpoint: string, id: T): Promise<T> {
         await new Promise(r => setTimeout(r, 1000));

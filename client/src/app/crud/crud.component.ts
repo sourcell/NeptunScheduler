@@ -65,10 +65,10 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
 
     public abstract aboutToEdit(viewModel: VM): void;
     
-    public async update(model: DTO): Promise<void> {
+    public async update(id: string, model: DTO): Promise<void> {
         this.loading = true;
 
-        await this.rest.put<DTO>('', model)
+        await this.rest._put<DTO>(this.endpoint + '/' + id, model)
             .then(res => {
                 this.processPutResult(res);
             })
