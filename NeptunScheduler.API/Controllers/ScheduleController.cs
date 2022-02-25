@@ -54,6 +54,23 @@ namespace NeptunScheduler.API.Controllers
             return _context.Subjects.Where(x => x.User.Id == user.Id && x.Id == id).ToList();
         }
 
+        [HttpPut("subjects/{id}")]
+        public ActionResult<Subject> CreateSubject(string id, Subject dto)
+        {
+            // Find old Subject.
+            User user = GetUser();
+            Subject old = _context.Subjects.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
+            if (old == null)
+                return BadRequest("The User has no Subject with this id.");
+
+            // Update.
+            old.Title = dto.Title;
+            old.Credits = dto.Credits;
+            _context.SaveChanges();
+
+            return old;
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
