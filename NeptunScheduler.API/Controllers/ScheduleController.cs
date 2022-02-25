@@ -71,6 +71,22 @@ namespace NeptunScheduler.API.Controllers
             return old;
         }
 
+        [HttpDelete("subjects/{id}")]
+        public ActionResult<Subject> DeleteSubject(string id)
+        {
+            // Find old Subject.
+            User user = GetUser();
+            Subject old = _context.Subjects.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
+            if (old == null)
+                return BadRequest("The User has no Subject with this id.");
+
+            // Update.
+            _context.Subjects.Remove(old);
+            _context.SaveChanges();
+
+            return old;
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
