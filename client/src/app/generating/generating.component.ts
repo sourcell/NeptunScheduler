@@ -20,6 +20,8 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
     public pageNumbers: Array<number> = new Array<number>();
     public pageNumber: number = 1;
 
+    protected endpoint: string = '/schedule/generating';
+
     constructor(rest: RestService) {
         super(rest);
 
@@ -78,6 +80,6 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
 
     public processPutResult(res: CourseDto): void {}
 
-    public processDeleteResult(res: string): void {}
+    public processDeleteResult(res: CourseDto): void {}
 
 }

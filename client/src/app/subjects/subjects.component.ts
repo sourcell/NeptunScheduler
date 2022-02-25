@@ -19,6 +19,8 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
     public model: SubjectVm = new SubjectVm();
     public tempModel: SubjectVm = new SubjectVm();
 
+    protected endpoint: string = '/schedule/subjects';
+
     constructor(rest: RestService) {
         super(rest);
     }
@@ -56,8 +58,8 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
         this.models = this.models.map(s => s.id == res.id ? result.toVm() : s);
     }
 
-    public processDeleteResult(res: string): void {
-        this.models = this.models.filter(s => s.id != res);
+    public processDeleteResult(res: SubjectDto): void {
+        this.models = this.models.filter(s => s.id != res.id);
     }
 
 }

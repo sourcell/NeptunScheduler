@@ -17,6 +17,8 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     public clickedDelete: boolean = false;
     public intention: string = '';
 
+    protected abstract endpoint: string;
+
     protected readonly rest: RestService;
 
     constructor(rest: RestService) {
@@ -30,7 +32,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     public async fetch(): Promise<void> {
         this.loading = true;
 
-        await this.rest.get<Array<DTO>>('', new Array<DTO>())
+        await this.rest._get<Array<DTO>>(this.endpoint)
             .then(res => {
                 this.processGetResult(res);
             })
@@ -48,7 +50,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     public async add(model: DTO): Promise<void> {
         this.loading = true;
 
-        await this.rest.post<DTO>('', model)
+        await this.rest._post<DTO>(this.endpoint, model)
             .then(res => {
                 this.processPostResult(res);
             })
@@ -63,10 +65,10 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
 
     public abstract aboutToEdit(viewModel: VM): void;
     
-    public async update(model: DTO): Promise<void> {
+    public async update(id: string, model: DTO): Promise<void> {
         this.loading = true;
 
-        await this.rest.put<DTO>('', model)
+        await this.rest._put<DTO>(this.endpoint + '/' + id, model)
             .then(res => {
                 this.processPutResult(res);
             })
@@ -83,7 +85,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
         this.loading = true;
         this.clickedDelete = false;
 
-        await this.rest.delete<string>('', id)
+        await this.rest._delete<DTO>(this.endpoint + '/' + id)
             .then(res => {
                 this.processDeleteResult(res);
             })
@@ -94,6 +96,6 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
         this.loading = false;
     }
 
-    public abstract processDeleteResult(res: string): void;
+    public abstract processDeleteResult(res: DTO): void;
 
 }

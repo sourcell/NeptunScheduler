@@ -75,7 +75,7 @@
                         <input type="max" class="form-control" [(ngModel)]="this.tempModel.max">
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'edit'" (click)="this.update(this.tempModel.toDto())">Update!</button>
+                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" *ngIf="this.intention == 'edit'" (click)="this.update(this.tempModel.id, this.tempModel.toDto())">Update!</button>
             </div>
         </div>
     </div>

@@ -4,22 +4,22 @@
             <ul class="list-group shadow">
                 <li class="list-group-item text-center p-3 fw-bold">LOGIN</li>
                 <li class="list-group-item p-4">
-                    <div class="alert alert-danger small" role="alert" *ngIf="false">
-                        login error message
+                    <div class="alert alert-danger small" role="alert" *ngIf="this.loginErrorMsg != ''">
+                        {{ this.loginErrorMsg }}
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Username</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" [(ngModel)]="this.loginDto.username">
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Password</label>
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" [(ngModel)]="this.loginDto.password">
                     </div>
-                    <button type="submit" class="btn btn-primary w-100" disabled *ngIf="false">
+                    <button type="submit" class="btn btn-primary w-100" disabled *ngIf="this.loginLoad">
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         Login
                     </button>
-                    <button type="submit" class="btn btn-primary w-100" *ngIf="true">Login</button>
+                    <button type="submit" class="btn btn-primary w-100" *ngIf="!this.loginLoad" (click)="this.login()">Login</button>
                 </li>
             </ul>
         </div>
@@ -27,29 +27,29 @@
             <ul class="list-group shadow">
                 <li class="list-group-item text-center p-3 fw-bold">REGISTER</li>
                 <li class="list-group-item p-4">
-                    <div class="alert alert-success small" role="alert" *ngIf="false">
-                        Successfully registered as <b>...</b>
+                    <div class="alert alert-success small" role="alert" *ngIf="this.registerResult.id != ''">
+                        Successfully registered as {{ this.registerResult.username }}
                     </div>
-                    <div class="alert alert-danger small" role="alert" *ngIf="false">
-                        register error message
+                    <div class="alert alert-danger small" role="alert" *ngIf="this.registerErrorMsg != ''">
+                        {{ this.registerErrorMsg }}
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Username</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" [(ngModel)]="this.registerDto.username">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Password</label>
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" [(ngModel)]="this.registerDto.password">
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Password confirmation</label>
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" [(ngModel)]="this.passconf">
                     </div>
-                    <button type="submit" class="btn btn-primary w-100" disabled *ngIf="false">
+                    <button type="submit" class="btn btn-primary w-100" disabled *ngIf="this.registerLoad">
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         Register
                     </button>
-                    <button type="submit" class="btn btn-primary w-100" *ngIf="true">Register</button>
+                    <button type="submit" class="btn btn-primary w-100" *ngIf="!this.registerLoad" (click)="this.register()">Register</button>
                 </li>
             </ul>
         </div>

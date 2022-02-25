@@ -7,7 +7,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class RestService {
 
-    private url: string = '';
+    private url: string = 'http://localhost:5000';
     private readonly http: HttpClient;
 
     constructor(http: HttpClient) {
@@ -26,6 +26,14 @@ export class RestService {
         // return result;
     }
 
+    public async _get<T>(endpoint: string): Promise<T> {
+        const result = await firstValueFrom(this.http.get<T>(this.url + endpoint, {
+            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
+        }));
+
+        return result;
+    }
+
     public async post<T>(endpoint: string, item: T): Promise<T> {
         await new Promise(r => setTimeout(r, 1000));
         return item;
@@ -35,6 +43,14 @@ export class RestService {
         // }));
 
         // return result;
+    }
+
+    public async _post<T>(endpoint: string, item: any): Promise<T> {
+        const result = await firstValueFrom(this.http.post<T>(this.url + endpoint, item, {
+            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
+        }));
+
+        return result;
     }
 
     public async put<T>(endpoint: string, item: T): Promise<T> {
@@ -48,6 +64,14 @@ export class RestService {
         // return result;
     }
 
+    public async _put<T>(endpoint: string, item: any): Promise<T> {
+        const result = await firstValueFrom(this.http.put<T>(this.url + endpoint, item, {
+            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
+        }));
+
+        return result;
+    }
+
     // 'item' parameter is only for the prototype
     public async delete<T>(endpoint: string, id: T): Promise<T> {
         await new Promise(r => setTimeout(r, 1000));
@@ -58,5 +82,13 @@ export class RestService {
         // }));
 
         // return result;
+    }
+
+    public async _delete<T>(endpoint: string): Promise<T> {
+        const result = await firstValueFrom(this.http.delete<T>(this.url + endpoint, {
+            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
+        }));
+
+        return result;
     }
 }
