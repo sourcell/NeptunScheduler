@@ -47,6 +47,13 @@ namespace NeptunScheduler.API.Controllers
             return _context.Subjects.Where(x => x.User.Id == user.Id).ToList();
         }
 
+        [HttpGet("subjects/{id}")]
+        public ActionResult<List<Subject>> GetSubject(string id)
+        {
+            User user = GetUser();
+            return _context.Subjects.Where(x => x.User.Id == user.Id && x.Id == id).ToList();
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
