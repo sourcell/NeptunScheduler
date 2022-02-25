@@ -19,6 +19,8 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
     public model: SubjectVm = new SubjectVm();
     public tempModel: SubjectVm = new SubjectVm();
 
+    protected endpoint: string = '/schedule/subjects';
+
     constructor(rest: RestService) {
         super(rest);
     }
