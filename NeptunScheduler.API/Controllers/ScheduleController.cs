@@ -23,6 +23,23 @@ namespace NeptunScheduler.API.Controllers
             _context = context;
         }
 
+        [HttpPost("subjects")]
+        public ActionResult<Subject> CreateSubject(Subject dto)
+        {
+            // Create.
+            User user = GetUser();
+            Subject newSubject = new Subject()
+            {
+                Title = dto.Title,
+                Credits = dto.Credits
+            };
+            user.Subjects.Add(newSubject);
+            _context.SaveChanges();
+
+            // Return
+            return user.Subjects.FirstOrDefault(x => x.Id == newSubject.Id);
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
