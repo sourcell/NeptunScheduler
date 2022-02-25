@@ -40,6 +40,13 @@ namespace NeptunScheduler.API.Controllers
             return user.Subjects.FirstOrDefault(x => x.Id == newSubject.Id);
         }
 
+        [HttpGet("subjects")]
+        public ActionResult<List<Subject>> GetSubjects()
+        {
+            User user = GetUser();
+            return _context.Subjects.Where(x => x.User.Id == user.Id).ToList();
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
