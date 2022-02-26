@@ -126,6 +126,31 @@ namespace NeptunScheduler.API.Controllers
             return _context.Courses.Where(x => x.User.Id == user.Id && x.Subject.Id == subjectId).ToList();
         }
 
+        [HttpPut("courses/{id}")]
+        public ActionResult<Course> UpdateCourse(string id, Course dto)
+        {
+            // Find old Course.
+            User user = GetUser();
+            Course old = _context.Courses.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
+            if (old == null)
+                return BadRequest("The User has no Course with this id.");
+
+            // Update.
+            old.Code = dto.Code;
+            old.Slots = dto.Slots;
+            old.Day = dto.Day;
+            old.Start = dto.Start;
+            old.End = dto.End;
+            old.Teachers = dto.Teachers;
+            old.Fix = dto.Fix;
+            old.Collidable = dto.Collidable;
+            old.Priority = dto.Priority;
+            old.Ignored = dto.Ignored;
+            _context.SaveChanges();
+
+            return old;
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
