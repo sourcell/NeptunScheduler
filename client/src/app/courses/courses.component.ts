@@ -34,7 +34,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
 
     public override async ngOnInit(): Promise<void> {
         this.fetchSubject();
-        this.fetch();
+        this.getCourses();
     }
 
     public async fetchSubject(): Promise<void> {
@@ -48,11 +48,17 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
             });
     }
 
+    public getCourses(): void {
+        this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
+        this.fetch();
+    }
+
     public processGetResult(res: Array<CourseDto>): void {
         this.models = res.map(c => Object.assign(new CourseDto(), c).toVm());
     }
 
     public aboutToAdd(): void {
+        this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
         this.intention = 'add';
         this.tempModel = new CourseVm();
     }
@@ -63,6 +69,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     }
 
     public aboutToEdit(courseVm: CourseVm): void {
+        this.endpoint = '/schedule/courses';
         this.intention = 'edit';
         this.tempModel = courseVm;
     }
