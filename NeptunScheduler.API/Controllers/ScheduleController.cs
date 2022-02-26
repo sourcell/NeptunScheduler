@@ -55,7 +55,7 @@ namespace NeptunScheduler.API.Controllers
         }
 
         [HttpPut("subjects/{id}")]
-        public ActionResult<Subject> CreateSubject(string id, Subject dto)
+        public ActionResult<Subject> UpdateSubject(string id, Subject dto)
         {
             // Find old Subject.
             User user = GetUser();
