@@ -5,7 +5,7 @@ import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
 import { CourseVm } from '../x-vm/course-vm';
 import { SubjectVm } from '../x-vm/subject-vm';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-courses',
@@ -20,21 +20,26 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
 
     public subject: SubjectVm = new SubjectVm();
 
-    protected endpoint: string = '/schedule/courses';
+    protected endpoint: string;
+    private route: ActivatedRoute;
+    private subjectId: string;
 
-    constructor(rest: RestService, router: Router) {
+    constructor(rest: RestService, router: Router, route: ActivatedRoute) {
         super(rest, router);
+        this.route = route;
+
+        this.subjectId = this.route.snapshot.paramMap.get('id') + '';
+        this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
     }
 
     public override async ngOnInit(): Promise<void> {
         this.fetchSubject();
-        await this.fetch();
+        this.fetch();
     }
 
     public async fetchSubject(): Promise<void> {
-        await this.rest.get<SubjectDto>('', new SubjectDto())
+        await this.rest._get<SubjectDto>('/schedule/subjects/' + this.subjectId)
             .then(res => {
-                res.title = 'subject name';
                 const result = Object.assign(new SubjectDto(), res);
                 this.subject = result.toVm();
             })
