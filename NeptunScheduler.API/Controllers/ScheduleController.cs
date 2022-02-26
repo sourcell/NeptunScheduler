@@ -80,7 +80,7 @@ namespace NeptunScheduler.API.Controllers
             if (old == null)
                 return BadRequest("The User has no Subject with this id.");
 
-            // Update.
+            // Delete.
             _context.Subjects.Remove(old);
             _context.SaveChanges();
 
