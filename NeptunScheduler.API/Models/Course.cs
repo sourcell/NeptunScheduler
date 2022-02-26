@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace NeptunScheduler.API.Models
 {
@@ -6,33 +7,31 @@ namespace NeptunScheduler.API.Models
     {
         public string Id { get; set; }
 
-        public string SubjectName { get; set; }
+        public string Code { get; set; }
 
-        public string NeptunId { get; set; }
+        public int Slots { get; set; }
 
-        public int AvailableSlots { get; set; }
+        public int Day { get; set; }
+
+        public int Start { get; set; }
+
+        public int End { get; set; }
+
+        public string Teachers { get; set; }
 
         public bool Fix { get; set; }
 
-        public bool CanCollide { get; set; }
+        public bool Collidable { get; set; }
 
         public int Priority { get; set; }
 
         public bool Ignored { get; set; }
 
-        public int Day { get; set; }
-        
-        public int StartHour { get; set; }
-        
-        public int StartMinute { get; set; }
-
-        public int EndHour { get; set; }
-        
-        public int EndMinute { get; set; }
-
-        public string SubjectId { get; set; }
-
+        [JsonIgnore]
         public Subject Subject { get; set; }
+
+        [JsonIgnore]
+        public User User { get; set; }
 
         public Course()
         {
