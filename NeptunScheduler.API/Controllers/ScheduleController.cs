@@ -48,10 +48,10 @@ namespace NeptunScheduler.API.Controllers
         }
 
         [HttpGet("subjects/{id}")]
-        public ActionResult<List<Subject>> GetSubject(string id)
+        public ActionResult<Subject> GetSubject(string id)
         {
             User user = GetUser();
-            return _context.Subjects.Where(x => x.User.Id == user.Id && x.Id == id).ToList();
+            return _context.Subjects.FirstOrDefault(x => x.User.Id == user.Id && x.Id == id);
         }
 
         [HttpPut("subjects/{id}")]
