@@ -30,11 +30,6 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
     // }
 
     public processGetResult(res: Array<SubjectDto>): void {
-        let x = new SubjectDto();
-        x.id = 'some_id';
-        x.title = 'simulated result from the server';
-        x.credits = 4;
-        res.push(x);
         this.models = res.map(s => Object.assign(new SubjectDto(), s).toVm());
     }
 
