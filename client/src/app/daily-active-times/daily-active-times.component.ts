@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
 import { DailyActiveTimeDto } from '../x-dto/daily-active-time-dto';
-import { DataTransferObject } from '../x-dto/data-transfer-object';
 import { RestService } from '../rest.service';
 import { DailyActiveTimeVm } from '../x-vm/daily-active-time-vm';
-import { ViewModel } from '../x-vm/view-model';
 
 @Component({
     selector: 'app-daily-active-times',

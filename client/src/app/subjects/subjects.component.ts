@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
-import { CourseDto } from '../x-dto/course-dto';
-import { DataTransferObject } from '../x-dto/data-transfer-object';
 import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
-import { CourseVm } from '../x-vm/course-vm';
 import { SubjectVm } from '../x-vm/subject-vm';
-import { ViewModel } from '../x-vm/view-model';
 
 @Component({
     selector: 'app-subjects',
