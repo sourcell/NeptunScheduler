@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { RestService } from '../rest.service';
 
 @Component({
@@ -20,9 +21,15 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     protected abstract endpoint: string;
 
     protected readonly rest: RestService;
+    protected readonly router: Router;
 
-    constructor(rest: RestService) {
+    constructor(rest: RestService, router: Router) {
         this.rest = rest;
+        this.router = router;
+
+        if (sessionStorage.getItem('username') == null || sessionStorage.getItem('token') == null) {
+            this.router.navigate(['auth']);
+        }
     }
 
     public async ngOnInit(): Promise<void> {
@@ -34,6 +41,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
 
         await this.rest._get<Array<DTO>>(this.endpoint)
             .then(res => {
+                this.errorMsg = '';
                 this.processGetResult(res);
             })
             .catch(err => {
@@ -52,6 +60,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
 
         await this.rest._post<DTO>(this.endpoint, model)
             .then(res => {
+                this.errorMsg = '';
                 this.processPostResult(res);
             })
             .catch(err => {
@@ -70,6 +79,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
 
         await this.rest._put<DTO>(this.endpoint + '/' + id, model)
             .then(res => {
+                this.errorMsg = '';
                 this.processPutResult(res);
             })
             .catch(err => {
@@ -87,6 +97,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
 
         await this.rest._delete<DTO>(this.endpoint + '/' + id)
             .then(res => {
+                this.errorMsg = '';
                 this.processDeleteResult(res);
             })
             .catch(err => {

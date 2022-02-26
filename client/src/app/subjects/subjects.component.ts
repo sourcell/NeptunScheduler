@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
-import { CourseDto } from '../x-dto/course-dto';
-import { DataTransferObject } from '../x-dto/data-transfer-object';
 import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
-import { CourseVm } from '../x-vm/course-vm';
 import { SubjectVm } from '../x-vm/subject-vm';
-import { ViewModel } from '../x-vm/view-model';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-subjects',
@@ -21,8 +18,8 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
 
     protected endpoint: string = '/schedule/subjects';
 
-    constructor(rest: RestService) {
-        super(rest);
+    constructor(rest: RestService, router: Router) {
+        super(rest, router);
     }
 
     // public async ngOnInit(): Promise<void> {
@@ -30,11 +27,6 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
     // }
 
     public processGetResult(res: Array<SubjectDto>): void {
-        let x = new SubjectDto();
-        x.id = 'some_id';
-        x.title = 'simulated result from the server';
-        x.credits = 4;
-        res.push(x);
         this.models = res.map(s => Object.assign(new SubjectDto(), s).toVm());
     }
 

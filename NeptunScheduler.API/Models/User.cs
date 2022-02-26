@@ -17,10 +17,13 @@ namespace NeptunScheduler.API.Models
 
         public List<Subject> Subjects { get; set; }
 
+        public List<Course> Courses { get; set; }
+
         public User()
         {
             this.Id = Guid.NewGuid().ToString();
             this.Subjects = new List<Subject>();
+            this.Courses = new List<Course>();
         }
     }
 }

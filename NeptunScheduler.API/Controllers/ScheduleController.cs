@@ -48,14 +48,14 @@ namespace NeptunScheduler.API.Controllers
         }
 
         [HttpGet("subjects/{id}")]
-        public ActionResult<List<Subject>> GetSubject(string id)
+        public ActionResult<Subject> GetSubject(string id)
         {
             User user = GetUser();
-            return _context.Subjects.Where(x => x.User.Id == user.Id && x.Id == id).ToList();
+            return _context.Subjects.FirstOrDefault(x => x.User.Id == user.Id && x.Id == id);
         }
 
         [HttpPut("subjects/{id}")]
-        public ActionResult<Subject> CreateSubject(string id, Subject dto)
+        public ActionResult<Subject> UpdateSubject(string id, Subject dto)
         {
             // Find old Subject.
             User user = GetUser();
@@ -80,8 +80,88 @@ namespace NeptunScheduler.API.Controllers
             if (old == null)
                 return BadRequest("The User has no Subject with this id.");
 
-            // Update.
+            // Delete.
             _context.Subjects.Remove(old);
+            _context.SaveChanges();
+
+            return old;
+        }
+
+        [HttpPost("subjects/{subjectId}/courses")]
+        public ActionResult<Course> CreateCourse(string subjectId, Course dto)
+        {
+            // Find Subject.
+            User user = GetUser();
+            Subject subject = _context.Subjects.FirstOrDefault(x => x.Id == subjectId && x.User.Id == user.Id);
+            if (subject == null)
+                return BadRequest("The User has no Subject with this id.");
+
+            // Create.
+            Course newCourse = new Course()
+            {
+                Code = dto.Code,
+                Slots = dto.Slots,
+                Day = dto.Day,
+                Start = dto.Start,
+                End = dto.End,
+                Teachers = dto.Teachers,
+                Fix = dto.Fix,
+                Collidable = dto.Collidable,
+                Priority = dto.Priority,
+                Ignored = dto.Ignored,
+                Subject = subject,
+                User = user
+            };
+            _context.Courses.Add(newCourse);
+            _context.SaveChanges();
+
+            // Return
+            return user.Courses.FirstOrDefault(x => x.Id == newCourse.Id);
+        }
+
+        [HttpGet("subjects/{subjectId}/courses")]
+        public ActionResult<List<Course>> GetCourses(string subjectId)
+        {
+            User user = GetUser();
+            return _context.Courses.Where(x => x.User.Id == user.Id && x.Subject.Id == subjectId).ToList();
+        }
+
+        [HttpPut("courses/{id}")]
+        public ActionResult<Course> UpdateCourse(string id, Course dto)
+        {
+            // Find old Course.
+            User user = GetUser();
+            Course old = _context.Courses.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
+            if (old == null)
+                return BadRequest("The User has no Course with this id.");
+
+            // Update.
+            old.Code = dto.Code;
+            old.Slots = dto.Slots;
+            old.Day = dto.Day;
+            old.Start = dto.Start;
+            old.End = dto.End;
+            old.Teachers = dto.Teachers;
+            old.Fix = dto.Fix;
+            old.Collidable = dto.Collidable;
+            old.Priority = dto.Priority;
+            old.Ignored = dto.Ignored;
+            _context.SaveChanges();
+
+            return old;
+        }
+
+        [HttpDelete("courses/{id}")]
+        public ActionResult<Course> DeleteCourse(string id)
+        {
+            // Find old Course.
+            User user = GetUser();
+            Course old = _context.Courses.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
+            if (old == null)
+                return BadRequest("The User has no Course with this id.");
+
+            // Delete.
+            _context.Courses.Remove(old);
             _context.SaveChanges();
 
             return old;

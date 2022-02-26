@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
 import { CourseDto } from '../x-dto/course-dto';
-import { DataTransferObject } from '../x-dto/data-transfer-object';
 import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
 import { CourseVm } from '../x-vm/course-vm';
 import { SubjectVm } from '../x-vm/subject-vm';
-import { ViewModel } from '../x-vm/view-model';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-courses',
@@ -21,21 +20,26 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
 
     public subject: SubjectVm = new SubjectVm();
 
-    protected endpoint: string = '/schedule/courses';
+    protected endpoint: string;
+    private route: ActivatedRoute;
+    private subjectId: string;
 
-    constructor(rest: RestService) {
-        super(rest);
+    constructor(rest: RestService, router: Router, route: ActivatedRoute) {
+        super(rest, router);
+        this.route = route;
+
+        this.subjectId = this.route.snapshot.paramMap.get('id') + '';
+        this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
     }
 
     public override async ngOnInit(): Promise<void> {
         this.fetchSubject();
-        await this.fetch();
+        this.getCourses();
     }
 
     public async fetchSubject(): Promise<void> {
-        await this.rest.get<SubjectDto>('', new SubjectDto())
+        await this.rest._get<SubjectDto>('/schedule/subjects/' + this.subjectId)
             .then(res => {
-                res.title = 'subject name';
                 const result = Object.assign(new SubjectDto(), res);
                 this.subject = result.toVm();
             })
@@ -44,38 +48,17 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
             });
     }
 
+    public getCourses(): void {
+        this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
+        this.fetch();
+    }
+
     public processGetResult(res: Array<CourseDto>): void {
-        let c1 = new CourseDto();
-        c1.id = 'id1';
-        c1.code = 'ABC-123';
-        c1.slots = 4;
-        c1.day = 1;
-        c1.start = 480;
-        c1.end = 580;
-        c1.teachers = 'Valaki Sanyi';
-        c1.fix = true;
-        c1.collidable = false;
-        c1.ignored = false;
-        c1.priority = 5;
-
-        let c2 = new CourseDto();
-        c2.id = 'id2';
-        c2.code = 'XZY-456';
-        c2.slots = 2;
-        c2.day = 2;
-        c2.start = 630;
-        c2.end = 720;
-        c2.teachers = 'Simon Péter';
-        c2.fix = false;
-        c2.collidable = true;
-        c2.ignored = true;
-        c2.priority = 10;
-
-        res.push(c1, c2);
         this.models = res.map(c => Object.assign(new CourseDto(), c).toVm());
     }
 
     public aboutToAdd(): void {
+        this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
         this.intention = 'add';
         this.tempModel = new CourseVm();
     }
@@ -86,6 +69,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     }
 
     public aboutToEdit(courseVm: CourseVm): void {
+        this.endpoint = '/schedule/courses';
         this.intention = 'edit';
         this.tempModel = courseVm;
     }
