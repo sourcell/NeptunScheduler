@@ -151,6 +151,22 @@ namespace NeptunScheduler.API.Controllers
             return old;
         }
 
+        [HttpDelete("courses/{id}")]
+        public ActionResult<Course> DeleteCourse(string id)
+        {
+            // Find old Course.
+            User user = GetUser();
+            Course old = _context.Courses.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
+            if (old == null)
+                return BadRequest("The User has no Course with this id.");
+
+            // Delete.
+            _context.Courses.Remove(old);
+            _context.SaveChanges();
+
+            return old;
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
