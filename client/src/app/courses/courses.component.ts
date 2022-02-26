@@ -5,6 +5,7 @@ import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
 import { CourseVm } from '../x-vm/course-vm';
 import { SubjectVm } from '../x-vm/subject-vm';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-courses',
@@ -21,8 +22,8 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
 
     protected endpoint: string = '/schedule/courses';
 
-    constructor(rest: RestService) {
-        super(rest);
+    constructor(rest: RestService, router: Router) {
+        super(rest, router);
     }
 
     public override async ngOnInit(): Promise<void> {

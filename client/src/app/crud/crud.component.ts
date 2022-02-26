@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { RestService } from '../rest.service';
 
 @Component({
@@ -20,9 +21,15 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     protected abstract endpoint: string;
 
     protected readonly rest: RestService;
+    protected readonly router: Router;
 
-    constructor(rest: RestService) {
+    constructor(rest: RestService, router: Router) {
         this.rest = rest;
+        this.router = router;
+
+        if (sessionStorage.getItem('username') == null || sessionStorage.getItem('token') == null) {
+            this.router.navigate(['auth']);
+        }
     }
 
     public async ngOnInit(): Promise<void> {

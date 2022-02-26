@@ -3,6 +3,7 @@ import { CrudComponent } from '../crud/crud.component';
 import { CourseDto } from '../x-dto/course-dto';
 import { RestService } from '../rest.service';
 import { CourseVm } from '../x-vm/course-vm';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-generating',
@@ -22,8 +23,8 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
 
     protected endpoint: string = '/schedule/generating';
 
-    constructor(rest: RestService) {
-        super(rest);
+    constructor(rest: RestService, router: Router) {
+        super(rest, router);
 
         for (let i = 1; i <= 10; i++) {
             this.pageNumbers.push(i);

@@ -3,6 +3,7 @@ import { CrudComponent } from '../crud/crud.component';
 import { BusyTimeblockDto } from '../x-dto/busy-timeblock-dto';
 import { RestService } from '../rest.service';
 import { BusyTimeblockVm } from '../x-vm/busy-timeblock-vm';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-busy-time-blocks',
@@ -17,8 +18,8 @@ export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, Busy
 
     protected endpoint: string = '/schedule/busytimeblocks';
 
-    constructor(rest: RestService) {
-        super(rest);
+    constructor(rest: RestService, router: Router) {
+        super(rest, router);
     }
 
     // public async ngOnInit(): Promise<void> {

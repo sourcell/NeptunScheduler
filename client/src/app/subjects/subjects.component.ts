@@ -3,6 +3,7 @@ import { CrudComponent } from '../crud/crud.component';
 import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
 import { SubjectVm } from '../x-vm/subject-vm';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-subjects',
@@ -17,8 +18,8 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
 
     protected endpoint: string = '/schedule/subjects';
 
-    constructor(rest: RestService) {
-        super(rest);
+    constructor(rest: RestService, router: Router) {
+        super(rest, router);
     }
 
     // public async ngOnInit(): Promise<void> {

@@ -3,6 +3,7 @@ import { CrudComponent } from '../crud/crud.component';
 import { DailyActiveTimeDto } from '../x-dto/daily-active-time-dto';
 import { RestService } from '../rest.service';
 import { DailyActiveTimeVm } from '../x-vm/daily-active-time-vm';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-daily-active-times',
@@ -17,8 +18,8 @@ export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, 
 
     protected endpoint: string = '/schedule/dailyactivetimes';
 
-    constructor(rest: RestService) {
-        super(rest);
+    constructor(rest: RestService, router: Router) {
+        super(rest, router);
     }
 
     // ngOnInit(): void {
