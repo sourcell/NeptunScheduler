@@ -119,6 +119,13 @@ namespace NeptunScheduler.API.Controllers
             return user.Courses.FirstOrDefault(x => x.Id == newCourse.Id);
         }
 
+        [HttpGet("subjects/{subjectId}/courses")]
+        public ActionResult<List<Course>> GetCourses(string subjectId)
+        {
+            User user = GetUser();
+            return _context.Courses.Where(x => x.User.Id == user.Id && x.Subject.Id == subjectId).ToList();
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
