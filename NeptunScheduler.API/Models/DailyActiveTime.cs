@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace NeptunScheduler.API.Models
@@ -12,6 +11,7 @@ namespace NeptunScheduler.API.Models
 
         public int Minutes { get; set; }
 
+        [JsonIgnore]
         public User User { get; set; }
 
         public DailyActiveTime()
