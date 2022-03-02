@@ -167,6 +167,26 @@ namespace NeptunScheduler.API.Controllers
             return old;
         }
 
+        [HttpPost("busytimeblocks")]
+        public ActionResult<BusyTimeBlock> CreateBusyTimeblock(BusyTimeBlock dto)
+        {
+            // Create.
+            User user = GetUser();
+            BusyTimeBlock newBusyTimeblock = new BusyTimeBlock()
+            {
+                Day = dto.Day,
+                Start = dto.Start,
+                End = dto.End,
+                User = user
+            };
+
+            _context.BusyTimeblocks.Add(newBusyTimeblock);
+            _context.SaveChanges();
+
+            // Return
+            return _context.BusyTimeblocks.FirstOrDefault(x => x.Id == newBusyTimeblock.Id);
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
