@@ -27,18 +27,6 @@ export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, Busy
     // }
 
     public processGetResult(res: Array<BusyTimeblockDto>): void {
-        let btb1 = new BusyTimeblockDto();
-        btb1.id = 'first_id';
-        btb1.day = 1;
-        btb1.start = 900;
-        btb1.end = 1439;
-        let btb2 = new BusyTimeblockDto();
-        btb2.id = 'second_id';
-        btb2.day = 5;
-        btb2.start = 480;
-        btb2.end = 600;
-
-        res.push(btb1, btb2);
         this.models = res.map(b => Object.assign(new BusyTimeblockDto(), b).toVm());
     }
 
