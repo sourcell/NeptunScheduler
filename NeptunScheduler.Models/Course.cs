@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace NeptunScheduler.API.Models
+namespace NeptunScheduler.Models
 {
     public class Course
     {
@@ -30,12 +30,14 @@ namespace NeptunScheduler.API.Models
         [JsonIgnore]
         public Subject Subject { get; set; }
 
+        public string UserId { get; set; }
+
         [JsonIgnore]
         public User User { get; set; }
 
         public Course()
         {
-            Id = Guid.NewGuid().ToString();
+            this.Id = Guid.NewGuid().ToString();
         }
     }
 }

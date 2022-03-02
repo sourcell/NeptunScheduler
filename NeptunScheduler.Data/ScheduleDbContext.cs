@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using NeptunScheduler.API.Models;
+using NeptunScheduler.Models;
 
 namespace NeptunScheduler.Data
 {
@@ -10,6 +10,10 @@ namespace NeptunScheduler.Data
         public DbSet<Subject> Subjects { get; set; }
 
         public DbSet<Course> Courses { get; set; }
+
+        public DbSet<BusyTimeblock> BusyTimeblocks { get; set; }
+
+        public DbSet<DailyActiveTime> DailyActiveTimes { get; set; }
 
         public ScheduleDbContext(DbContextOptions<ScheduleDbContext> options)
             : base(options)
