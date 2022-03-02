@@ -9,7 +9,9 @@ namespace NeptunScheduler.API.Models
 
         public int Day { get; set; }
 
-        public int Minutes { get; set; }
+        public int Min { get; set; }
+
+        public int Max { get; set; }
 
         [JsonIgnore]
         public User User { get; set; }
