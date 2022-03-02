@@ -228,6 +228,33 @@ namespace NeptunScheduler.API.Controllers
             return old;
         }
 
+        [HttpGet("dailyactivetimes")]
+        public ActionResult<List<DailyActiveTime>> GetDailyActiveTimes()
+        {
+            User user = GetUser();
+            var res = _context.DailyActiveTimes.Where(x => x.User.Id == user.Id);
+
+            if (res.Count() == 0)
+            {
+                // Initialize Daily Active Times.
+                for (int i = 0; i < 7; i++)
+                {
+                    DailyActiveTime x = new DailyActiveTime()
+                    {
+                        Day = i,
+                        Min = 0,
+                        Max = 1440,
+                        User = user
+                    };
+                    _context.DailyActiveTimes.Add(x);
+                    _context.SaveChanges();
+                }
+                res = _context.DailyActiveTimes.Where(x => x.User.Id == user.Id);
+            }
+
+            return res.ToList();
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
