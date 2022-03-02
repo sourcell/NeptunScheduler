@@ -14,6 +14,8 @@ namespace NeptunScheduler.Models
 
         public List<Course> Courses { get; set; }
 
+        public string UserId { get; set; }
+
         [JsonIgnore]
         public User User { get; set; }
 
