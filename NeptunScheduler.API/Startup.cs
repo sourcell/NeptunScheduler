@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NeptunScheduler.Data;
+using NeptunScheduler.Repository;
 
 namespace NeptunScheduler.API
 {
@@ -34,6 +35,8 @@ namespace NeptunScheduler.API
 
             services.AddControllers();
             services.AddDbContext<ScheduleDbContext>(opt => opt.UseSqlite("Data Source=Database.db;Cache=Shared", x => x.MigrationsAssembly("NeptunScheduler.API")));
+            services.AddScoped<ISubjectRepository, SubjectRepository>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
             {
                 opt.TokenValidationParameters = new TokenValidationParameters()

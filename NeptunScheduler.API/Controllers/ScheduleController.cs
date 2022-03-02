@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NeptunScheduler.Models;
 using NeptunScheduler.Data;
+using NeptunScheduler.Repository;
 
 namespace NeptunScheduler.API.Controllers
 {
@@ -17,74 +18,56 @@ namespace NeptunScheduler.API.Controllers
     public class ScheduleController : ControllerBase
     {
         private ScheduleDbContext _context;
+        private ISubjectRepository _subjectRepo;
 
-        public ScheduleController(ScheduleDbContext context)
+        public ScheduleController(ScheduleDbContext context, ISubjectRepository subjectRepo)
         {
             _context = context;
+            _subjectRepo = subjectRepo;
         }
 
         [HttpPost("subjects")]
         public ActionResult<Subject> CreateSubject(Subject dto)
         {
-            // Create.
             User user = GetUser();
-            Subject newSubject = new Subject()
-            {
-                Title = dto.Title,
-                Credits = dto.Credits
-            };
-            user.Subjects.Add(newSubject);
-            _context.SaveChanges();
-
-            // Return
-            return user.Subjects.FirstOrDefault(x => x.Id == newSubject.Id);
+            return _subjectRepo.Add(user.Id, dto);
         }
 
         [HttpGet("subjects")]
         public ActionResult<List<Subject>> GetSubjects()
         {
             User user = GetUser();
-            return _context.Subjects.Where(x => x.User.Id == user.Id).ToList();
+            return _subjectRepo.GetAll(user.Id).ToList();
         }
 
         [HttpGet("subjects/{id}")]
         public ActionResult<Subject> GetSubject(string id)
         {
             User user = GetUser();
-            return _context.Subjects.FirstOrDefault(x => x.User.Id == user.Id && x.Id == id);
+            Subject res = _subjectRepo.Get(user.Id, id);
+            if (res == null)
+                return BadRequest("The User has no Subject with this id.");
+            return res;
         }
 
         [HttpPut("subjects/{id}")]
         public ActionResult<Subject> UpdateSubject(string id, Subject dto)
         {
-            // Find old Subject.
             User user = GetUser();
-            Subject old = _context.Subjects.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
-            if (old == null)
+            Subject res = _subjectRepo.Update(user.Id, id, dto);
+            if (res == null)
                 return BadRequest("The User has no Subject with this id.");
-
-            // Update.
-            old.Title = dto.Title;
-            old.Credits = dto.Credits;
-            _context.SaveChanges();
-
-            return old;
+            return res;
         }
 
         [HttpDelete("subjects/{id}")]
         public ActionResult<Subject> DeleteSubject(string id)
         {
-            // Find old Subject.
             User user = GetUser();
-            Subject old = _context.Subjects.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
-            if (old == null)
+            Subject res = _subjectRepo.Delete(user.Id, id);
+            if (res == null)
                 return BadRequest("The User has no Subject with this id.");
-
-            // Delete.
-            _context.Subjects.Remove(old);
-            _context.SaveChanges();
-
-            return old;
+            return res;
         }
 
         [HttpPost("subjects/{subjectId}/courses")]
