@@ -55,7 +55,7 @@ namespace NeptunScheduler.Repository
             return old;
         }
 
-        public Subject Delete(string userId, string id, Subject item)
+        public Subject Delete(string userId, string id)
         {
             // Find old Subject.
             Subject old = Get(userId, id);

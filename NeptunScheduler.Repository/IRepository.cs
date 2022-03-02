@@ -13,6 +13,6 @@ namespace NeptunScheduler.Repository
 
         T Update(string userId, string id, T item);
 
-        T Delete(string userId, string id, T item);
+        T Delete(string userId, string id);
     }
 }
