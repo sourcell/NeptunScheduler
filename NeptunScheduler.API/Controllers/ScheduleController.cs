@@ -23,11 +23,14 @@ namespace NeptunScheduler.API.Controllers
 
         private IDailyActiveTimeRepository _dailyActiveTimeRepo;
 
-        public ScheduleController(ScheduleDbContext context, ISubjectRepository subjectRepo, IDailyActiveTimeRepository dailyActiveTimeRepo)
+        private IBusyTimeblockRepository _busyTimeblockRepo;
+
+        public ScheduleController(ScheduleDbContext context, ISubjectRepository subjectRepo, IDailyActiveTimeRepository dailyActiveTimeRepo, IBusyTimeblockRepository busyTimeblockRepository)
         {
             _context = context;
             _subjectRepo = subjectRepo;
             _dailyActiveTimeRepo = dailyActiveTimeRepo;
+            _busyTimeblockRepo = busyTimeblockRepository;
         }
 
         [HttpPost("subjects")]
@@ -157,62 +160,35 @@ namespace NeptunScheduler.API.Controllers
         [HttpPost("busytimeblocks")]
         public ActionResult<BusyTimeblock> CreateBusyTimeblock(BusyTimeblock dto)
         {
-            // Create.
             User user = GetUser();
-            BusyTimeblock newBusyTimeblock = new BusyTimeblock()
-            {
-                Day = dto.Day,
-                Start = dto.Start,
-                End = dto.End,
-                User = user
-            };
-
-            _context.BusyTimeblocks.Add(newBusyTimeblock);
-            _context.SaveChanges();
-
-            // Return
-            return _context.BusyTimeblocks.FirstOrDefault(x => x.Id == newBusyTimeblock.Id);
+            return _busyTimeblockRepo.Add(user.Id, dto);
         }
 
         [HttpGet("busytimeblocks")]
         public ActionResult<List<BusyTimeblock>> GetBusyTimeblocks()
         {
             User user = GetUser();
-            return _context.BusyTimeblocks.Where(x => x.User.Id == user.Id).ToList();
+            return _busyTimeblockRepo.GetAll(user.Id).ToList();
         }
 
         [HttpPut("busytimeblocks/{id}")]
         public ActionResult<BusyTimeblock> UpdateBusyTimeblock(string id, BusyTimeblock dto)
         {
-            // Find old BusyTimeblock.
             User user = GetUser();
-            BusyTimeblock old = _context.BusyTimeblocks.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
-            if (old == null)
+            BusyTimeblock res = _busyTimeblockRepo.Update(user.Id, id, dto);
+            if (res == null)
                 return BadRequest("The User has no BusyTimeblock with this id.");
-
-            // Update.
-            old.Day = dto.Day;
-            old.Start = dto.Start;
-            old.End = dto.End;
-            _context.SaveChanges();
-
-            return old;
+            return res;
         }
 
         [HttpDelete("busytimeblocks/{id}")]
         public ActionResult<BusyTimeblock> DeleteBusyTimeblock(string id)
         {
-            // Find old BusyTimeblock.
             User user = GetUser();
-            BusyTimeblock old = _context.BusyTimeblocks.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
-            if (old == null)
+            BusyTimeblock res = _busyTimeblockRepo.Delete(user.Id, id);
+            if (res == null)
                 return BadRequest("The User has no BusyTimeblock with this id.");
-
-            // Delete.
-            _context.BusyTimeblocks.Remove(old);
-            _context.SaveChanges();
-
-            return old;
+            return res;
         }
 
         [HttpGet("dailyactivetimes")]
