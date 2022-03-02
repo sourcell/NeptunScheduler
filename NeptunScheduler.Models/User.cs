@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace NeptunScheduler.API.Models
+namespace NeptunScheduler.Models
 {
     public class User
     {
@@ -12,7 +12,7 @@ namespace NeptunScheduler.API.Models
 
         [JsonIgnore]
         public string PasswordHash { get; set; }
-        
+
         public string Roles { get; set; }
 
         public List<Subject> Subjects { get; set; }

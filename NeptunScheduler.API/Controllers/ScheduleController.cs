@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NeptunScheduler.API.Models;
+using NeptunScheduler.Models;
 using NeptunScheduler.Data;
 
 namespace NeptunScheduler.API.Controllers

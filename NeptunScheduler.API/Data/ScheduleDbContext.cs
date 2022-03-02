@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using NeptunScheduler.API.Models;
+using NeptunScheduler.Models;
 
 namespace NeptunScheduler.Data
 {

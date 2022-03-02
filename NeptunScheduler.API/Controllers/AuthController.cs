@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using NeptunScheduler.API.Models;
+using NeptunScheduler.Models;
 using NeptunScheduler.Data;
 
 namespace NeptunScheduler.API.Controllers
