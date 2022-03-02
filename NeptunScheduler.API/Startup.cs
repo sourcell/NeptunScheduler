@@ -36,6 +36,7 @@ namespace NeptunScheduler.API
             services.AddControllers();
             services.AddDbContext<ScheduleDbContext>(opt => opt.UseSqlite("Data Source=Database.db;Cache=Shared", x => x.MigrationsAssembly("NeptunScheduler.API")));
             services.AddScoped<ISubjectRepository, SubjectRepository>();
+            services.AddScoped<IDailyActiveTimeRepository, DailyActiveTimeRepository>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
             {

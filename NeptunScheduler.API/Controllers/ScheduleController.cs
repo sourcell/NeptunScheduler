@@ -18,12 +18,16 @@ namespace NeptunScheduler.API.Controllers
     public class ScheduleController : ControllerBase
     {
         private ScheduleDbContext _context;
+
         private ISubjectRepository _subjectRepo;
 
-        public ScheduleController(ScheduleDbContext context, ISubjectRepository subjectRepo)
+        private IDailyActiveTimeRepository _dailyActiveTimeRepo;
+
+        public ScheduleController(ScheduleDbContext context, ISubjectRepository subjectRepo, IDailyActiveTimeRepository dailyActiveTimeRepo)
         {
             _context = context;
             _subjectRepo = subjectRepo;
+            _dailyActiveTimeRepo = dailyActiveTimeRepo;
         }
 
         [HttpPost("subjects")]
@@ -215,7 +219,7 @@ namespace NeptunScheduler.API.Controllers
         public ActionResult<List<DailyActiveTime>> GetDailyActiveTimes()
         {
             User user = GetUser();
-            var res = _context.DailyActiveTimes.Where(x => x.User.Id == user.Id);
+            var res = _dailyActiveTimeRepo.GetAll(user.Id);
 
             if (res.Count() == 0)
             {
@@ -229,10 +233,9 @@ namespace NeptunScheduler.API.Controllers
                         Max = 1440,
                         User = user
                     };
-                    _context.DailyActiveTimes.Add(x);
-                    _context.SaveChanges();
+                    _dailyActiveTimeRepo.Add(user.Id, x);
                 }
-                res = _context.DailyActiveTimes.Where(x => x.User.Id == user.Id);
+                res = _dailyActiveTimeRepo.GetAll(user.Id);
             }
 
             return res.ToList();
@@ -241,18 +244,11 @@ namespace NeptunScheduler.API.Controllers
         [HttpPut("dailyactivetimes/{id}")]
         public ActionResult<DailyActiveTime> UpdateDailyActiveTime(string id, DailyActiveTime dto)
         {
-            // Find old DailyActiveTime.
             User user = GetUser();
-            DailyActiveTime old = _context.DailyActiveTimes.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
-            if (old == null)
-                return BadRequest("The User has no DailyActiveTime with this id.");
-
-            // Update.
-            old.Min = dto.Min;
-            old.Max = dto.Max;
-            _context.SaveChanges();
-
-            return old;
+            DailyActiveTime res = _dailyActiveTimeRepo.Update(user.Id, id, dto);
+            if (res == null)
+                return BadRequest("The User has no Daily Active Time with this id.");
+            return res;
         }
 
         private User GetUser()
