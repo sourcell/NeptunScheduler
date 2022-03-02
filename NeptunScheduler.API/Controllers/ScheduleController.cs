@@ -212,6 +212,22 @@ namespace NeptunScheduler.API.Controllers
             return old;
         }
 
+        [HttpDelete("busytimeblocks/{id}")]
+        public ActionResult<BusyTimeblock> DeleteBusyTimeblock(string id)
+        {
+            // Find old BusyTimeblock.
+            User user = GetUser();
+            BusyTimeblock old = _context.BusyTimeblocks.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
+            if (old == null)
+                return BadRequest("The User has no BusyTimeblock with this id.");
+
+            // Delete.
+            _context.BusyTimeblocks.Remove(old);
+            _context.SaveChanges();
+
+            return old;
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
