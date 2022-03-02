@@ -26,18 +26,6 @@ export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, 
     // }
 
     public processGetResult(res: Array<DailyActiveTimeDto>): void {
-        let x1 = new DailyActiveTimeDto();
-        x1.id = '1';
-        x1.day = 1;
-        x1.min = 200;
-        x1.max = 400;
-        let x2 = new DailyActiveTimeDto();
-        x2.id = '2';
-        x2.day = 2;
-        x2.min = 200;
-        x2.max = 400;
-
-        res.push(x1, x2);
         this.models = res.map(x => Object.assign(new DailyActiveTimeDto(), x).toVm());
     }
 
