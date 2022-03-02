@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace NeptunScheduler.API.Models
 {
@@ -15,6 +16,9 @@ namespace NeptunScheduler.API.Models
         public int EndHour { get; set; }
         
         public int EndMinute { get; set; }
+
+        [JsonIgnore]
+        public User User { get; set; }
 
         public BusyTimeBlock()
         {

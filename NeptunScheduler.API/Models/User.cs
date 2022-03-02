@@ -19,6 +19,8 @@ namespace NeptunScheduler.API.Models
 
         public List<Course> Courses { get; set; }
 
+        public List<BusyTimeBlock> BusyTimeblocks { get; set; }
+
         public User()
         {
             this.Id = Guid.NewGuid().ToString();
