@@ -187,6 +187,13 @@ namespace NeptunScheduler.API.Controllers
             return _context.BusyTimeblocks.FirstOrDefault(x => x.Id == newBusyTimeblock.Id);
         }
 
+        [HttpGet("busytimeblocks")]
+        public ActionResult<List<BusyTimeBlock>> GetBusyTimeblocks()
+        {
+            User user = GetUser();
+            return _context.BusyTimeblocks.Where(x => x.User.Id == user.Id).ToList();
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
