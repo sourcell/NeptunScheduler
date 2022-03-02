@@ -255,6 +255,23 @@ namespace NeptunScheduler.API.Controllers
             return res.ToList();
         }
 
+        [HttpPut("dailyactivetimes/{id}")]
+        public ActionResult<DailyActiveTime> UpdateDailyActiveTime(string id, DailyActiveTime dto)
+        {
+            // Find old DailyActiveTime.
+            User user = GetUser();
+            DailyActiveTime old = _context.DailyActiveTimes.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
+            if (old == null)
+                return BadRequest("The User has no DailyActiveTime with this id.");
+
+            // Update.
+            old.Min = dto.Min;
+            old.Max = dto.Max;
+            _context.SaveChanges();
+
+            return old;
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
