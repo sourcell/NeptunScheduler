@@ -9,13 +9,9 @@ namespace NeptunScheduler.API.Models
 
         public int Day { get; set; }
         
-        public int StartHour { get; set; }
-        
-        public int StartMinute { get; set; }
+        public int Start { get; set; }
 
-        public int EndHour { get; set; }
-        
-        public int EndMinute { get; set; }
+        public int End { get; set; }
 
         [JsonIgnore]
         public User User { get; set; }
