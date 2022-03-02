@@ -194,6 +194,24 @@ namespace NeptunScheduler.API.Controllers
             return _context.BusyTimeblocks.Where(x => x.User.Id == user.Id).ToList();
         }
 
+        [HttpPut("busytimeblocks/{id}")]
+        public ActionResult<BusyTimeblock> UpdateBusyTimeblock(string id, BusyTimeblock dto)
+        {
+            // Find old BusyTimeblock.
+            User user = GetUser();
+            BusyTimeblock old = _context.BusyTimeblocks.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
+            if (old == null)
+                return BadRequest("The User has no BusyTimeblock with this id.");
+
+            // Update.
+            old.Day = dto.Day;
+            old.Start = dto.Start;
+            old.End = dto.End;
+            _context.SaveChanges();
+
+            return old;
+        }
+
         private User GetUser()
         {
             var identity = this.User.Identity as ClaimsIdentity;
