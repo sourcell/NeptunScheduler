@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace NeptunScheduler.API.Models
 {
-    public class BusyTimeBlock
+    public class BusyTimeblock
     {
         public string Id { get; set; }
 
@@ -16,7 +16,7 @@ namespace NeptunScheduler.API.Models
         [JsonIgnore]
         public User User { get; set; }
 
-        public BusyTimeBlock()
+        public BusyTimeblock()
         {
             Id = Guid.NewGuid().ToString();
         }

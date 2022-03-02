@@ -168,11 +168,11 @@ namespace NeptunScheduler.API.Controllers
         }
 
         [HttpPost("busytimeblocks")]
-        public ActionResult<BusyTimeBlock> CreateBusyTimeblock(BusyTimeBlock dto)
+        public ActionResult<BusyTimeblock> CreateBusyTimeblock(BusyTimeblock dto)
         {
             // Create.
             User user = GetUser();
-            BusyTimeBlock newBusyTimeblock = new BusyTimeBlock()
+            BusyTimeblock newBusyTimeblock = new BusyTimeblock()
             {
                 Day = dto.Day,
                 Start = dto.Start,
@@ -188,7 +188,7 @@ namespace NeptunScheduler.API.Controllers
         }
 
         [HttpGet("busytimeblocks")]
-        public ActionResult<List<BusyTimeBlock>> GetBusyTimeblocks()
+        public ActionResult<List<BusyTimeblock>> GetBusyTimeblocks()
         {
             User user = GetUser();
             return _context.BusyTimeblocks.Where(x => x.User.Id == user.Id).ToList();

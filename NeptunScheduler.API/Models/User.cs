@@ -19,14 +19,14 @@ namespace NeptunScheduler.API.Models
 
         public List<Course> Courses { get; set; }
 
-        public List<BusyTimeBlock> BusyTimeblocks { get; set; }
+        public List<BusyTimeblock> BusyTimeblocks { get; set; }
 
         public User()
         {
             this.Id = Guid.NewGuid().ToString();
             this.Subjects = new List<Subject>();
             this.Courses = new List<Course>();
-            this.BusyTimeblocks = new List<BusyTimeBlock>();
+            this.BusyTimeblocks = new List<BusyTimeblock>();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace NeptunScheduler.Data
 
         public DbSet<Course> Courses { get; set; }
 
-        public DbSet<BusyTimeBlock> BusyTimeblocks { get; set; }
+        public DbSet<BusyTimeblock> BusyTimeblocks { get; set; }
 
         public ScheduleDbContext(DbContextOptions<ScheduleDbContext> options)
             : base(options)
