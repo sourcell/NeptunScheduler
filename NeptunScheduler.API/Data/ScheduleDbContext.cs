@@ -13,6 +13,8 @@ namespace NeptunScheduler.Data
 
         public DbSet<BusyTimeblock> BusyTimeblocks { get; set; }
 
+        public DbSet<DailyActiveTime> DailyActiveTimes { get; set; }
+
         public ScheduleDbContext(DbContextOptions<ScheduleDbContext> options)
             : base(options)
         {
