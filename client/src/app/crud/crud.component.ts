@@ -70,7 +70,24 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
         this.loading = false;
     }
 
+    public async addAll(model: Array<DTO>): Promise<void> {
+        this.loading = true;
+
+        await this.rest._post<Array<DTO>>(this.endpoint, model)
+            .then(res => {
+                this.errorMsg = '';
+                this.processPostResults(res);
+            })
+            .catch(err => {
+                this.errorMsg = 'Failed to add model.';
+            });
+
+        this.loading = false;
+    }
+
     public abstract processPostResult(res: DTO): void;
+
+    public abstract processPostResults(res: Array<DTO>): void;
 
     public abstract aboutToEdit(viewModel: VM): void;
     

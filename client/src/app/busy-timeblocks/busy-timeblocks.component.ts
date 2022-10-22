@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
     styleUrls: ['./busy-timeblocks.component.css']
 })
 export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, BusyTimeblockDto> implements OnInit {
-    
+
     public models: Array<BusyTimeblockVm> = new Array<BusyTimeblockVm>();
     public model: BusyTimeblockVm = new BusyTimeblockVm();
     public tempModel: BusyTimeblockVm = new BusyTimeblockVm();
@@ -39,6 +39,8 @@ export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, Busy
         const result = Object.assign(new BusyTimeblockDto(), res);
         this.models.push(result.toVm());
     }
+
+    public processPostResults(res: Array<BusyTimeblockDto>): void {}
 
     public aboutToEdit(busyTimeblock: BusyTimeblockVm): void {
         this.intention = 'edit';
