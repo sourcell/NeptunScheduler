@@ -31,5 +31,5 @@ obj/
 NeptunScheduler.ConsoleApp/
 NeptunScheduler.API/Migrations/
 Migrations/
-Database.db
+Database.db*
 

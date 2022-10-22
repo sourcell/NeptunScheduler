@@ -39,6 +39,8 @@ export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, 
         this.models.push(result.toVm());
     }
 
+    public processPostResults(res: Array<DailyActiveTimeDto>): void {}
+
     public aboutToEdit(model: DailyActiveTimeVm): void {
         this.intention = 'edit';
         this.tempModel = model;

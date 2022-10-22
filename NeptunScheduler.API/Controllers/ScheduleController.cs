@@ -109,6 +109,43 @@ namespace NeptunScheduler.API.Controllers
             return user.Courses.FirstOrDefault(x => x.Id == newCourse.Id);
         }
 
+        [HttpPost("subjects/{subjectId}/courses/all")]
+        public ActionResult<List<Course>> CreateAllCourses(string subjectId, Course[] courses)
+        {
+            // Find Subject.
+            User user = GetUser();
+            Subject subject = _context.Subjects.FirstOrDefault(x => x.Id == subjectId && x.User.Id == user.Id);
+            if (subject == null)
+                return BadRequest("The User has no Subject with this id.");
+
+            // Create.
+            List<Course> newCourses = new List<Course>();
+            foreach (Course dto in courses)
+            {
+                Course course = new Course()
+                {
+                    Code = dto.Code,
+                    Slots = dto.Slots,
+                    Day = dto.Day,
+                    Start = dto.Start,
+                    End = dto.End,
+                    Teachers = dto.Teachers,
+                    Fix = dto.Fix,
+                    Collidable = dto.Collidable,
+                    Priority = dto.Priority,
+                    Ignored = dto.Ignored,
+                    Subject = subject,
+                    User = user
+                };
+                _context.Courses.Add(course);
+                newCourses.Add(course);
+            }
+           _context.SaveChanges();
+
+            // Return
+            return newCourses;
+        }
+
         [HttpGet("subjects/{subjectId}/courses")]
         public ActionResult<List<Course>> GetCourses(string subjectId)
         {

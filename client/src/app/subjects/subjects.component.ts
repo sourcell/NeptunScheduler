@@ -40,6 +40,8 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
         this.models.push(result.toVm());
     }
 
+    public processPostResults(res: SubjectDto[]): void {}
+
     public aboutToEdit(subjectVm: SubjectVm): void {
         this.intention = 'edit';
         this.tempModel = subjectVm;

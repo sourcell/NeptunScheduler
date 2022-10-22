@@ -24,7 +24,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
                         <li>
-                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addAllModal">Add all</button>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addAllModal" (click)="this.aboutToAddAll()">Add all</button>
                         </li>
                         <li>
                             <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addOneModal" (click)="this.aboutToAdd()">Add one</button>
@@ -96,13 +96,13 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label class="form-label">Copy the table from the .xlsx file!</label>
-                    <textarea class="form-control" value="sample..."></textarea>
+                    <label class="form-label">Select the export.xlsx file!</label>
+                    <input #fileInput type="file">
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Add!</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="addCoursesViaXlsx(fileInput.files)">Add!</button>
             </div>
         </div>
     </div>

@@ -77,6 +77,8 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
 
     public processPostResult(res: CourseDto): void {}
 
+    public processPostResults(res: CourseDto[]): void {}
+
     public aboutToEdit(viewModel: CourseVm): void {}
 
     public processPutResult(res: CourseDto): void {}
