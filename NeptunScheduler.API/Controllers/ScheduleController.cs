@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NeptunScheduler.Models;
 using NeptunScheduler.Repository;
+using NeptunScheduler.Scheduler;
 
 namespace NeptunScheduler.API.Controllers
 {
@@ -203,6 +204,20 @@ namespace NeptunScheduler.API.Controllers
             if (res == null)
                 return BadRequest("The User has no Daily Active Time with this id.");
             return res;
+        }
+
+        [HttpGet("generate")]
+        public ActionResult<List<List<Course>>> GenerateSchedules() // TODO: separate result model (course needs subject name)
+        {
+            User user = GetUser();
+
+            List<Subject> subjects = _subjectRepo.GetAllWithCourses(user.Id).ToList();
+            List<BusyTimeblock> busyTimeblocks = _busyTimeblockRepo.GetAll(user.Id).ToList();
+
+            Backtracking bt = new Backtracking(subjects, busyTimeblocks);
+            var results = bt.PossibleResults();
+
+            return results.Take(10).ToList();
         }
 
         private User GetUser()

@@ -103,7 +103,6 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     }
 
     public processPostResults(res: Array<CourseDto>): void {
-        console.log(res);
         res.forEach(dto => {
             this.processPostResult(dto);
         });

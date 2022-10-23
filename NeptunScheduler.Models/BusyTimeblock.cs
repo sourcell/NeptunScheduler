@@ -3,15 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace NeptunScheduler.Models
 {
-    public class BusyTimeblock
+    public class BusyTimeblock : TimeBlock
     {
         public string Id { get; set; }
-
-        public int Day { get; set; }
-
-        public int Start { get; set; }
-
-        public int End { get; set; }
 
         public string UserId { get; set; }
 
