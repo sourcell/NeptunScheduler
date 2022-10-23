@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NeptunScheduler.Data;
 using NeptunScheduler.Models;
 
@@ -33,6 +34,11 @@ namespace NeptunScheduler.Repository
         public IQueryable<Subject> GetAll(string userId)
         {
             return _context.Subjects.Where(x => x.User.Id == userId);
+        }
+
+        public IQueryable<Subject> GetAllWithCourses(string userId)
+        {
+            return _context.Subjects.Include(s => s.Courses).Where(x => x.User.Id == userId);
         }
 
         public Subject Get(string userId, string id)

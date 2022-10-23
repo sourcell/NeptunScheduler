@@ -6,5 +6,6 @@ namespace NeptunScheduler.Repository
 {
     public interface ISubjectRepository : IRepository<Subject>
     {
+        IQueryable<Subject> GetAllWithCourses(string userId);
     }
 }

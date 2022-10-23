@@ -3,19 +3,13 @@ using System.Text.Json.Serialization;
 
 namespace NeptunScheduler.Models
 {
-    public class Course
+    public class Course : TimeBlock
     {
         public string Id { get; set; }
 
         public string Code { get; set; }
 
         public int Slots { get; set; }
-
-        public int Day { get; set; }
-
-        public int Start { get; set; }
-
-        public int End { get; set; }
 
         public string Teachers { get; set; }
 

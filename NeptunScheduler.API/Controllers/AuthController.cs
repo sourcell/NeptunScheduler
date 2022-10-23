@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using NeptunScheduler.Models;
-using NeptunScheduler.Data;
+using NeptunScheduler.Repository;
 
 namespace NeptunScheduler.API.Controllers
 {
@@ -15,18 +14,18 @@ namespace NeptunScheduler.API.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly ScheduleDbContext context;
+        private readonly IUserRepository _userRepo;
 
-        public AuthController(ScheduleDbContext context)
+        public AuthController(IUserRepository userRepo)
         {
-            this.context = context;
+            _userRepo = userRepo;
         }
 
         [HttpPost("register")]
         public ActionResult<User> Register(UserDto user)
         {
             // Check if username exists.
-            if (this.context.Users.Count(u => u.Username == user.Username) > 0)
+            if (_userRepo.IsUsernameInUse(user.Username))
             {
                 return BadRequest("Username is already in use.");
             }
@@ -39,24 +38,20 @@ namespace NeptunScheduler.API.Controllers
 
             // Add roles to the user.
             newUser.Roles += "user";
-            if (this.context.Users.Count() == 0)
+            if (_userRepo.TotalNumberOfUsers() == 0)
             {
                 newUser.Roles += "|admin";
             }
 
-            // Add user to the context.
-            this.context.Users.Add(newUser);
-            this.context.SaveChanges();
-
-            // Return newly added user.
-            return this.context.Users.FirstOrDefault(u => u.Username == user.Username);
+            // Add and return user.
+            return _userRepo.Add(newUser);
         }
 
         [HttpPost("login")]
         public ActionResult<LoginResult> Login(UserDto userDto)
         {
             // Check if username and password is correct.
-            User user = this.context.Users.FirstOrDefault(u => u.Username == userDto.Username && u.PasswordHash == userDto.Password);
+            User user = _userRepo.GetUserByUsernameAndPassword(userDto.Username, userDto.Password);
             if (user == null)
             {
                 return BadRequest("Username or password is incorrect.");
@@ -92,7 +87,7 @@ namespace NeptunScheduler.API.Controllers
         [HttpGet("n")]
         public ActionResult<int> NumberOfUsers()
         {
-            return this.context.Users.Count();
+            return _userRepo.TotalNumberOfUsers();
         }
     }
 

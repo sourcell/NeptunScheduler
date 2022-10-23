@@ -18,6 +18,7 @@
     <ProjectReference Include="..\NeptunScheduler.Models\NeptunScheduler.Models.csproj" />
     <ProjectReference Include="..\NeptunScheduler.Data\NeptunScheduler.Data.csproj" />
     <ProjectReference Include="..\NeptunScheduler.Repository\NeptunScheduler.Repository.csproj" />
+    <ProjectReference Include="..\NeptunScheduler.Scheduler\NeptunScheduler.Scheduler.csproj" />
   </ItemGroup>
 
 </Project>

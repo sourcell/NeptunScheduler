@@ -18,8 +18,10 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
 
     public isGenerating = false;
 
+    public pageContent: Array<CourseVm> = new Array<CourseVm>();
+    public pageSize: number = 0;
     public pageNumbers: Array<number> = new Array<number>();
-    public pageNumber: number = 1;
+    public pageNumber: number = 0;
 
     protected endpoint: string = '/schedule/generating';
 
@@ -31,19 +33,24 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
         }
     }
 
-    // public async ngOnInit(): Promise<void> {
-    //     await this.fetch();
-    // }
+    public override async ngOnInit(): Promise<void> {
+    }
 
     public async generate(): Promise<void> {
         this.loading = true;
         this.isGenerating = true;
 
-        await this.rest.get<Array<CourseDto>>('', new Array<CourseDto>())
+        await this.rest._get<Array<Array<CourseDto>>>('/schedule/generate')
         .then(res => {
-            res.push(new CourseDto());
-            const result = res.map(c => Object.assign(new CourseDto(), c).toVm());
-            this.models = result;
+            res.forEach(timetable => {
+                timetable.forEach(course => {
+                    if (course.day != -1) {
+                        this.models.push(Object.assign(new CourseDto(), course).toVm());
+                    }
+                });
+            });
+            this.pageSize = res[0].filter(course => course.day != -1).length;
+            this.setPageNumber(1);
         })
         .catch(err => {
             this.errorMsg = 'Failed to generate schedules.';
@@ -57,18 +64,21 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
         if (this.pageNumber < 10) {
             this.pageNumber++;
         }
+        this.setPageContent();
     }
 
     public async decPageNumber(): Promise<void> {
         if (this.pageNumber > 1) {
             this.pageNumber--;
         }
+        this.setPageContent();
     }
 
     public async setPageNumber(n: number): Promise<void> {
         if (1 <= n && n <= 10) {
             this.pageNumber = n;
         }
+        this.setPageContent();
     }
 
     public processGetResult(res: Array<CourseDto>): void {}
@@ -84,5 +94,11 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
     public processPutResult(res: CourseDto): void {}
 
     public processDeleteResult(res: CourseDto): void {}
+
+    private setPageContent(): void {
+        const fromIdx = (this.pageNumber - 1)*this.pageSize;
+        const toIdx = this.pageNumber*this.pageSize;
+        this.pageContent = this.models.slice(fromIdx, toIdx);
+    }
 
 }

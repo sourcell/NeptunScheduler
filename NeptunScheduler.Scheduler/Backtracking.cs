@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NeptunScheduler.Models;
 
 namespace NeptunScheduler.Scheduler
 {
@@ -8,10 +9,10 @@ namespace NeptunScheduler.Scheduler
     {
         List<List<Course>> finalResults;
         List<Subject> subjects;
-        List<BusyTimeBlock> busyTimeBlocks;
+        List<BusyTimeblock> busyTimeBlocks;
         List<Course> fixCourses;
 
-        public Backtracking(List<Subject> subjects, List<BusyTimeBlock> busies)
+        public Backtracking(List<Subject> subjects, List<BusyTimeblock> busies)
         {
             this.finalResults = new List<List<Course>>();
             this.subjects = subjects;
@@ -31,8 +32,15 @@ namespace NeptunScheduler.Scheduler
         public List<List<Course>> PossibleResults()
         {
             // Check if there is collision between fix timeblocks
-            if (CheckCollisions().Count > 0)
+            List<TimeBlock> colliders = CheckCollisions();
+            if (colliders.Count > 0)
             {
+                colliders.ForEach(c => {
+                    if (c is Course)
+                    {
+                        Console.WriteLine((c as Course).Subject.Title + " " + (c as Course).Fix + " " + (c as Course).Code);
+                    }
+                });
                 throw new ArgumentException("There are initial collisions between the fix timeblocks (fix courses + busy timeblocks).");
             }
 
@@ -40,7 +48,7 @@ namespace NeptunScheduler.Scheduler
             Course[] result = new Course[subjects.Count];
 
             Backtrack(result, 0);
-
+            System.Console.WriteLine("found results: " + finalResults.Count);
             return finalResults;
         }
 
@@ -56,7 +64,7 @@ namespace NeptunScheduler.Scheduler
             {
                 timeBlocks.ForEach(y =>
                 {
-                    if (x != y && x.CollideWith(y))
+                    if (x != y && DoCollide(x, y))
                         if (!colliders.Contains(x))
                             colliders.Add(x);
                 });
@@ -71,7 +79,7 @@ namespace NeptunScheduler.Scheduler
             List<Course> courses = subjects[level].Courses.Where(c => !c.Fix).ToList();
 
             if (courses.Count == 0)
-                courses.Add(new Course() { Day = -1, Start = new Time(0, 0), End = new Time(0, 0), CanCollide = true });
+                courses.Add(new Course() { Day = -1, Start = 0, End = 0, Collidable = true });
             
             for (int i = 0; i < courses.Count; i++)
             {
@@ -80,7 +88,11 @@ namespace NeptunScheduler.Scheduler
                 if (IsValid(result, level))
                 {
                     if (level == result.Length - 1)
-                        finalResults.Add(result.ToList());
+                    {
+                        List<Course> res = result.ToList();
+                        res.AddRange(fixCourses);
+                        finalResults.Add(res.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList());
+                    }
                     else
                         Backtrack(result, level + 1);
                 }
@@ -91,20 +103,30 @@ namespace NeptunScheduler.Scheduler
         {
             // Check collision with lower levels
             for (int i = 0; i < level; i++)
-                if (result[i].CollideWith(result[level]))
+                if (DoCollide(result[i], result[level]))
                     return false;
 
             // Check collision with the fix courses
             foreach (Course fixCourse in fixCourses)
-                if (fixCourse.CollideWith(result[level]))
+                if (DoCollide(fixCourse, result[level]))
                     return false;
 
             // Check collision with the busy timeblocks
-            foreach (BusyTimeBlock busyTimeBlock in busyTimeBlocks)
-                if (busyTimeBlock.CollideWith(result[level]))
+            foreach (BusyTimeblock busyTimeBlock in busyTimeBlocks)
+                if (DoCollide(busyTimeBlock, result[level]))
                     return false;
 
             return true;
+        }
+
+        private bool DoCollide(TimeBlock a, TimeBlock b)
+        {
+            if (a is Course && b is Course && (a as Course).Collidable && (b as Course).Collidable)
+            {
+                return false;
+            }
+
+            return a.Day == b.Day && !(a.End < b.Start || a.Start > b.End);
         }
     }
 }
