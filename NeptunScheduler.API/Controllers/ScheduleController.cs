@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using NeptunScheduler.Models;
-using NeptunScheduler.Data;
 using NeptunScheduler.Repository;
 
 namespace NeptunScheduler.API.Controllers
@@ -17,18 +13,21 @@ namespace NeptunScheduler.API.Controllers
     [Authorize(Roles = "user")]
     public class ScheduleController : ControllerBase
     {
-        private ScheduleDbContext _context;
+        private IUserRepository _userRepo;
 
         private ISubjectRepository _subjectRepo;
+
+        private ICourseRepository _courseRepo;
 
         private IDailyActiveTimeRepository _dailyActiveTimeRepo;
 
         private IBusyTimeblockRepository _busyTimeblockRepo;
 
-        public ScheduleController(ScheduleDbContext context, ISubjectRepository subjectRepo, IDailyActiveTimeRepository dailyActiveTimeRepo, IBusyTimeblockRepository busyTimeblockRepository)
+        public ScheduleController(IUserRepository userRepo, ISubjectRepository subjectRepo, ICourseRepository courseRepo, IDailyActiveTimeRepository dailyActiveTimeRepo, IBusyTimeblockRepository busyTimeblockRepository)
         {
-            _context = context;
+            _userRepo = userRepo;
             _subjectRepo = subjectRepo;
+            _courseRepo = courseRepo;
             _dailyActiveTimeRepo = dailyActiveTimeRepo;
             _busyTimeblockRepo = busyTimeblockRepository;
         }
@@ -82,31 +81,12 @@ namespace NeptunScheduler.API.Controllers
         {
             // Find Subject.
             User user = GetUser();
-            Subject subject = _context.Subjects.FirstOrDefault(x => x.Id == subjectId && x.User.Id == user.Id);
+            Subject subject = _subjectRepo.Get(user.Id, subjectId);
             if (subject == null)
                 return BadRequest("The User has no Subject with this id.");
 
-            // Create.
-            Course newCourse = new Course()
-            {
-                Code = dto.Code,
-                Slots = dto.Slots,
-                Day = dto.Day,
-                Start = dto.Start,
-                End = dto.End,
-                Teachers = dto.Teachers,
-                Fix = dto.Fix,
-                Collidable = dto.Collidable,
-                Priority = dto.Priority,
-                Ignored = dto.Ignored,
-                Subject = subject,
-                User = user
-            };
-            _context.Courses.Add(newCourse);
-            _context.SaveChanges();
-
-            // Return
-            return user.Courses.FirstOrDefault(x => x.Id == newCourse.Id);
+            // Create and return.
+            return _courseRepo.AddToSubject(user, subject, dto);
         }
 
         [HttpPost("subjects/{subjectId}/courses/all")]
@@ -114,43 +94,19 @@ namespace NeptunScheduler.API.Controllers
         {
             // Find Subject.
             User user = GetUser();
-            Subject subject = _context.Subjects.FirstOrDefault(x => x.Id == subjectId && x.User.Id == user.Id);
+            Subject subject = _subjectRepo.Get(user.Id, subjectId);
             if (subject == null)
                 return BadRequest("The User has no Subject with this id.");
 
-            // Create.
-            List<Course> newCourses = new List<Course>();
-            foreach (Course dto in courses)
-            {
-                Course course = new Course()
-                {
-                    Code = dto.Code,
-                    Slots = dto.Slots,
-                    Day = dto.Day,
-                    Start = dto.Start,
-                    End = dto.End,
-                    Teachers = dto.Teachers,
-                    Fix = dto.Fix,
-                    Collidable = dto.Collidable,
-                    Priority = dto.Priority,
-                    Ignored = dto.Ignored,
-                    Subject = subject,
-                    User = user
-                };
-                _context.Courses.Add(course);
-                newCourses.Add(course);
-            }
-           _context.SaveChanges();
-
-            // Return
-            return newCourses;
+            // Create and return.
+            return _courseRepo.AddAllCoursesToSubject(user, subject, courses);
         }
 
         [HttpGet("subjects/{subjectId}/courses")]
         public ActionResult<List<Course>> GetCourses(string subjectId)
         {
             User user = GetUser();
-            return _context.Courses.Where(x => x.User.Id == user.Id && x.Subject.Id == subjectId).ToList();
+            return _courseRepo.GetCoursesBySubjectId(user.Id, subjectId);
         }
 
         [HttpPut("courses/{id}")]
@@ -158,24 +114,12 @@ namespace NeptunScheduler.API.Controllers
         {
             // Find old Course.
             User user = GetUser();
-            Course old = _context.Courses.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
+            Course old = _courseRepo.Get(user.Id, id);
             if (old == null)
                 return BadRequest("The User has no Course with this id.");
 
             // Update.
-            old.Code = dto.Code;
-            old.Slots = dto.Slots;
-            old.Day = dto.Day;
-            old.Start = dto.Start;
-            old.End = dto.End;
-            old.Teachers = dto.Teachers;
-            old.Fix = dto.Fix;
-            old.Collidable = dto.Collidable;
-            old.Priority = dto.Priority;
-            old.Ignored = dto.Ignored;
-            _context.SaveChanges();
-
-            return old;
+            return _courseRepo.Update(user.Id, id, dto);
         }
 
         [HttpDelete("courses/{id}")]
@@ -183,15 +127,12 @@ namespace NeptunScheduler.API.Controllers
         {
             // Find old Course.
             User user = GetUser();
-            Course old = _context.Courses.FirstOrDefault(x => x.Id == id && x.User.Id == user.Id);
+            Course old = _courseRepo.Get(user.Id, id);
             if (old == null)
                 return BadRequest("The User has no Course with this id.");
 
             // Delete.
-            _context.Courses.Remove(old);
-            _context.SaveChanges();
-
-            return old;
+            return _courseRepo.Delete(user.Id, id);
         }
 
         [HttpPost("busytimeblocks")]
@@ -268,7 +209,7 @@ namespace NeptunScheduler.API.Controllers
         {
             var identity = this.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("userid")?.Value;
-            return _context.Users.FirstOrDefault(u => u.Id == userId);
+            return _userRepo.GetUserById(userId);
         }
     }
 }

@@ -1,20 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using NeptunScheduler.Data;
 using NeptunScheduler.Repository;
 
@@ -35,7 +27,9 @@ namespace NeptunScheduler.API
 
             services.AddControllers();
             services.AddDbContext<ScheduleDbContext>(opt => opt.UseSqlite("Data Source=Database.db;Cache=Shared", x => x.MigrationsAssembly("NeptunScheduler.API")));
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISubjectRepository, SubjectRepository>();
+            services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<IDailyActiveTimeRepository, DailyActiveTimeRepository>();
             services.AddScoped<IBusyTimeblockRepository, BusyTimeblockRepository>();
 
