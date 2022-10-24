@@ -44,12 +44,10 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
         .then(res => {
             res.forEach(timetable => {
                 timetable.forEach(course => {
-                    if (course.day != -1) {
-                        this.models.push(Object.assign(new CourseDto(), course).toVm());
-                    }
+                    this.models.push(Object.assign(new CourseDto(), course).toVm());
                 });
             });
-            this.pageSize = res[0].filter(course => course.day != -1).length;
+            this.pageSize = res[0].length;
             this.setPageNumber(1);
         })
         .catch(err => {
