@@ -20,6 +20,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     public tempModel: CourseVm = new CourseVm();
 
     public subject: SubjectVm = new SubjectVm();
+    public notAllAdded = false;
 
     protected endpoint: string;
     private route: ActivatedRoute;
@@ -92,6 +93,8 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
                 this.tempModel.teachers = row['Oktatók'];
                 this.tempModel.fix = row['Kurzus típusa'] === 'Elmélet';
                 models.push(this.tempModel.toDto());
+            } else {
+                this.notAllAdded = true;
             }
         });
         this.tempModel = new CourseVm();

@@ -37,6 +37,9 @@
             <div class="alert alert-danger text-center small" role="alert" *ngIf="this.errorMsg != ''">
                 {{ this.errorMsg }}
             </div>
+            <div class="alert alert-warning text-center small" role="alert" *ngIf="this.notAllAdded">
+                Note: courses without time data have not been imported.
+            </div>
             <div class="text-center" *ngIf="false">
                 <span class="spinner-border"></span>
             </div>
