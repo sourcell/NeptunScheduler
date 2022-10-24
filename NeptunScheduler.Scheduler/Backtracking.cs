@@ -11,10 +11,10 @@ namespace NeptunScheduler.Scheduler
         List<Subject> subjects;
         List<BusyTimeblock> busyTimeBlocks;
         List<Course> fixCourses;
+        int bestWastedMinutes = int.MaxValue;
 
         public Backtracking(List<Subject> subjects, List<BusyTimeblock> busies)
         {
-            this.finalResults = new List<List<Course>>();
             this.subjects = subjects;
             this.busyTimeBlocks = busies;
             this.fixCourses = new List<Course>();
@@ -84,14 +84,23 @@ namespace NeptunScheduler.Scheduler
             for (int i = 0; i < courses.Count; i++)
             {
                 result[level] = courses[i];
-
                 if (IsValid(result, level))
                 {
                     if (level == result.Length - 1)
                     {
-                        List<Course> res = result.ToList();
+                        List<Course> res = result.Where(x => x.Day != -1).ToList();
                         res.AddRange(fixCourses);
-                        finalResults.Add(res.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList());
+                        res = res.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList();
+                        int wastedMinutes = WastedMinutes(res);
+                        if (wastedMinutes <= bestWastedMinutes)
+                        {
+                            if (wastedMinutes < bestWastedMinutes)
+                            {
+                                finalResults = new List<List<Course>>();
+                                bestWastedMinutes = wastedMinutes;
+                            }
+                            finalResults.Add(res);
+                        }
                     }
                     else
                         Backtrack(result, level + 1);
@@ -127,6 +136,29 @@ namespace NeptunScheduler.Scheduler
             }
 
             return a.Day == b.Day && !(a.End < b.Start || a.Start > b.End);
+        }
+
+        private int WastedMinutes(List<Course> result) { // TODO: somehow not working right
+            int totalMinutes = 0;
+            int activeMinutes = 0;
+            Course first = null;
+            Course last = null;
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (i == 0 || result[i-1].Day != result[i].Day)
+                {
+                    first = result[i];
+                }
+
+                activeMinutes += result[i].End - result[i].Start;
+
+                if (i == result.Count - 1 || result[i+1].Day != result[i].Day)
+                {
+                    last = result[i];
+                    totalMinutes += last.End - first.Start;
+                }
+            }
+            return totalMinutes - activeMinutes;
         }
     }
 }
