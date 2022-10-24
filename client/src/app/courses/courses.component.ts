@@ -78,7 +78,8 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
         const models: Array<CourseDto> = [];
         rows.forEach(row => {
             this.tempModel.code = row['Kurzus kódja'];
-            // TODO: this.tempModel.slots = ...
+            const slotsData = row['Fő/Várólista/Limit'].split('/');
+            this.tempModel.slots = +slotsData[2] - +slotsData[0];
             const dayCodes = ['', 'H', 'K', 'SZE', 'CS', 'P', ''];
             const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const fullTimeData = row['Órarend infó'];
