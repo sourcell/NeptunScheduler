@@ -81,13 +81,14 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
             this.tempModel.code = row['Kurzus kódja'];
             const slotsData = row['Fő/Várólista/Limit'].split('/');
             this.tempModel.slots = +slotsData[2] - +slotsData[0];
-            const dayCodes = ['', 'H', 'K', 'SZE', 'CS', 'P', ''];
+            const dayCodes = ['V', 'H', 'K', 'SZE', 'CS', 'P', 'SZO'];
             const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const fullTimeData = row['Órarend infó'];
             const timeData: string = fullTimeData.slice(0, fullTimeData.indexOf(' '));
             if (timeData !== '') {
                 const endOfDay = timeData.indexOf(':');
-                this.tempModel.day = dayNames[dayCodes.indexOf(timeData.slice(0, endOfDay))];
+                const dayCode = timeData.slice(0, endOfDay);
+                this.tempModel.day = dayNames[dayCodes.indexOf(dayCode)];
                 this.tempModel.start = timeData.slice(endOfDay + 1, endOfDay + 6);
                 this.tempModel.end = timeData.slice(endOfDay + 7, endOfDay + 12);
                 this.tempModel.teachers = row['Oktatók'];
