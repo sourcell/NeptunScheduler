@@ -6,7 +6,7 @@ import { RestService } from '../rest.service';
 import { CourseVm } from '../x-vm/course-vm';
 import { SubjectVm } from '../x-vm/subject-vm';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as XLSX from 'xlsx';
+import { XlsxService } from '../services/xlsx.service';
 
 @Component({
     selector: 'app-courses',
@@ -20,18 +20,19 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     public tempModel: CourseVm = new CourseVm();
 
     public subject: SubjectVm = new SubjectVm();
-    public notAllAdded = false;
+    public importWarning = false;
 
     protected endpoint: string;
-    private route: ActivatedRoute;
     private subjectId: string;
 
-    constructor(rest: RestService, router: Router, route: ActivatedRoute) {
-        super(rest, router);
-        this.route = route;
-
-        this.subjectId = this.route.snapshot.paramMap.get('id')!;
-        this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
+    constructor(
+        rest: RestService,
+        router: Router,
+        private readonly route: ActivatedRoute,
+        private readonly xlsxService: XlsxService) {
+            super(rest, router);
+            this.subjectId = this.route.snapshot.paramMap.get('id')!;
+            this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
     }
 
     public override async ngOnInit(): Promise<void> {
@@ -70,36 +71,14 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
         this.intention = 'add';
     }
 
-    public async addCoursesViaXlsx(files: FileList | null) {
+    public async addCoursesViaXlsx(files: FileList | null): Promise<void> {
         const file = files?.item(0);
-        const data = await file?.arrayBuffer();
-        const workbook = XLSX.read(data);
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows: Array<any> = XLSX.utils.sheet_to_json(worksheet);
-        const models: Array<CourseDto> = [];
-        rows.forEach(row => {
-            this.tempModel.code = row['Kurzus kódja'];
-            const slotsData = row['Fő/Várólista/Limit'].split('/');
-            this.tempModel.slots = +slotsData[2] - +slotsData[0];
-            const dayCodes = ['V', 'H', 'K', 'SZE', 'CS', 'P', 'SZO'];
-            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const fullTimeData = row['Órarend infó'];
-            const timeData: string = fullTimeData.slice(0, fullTimeData.indexOf(' '));
-            if (timeData !== '') {
-                const endOfDay = timeData.indexOf(':');
-                const dayCode = timeData.slice(0, endOfDay);
-                this.tempModel.day = dayNames[dayCodes.indexOf(dayCode)];
-                this.tempModel.start = timeData.slice(endOfDay + 1, endOfDay + 6);
-                this.tempModel.end = timeData.slice(endOfDay + 7, endOfDay + 12);
-                this.tempModel.teachers = row['Oktatók'];
-                this.tempModel.fix = row['Kurzus típusa'] === 'Elmélet';
-                models.push(this.tempModel.toDto());
-            } else {
-                this.notAllAdded = true;
-            }
-        });
-        this.tempModel = new CourseVm();
+        if (!file) {
+            return;
+        }
+        const models = await this.xlsxService.importCourses(file);
         this.addAll(models);
+        this.importWarning = true;
     }
 
     public processPostResult(res: CourseDto): void {

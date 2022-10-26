@@ -4,6 +4,8 @@ import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
 import { SubjectVm } from '../x-vm/subject-vm';
 import { Router } from '@angular/router';
+import { XlsxService } from '../services/xlsx.service';
+import { CourseDto } from '../x-dto/course-dto';
 
 @Component({
     selector: 'app-subjects',
@@ -18,13 +20,12 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
 
     protected endpoint: string = '/schedule/subjects';
 
-    constructor(rest: RestService, router: Router) {
-        super(rest, router);
+    constructor(
+        rest: RestService,
+        router: Router,
+        private readonly xlsxService: XlsxService) {
+            super(rest, router);
     }
-
-    // public async ngOnInit(): Promise<void> {
-    //     await this.fetch();
-    // }
 
     public processGetResult(res: Array<SubjectDto>): void {
         this.models = res.map(s => Object.assign(new SubjectDto(), s).toVm());
@@ -33,6 +34,23 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
     public aboutToAdd(): void {
         this.intention = 'add';
         this.tempModel = new SubjectVm();
+    }
+
+    public async importFromFiles(files: FileList | null): Promise<void> {
+        this.loading = true;
+        const fileNames = this.xlsxService.getFileNames(files);
+        const subjects = fileNames.map(name => {
+            const subject = new SubjectDto();
+            subject.title = name;
+            return subject;
+        });
+        const newSubjects = await this.rest._post<Array<SubjectDto>>('/schedule/subjects/all', subjects);
+        for (const subject of newSubjects) {
+            const courses = await this.xlsxService.importCoursesByFileName(files, subject.title);
+            await this.rest._post<Array<CourseDto>>('/schedule/subjects/' + subject.id + '/courses/all', courses);
+        }
+        this.models = this.models.concat(newSubjects.map(subject => Object.assign(new SubjectDto(), subject).toVm()));
+        this.loading = false;
     }
 
     public processPostResult(res: SubjectDto): void {

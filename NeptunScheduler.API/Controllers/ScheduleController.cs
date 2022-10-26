@@ -40,6 +40,13 @@ namespace NeptunScheduler.API.Controllers
             return _subjectRepo.Add(user.Id, dto);
         }
 
+        [HttpPost("subjects/all")]
+        public ActionResult<List<Subject>> CreateSubject(List<Subject> subjects)
+        {
+            User user = GetUser();
+            return _subjectRepo.AddAll(user, subjects);
+        }
+
         [HttpGet("subjects")]
         public ActionResult<List<Subject>> GetSubjects()
         {

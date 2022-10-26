@@ -20,16 +20,12 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
 
     protected abstract endpoint: string;
 
-    protected readonly rest: RestService;
-    protected readonly router: Router;
-
-    constructor(rest: RestService, router: Router) {
-        this.rest = rest;
-        this.router = router;
-
-        if (sessionStorage.getItem('username') == null || sessionStorage.getItem('token') == null) {
-            this.router.navigate(['auth']);
-        }
+    constructor(
+        protected readonly rest: RestService,
+        protected readonly router: Router) {
+            if (sessionStorage.getItem('username') == null || sessionStorage.getItem('token') == null) {
+                this.router.navigate(['auth']);
+            }
     }
 
     public async ngOnInit(): Promise<void> {
