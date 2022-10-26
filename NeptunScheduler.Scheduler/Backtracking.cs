@@ -138,25 +138,17 @@ namespace NeptunScheduler.Scheduler
             return a.Day == b.Day && !(a.End < b.Start || a.Start > b.End);
         }
 
-        private int WastedMinutes(List<Course> result) { // TODO: somehow not working right
+        public int WastedMinutes(List<Course> result) {
             int totalMinutes = 0;
             int activeMinutes = 0;
             Course first = null;
-            Course last = null;
             for (int i = 0; i < result.Count; i++)
             {
-                if (i == 0 || result[i-1].Day != result[i].Day)
-                {
-                    first = result[i];
-                }
-
                 activeMinutes += result[i].End - result[i].Start;
-
+                if (i == 0 || result[i-1].Day != result[i].Day)
+                    first = result[i];
                 if (i == result.Count - 1 || result[i+1].Day != result[i].Day)
-                {
-                    last = result[i];
-                    totalMinutes += last.End - first.Start;
-                }
+                    totalMinutes += result[i].End - first.Start;
             }
             return totalMinutes - activeMinutes;
         }
