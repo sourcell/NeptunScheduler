@@ -215,9 +215,16 @@ namespace NeptunScheduler.API.Controllers
             List<BusyTimeblock> busyTimeblocks = _busyTimeblockRepo.GetAll(user.Id).ToList();
 
             Backtracking bt = new Backtracking(subjects, busyTimeblocks);
-            var results = bt.PossibleResults();
 
-            return results.Take(10).ToList();
+            try
+            {
+                var results = bt.PossibleResults();
+                return results.Take(10).ToList();
+            }
+            catch (ConflictException)
+            {
+                return BadRequest("There are conflicts between the fix timeblocks (fix courses, busy timeblocks)");
+            }
         }
 
         private User GetUser()

@@ -51,7 +51,11 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
             this.setPageNumber(1);
         })
         .catch(err => {
-            this.errorMsg = 'Failed to generate schedules.';
+            if (err.status == 400) {
+                this.errorMsg = err.error;
+            } else {
+                this.errorMsg = 'Something went wrong.';
+            }
         });
 
         this.isGenerating = false;

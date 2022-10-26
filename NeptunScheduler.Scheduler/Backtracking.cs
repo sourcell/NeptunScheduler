@@ -34,21 +34,12 @@ namespace NeptunScheduler.Scheduler
             // Check if there is collision between fix timeblocks
             List<TimeBlock> colliders = CheckCollisions();
             if (colliders.Count > 0)
-            {
-                colliders.ForEach(c => {
-                    if (c is Course)
-                    {
-                        Console.WriteLine((c as Course).Subject.Title + " " + (c as Course).Fix + " " + (c as Course).Code);
-                    }
-                });
-                throw new ArgumentException("There are initial collisions between the fix timeblocks (fix courses + busy timeblocks).");
-            }
+                throw new ConflictException();
 
             // Temporary result array to work with
             Course[] result = new Course[subjects.Count];
-
             Backtrack(result, 0);
-            System.Console.WriteLine("found results: " + finalResults.Count);
+            Console.WriteLine("found results: " + finalResults.Count);
             return finalResults;
         }
 
