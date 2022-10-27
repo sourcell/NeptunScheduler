@@ -143,6 +143,14 @@ namespace NeptunScheduler.API.Controllers
             return _courseRepo.Delete(user.Id, id);
         }
 
+        [HttpPatch("courses")]
+        public ActionResult DeleteCourse(List<string> courseIds)
+        {
+            User user = GetUser();
+            _courseRepo.DeleteAll(user.Id, courseIds);
+            return Ok();
+        }
+
         [HttpPost("busytimeblocks")]
         public ActionResult<BusyTimeblock> CreateBusyTimeblock(BusyTimeblock dto)
         {

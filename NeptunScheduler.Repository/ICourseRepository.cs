@@ -12,5 +12,7 @@ namespace NeptunScheduler.Repository
         List<Course> AddAllCoursesToSubject(User user, Subject subject, Course[] courses);
 
         List<Course> GetCoursesBySubjectId(string userId, string subjectId);
+
+        void DeleteAll(string userId, List<string> ids);
     }
 }

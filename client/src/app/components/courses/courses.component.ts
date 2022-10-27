@@ -106,4 +106,12 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
         this.models = this.models.filter(s => s.id != res.id);
     }
 
+    public async removeAllCourses(): Promise<void> {
+        this.loading = true;
+        const courseIds = this.models.map(course => course.id);
+        await this.rest.deleteModel<Array<string>>('/schedule/courses', courseIds);
+        this.models = [];
+        this.loading = false;
+    }
+
 }

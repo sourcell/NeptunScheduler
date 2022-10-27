@@ -46,4 +46,12 @@ export class RestService {
         return result;
     }
 
+    public async deleteModel<T>(endpoint: string, model: T): Promise<T> {
+        const result = await firstValueFrom(this.http.patch<T>(this.url + endpoint, model, {
+            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
+        }));
+
+        return result;
+    }
+
 }

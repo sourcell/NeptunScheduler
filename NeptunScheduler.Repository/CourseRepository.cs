@@ -80,6 +80,17 @@ namespace NeptunScheduler.Repository
             return old;
         }
 
+        public void DeleteAll(string userId, List<string> ids)
+        {
+            List<Course> courses = new List<Course>();
+            ids.ForEach(id => {
+                courses.Add(Get(userId, id));
+            });
+
+            _context.Courses.RemoveRange(courses);
+            _context.SaveChanges();
+        }
+
         public Course Get(string userId, string id)
         {
             return _context.Courses.FirstOrDefault(x => x.Id == id && x.User.Id == userId);

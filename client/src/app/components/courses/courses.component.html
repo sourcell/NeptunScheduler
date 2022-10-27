@@ -16,18 +16,24 @@
                     <button class="btn btn-primary mx-2" disabled *ngIf="this.loading">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
                     </button>
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" *ngIf="!this.loading">
-                        Add Courses
-                    </button>
-                    <button class="btn btn-primary dropdown-toggle" type="button" disabled *ngIf="this.loading">
-                        Add Courses
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" [disabled]="this.loading">
+                        Manage
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
                         <li>
-                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addAllModal" (click)="this.aboutToAddAll()">Add all</button>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#import-modal" (click)="this.aboutToAddAll()">
+                                Import courses
+                            </button>
                         </li>
                         <li>
-                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addOneModal" (click)="this.aboutToAdd()">Add one</button>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#add-modal" (click)="this.aboutToAdd()">
+                                Add course
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#remove-modal">
+                                Remove courses
+                            </button>
                         </li>
                     </ul>
                 </div>
@@ -77,7 +83,7 @@
                             </td>
                             <td>{{ course.priority }}</td>
                             <td>
-                                <a role="button" data-bs-toggle="modal" data-bs-target="#addOneModal" (click)="this.aboutToEdit(course.copy())">
+                                <a role="button" data-bs-toggle="modal" data-bs-target="#add-modal" (click)="this.aboutToEdit(course.copy())">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>
                                 </a>
                             </td>
@@ -89,12 +95,12 @@
     </ul>
 </div>
 
-<!-- Add-all modal -->
-<div class="modal fade" id="addAllModal" tabindex="-1" aria-hidden="true">
+<!-- Import modal -->
+<div class="modal fade" id="import-modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Adding all Courses</h5>
+                <h5 class="modal-title">Importing courses</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -105,19 +111,19 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="addCoursesViaXlsx(fileInput.files)">Add!</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="addCoursesViaXlsx(fileInput.files)">Import!</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Add-one modal / Edit modal -->
-<div class="modal fade" id="addOneModal" tabindex="-1" aria-hidden="true">
+<!-- Add / Edit modal -->
+<div class="modal fade" id="add-modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" *ngIf="this.intention == 'add'">Adding one Course</h5>
-                <h5 class="modal-title" *ngIf="this.intention == 'edit'">Editing Course</h5>
+                <h5 class="modal-title" *ngIf="this.intention == 'add'">Adding course</h5>
+                <h5 class="modal-title" *ngIf="this.intention == 'edit'">Editing course</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -187,6 +193,27 @@
                         <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" (click)="this.update(this.tempModel.id, this.tempModel.toDto())">Update!</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Remove modal -->
+<div class="modal fade" id="remove-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Removing courses</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    Are you sure to remove all the courses?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="removeAllCourses()">Remove all!</button>
             </div>
         </div>
     </div>
