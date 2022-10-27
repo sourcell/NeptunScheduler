@@ -89,12 +89,12 @@ export class AuthComponent {
 
 }
 
-export class UserDto {
+class UserDto {
     username: string = '';
     password: string = '';
 }
 
-export class UserResult {
+class UserResult {
     id: string = '';
     username: string = '';
     roles: string = '';
