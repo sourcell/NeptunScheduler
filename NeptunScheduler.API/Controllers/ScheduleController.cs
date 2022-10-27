@@ -240,6 +240,10 @@ namespace NeptunScheduler.API.Controllers
             {
                 return BadRequest("There are conflicts between the fix timeblocks (fix courses, busy timeblocks)");
             }
+            catch (NoResultException)
+            {
+                return BadRequest("No possible result are found");
+            }
         }
 
         private User GetUser()

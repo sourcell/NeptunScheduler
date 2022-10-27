@@ -31,6 +31,9 @@ namespace NeptunScheduler.Scheduler
 
         public List<List<Course>> PossibleResults()
         {
+            if (subjects.Count == 0)
+                throw new NoResultException();
+
             // Check if there is collision between fix timeblocks
             List<TimeBlock> colliders = CheckCollisions();
             if (colliders.Count > 0)
@@ -39,6 +42,8 @@ namespace NeptunScheduler.Scheduler
             // Temporary result array to work with
             Course[] result = new Course[subjects.Count];
             Backtrack(result, 0);
+            if (finalResults == null)
+                throw new NoResultException();
             Console.WriteLine("found results: " + finalResults.Count);
             return finalResults;
         }
