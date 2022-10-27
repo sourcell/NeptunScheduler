@@ -15,10 +15,17 @@
                     <button class="btn btn-primary mx-2" disabled *ngIf="this.loading">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
                     </button>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal" (click)="this.aboutToAdd()" *ngIf="!this.loading">Add Subject!</button>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal" disabled *ngIf="this.loading">
-                        Add Subject!
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" [disabled]="this.loading">
+                        Manage
                     </button>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#import-modal">Import Subjects</button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#add-one-modal" (click)="this.aboutToAdd()">Add one Subject</button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </li>
@@ -31,7 +38,7 @@
                     <div class="row">
                         <div class="col-md text-start">{{ subject.title }} [{{ subject.credits }}]</div>
                         <div class="col-md text-end">
-                            <a class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#modal" (click)="this.aboutToEdit(subject.copy())">Edit Subject</a> | <a class="btn btn-link p-0" [routerLink]="['/subjects', subject.id]">Courses</a>
+                            <a class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#add-one-modal" (click)="this.aboutToEdit(subject.copy())">Edit Subject</a> | <a class="btn btn-link p-0" [routerLink]="['/subjects', subject.id]">Courses</a>
                         </div>
                     </div>
                 </li>
@@ -40,8 +47,31 @@
     </ul>
 </div>
 
+<!-- Import modal -->
+<div class="modal fade" id="import-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Importing Subjects</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Select the xlsx files!</label>
+                    <br>
+                    <input #fileInput type="file" [multiple]="true">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="importFromFiles(fileInput.files)">Add!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Add modal / Edit modal -->
-<div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="add-one-modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">

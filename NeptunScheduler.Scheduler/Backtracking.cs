@@ -11,52 +11,48 @@ namespace NeptunScheduler.Scheduler
         List<Subject> subjects;
         List<BusyTimeblock> busyTimeBlocks;
         List<Course> fixCourses;
+        int bestWastedMinutes = int.MaxValue;
 
         public Backtracking(List<Subject> subjects, List<BusyTimeblock> busies)
         {
-            this.finalResults = new List<List<Course>>();
             this.subjects = subjects;
             this.busyTimeBlocks = busies;
             this.fixCourses = new List<Course>();
 
-            this.subjects.ForEach(s =>
+            this.subjects.ForEach(subject =>
             {
-                s.Courses.ForEach(c =>
+                subject.Courses.ForEach(course =>
                 {
-                    if (c.Fix)
-                        fixCourses.Add(c);
+                    if (course.Fix && !course.Ignored)
+                        fixCourses.Add(course);
                 });
             });
         }
 
         public List<List<Course>> PossibleResults()
         {
+            if (subjects.Count == 0)
+                throw new NoResultException();
+
             // Check if there is collision between fix timeblocks
             List<TimeBlock> colliders = CheckCollisions();
             if (colliders.Count > 0)
-            {
-                colliders.ForEach(c => {
-                    if (c is Course)
-                    {
-                        Console.WriteLine((c as Course).Subject.Title + " " + (c as Course).Fix + " " + (c as Course).Code);
-                    }
-                });
-                throw new ArgumentException("There are initial collisions between the fix timeblocks (fix courses + busy timeblocks).");
-            }
+                throw new ConflictException();
 
             // Temporary result array to work with
             Course[] result = new Course[subjects.Count];
-
             Backtrack(result, 0);
-            System.Console.WriteLine("found results: " + finalResults.Count);
-            return finalResults;
+            if (finalResults == null)
+                throw new NoResultException();
+            Console.WriteLine("found results: " + finalResults.Count);
+            return finalResults.OrderByDescending(res => res.Sum(x => x.Priority)).ToList();
         }
 
         private List<TimeBlock> CheckCollisions()
         {
             List<TimeBlock> timeBlocks = new List<TimeBlock>();
-            fixCourses.ForEach(c => timeBlocks.Add(c));
-            busyTimeBlocks.ForEach(b => timeBlocks.Add(b));
+            timeBlocks.AddRange(fixCourses);
+            timeBlocks.AddRange(busyTimeBlocks);
 
             List<TimeBlock> colliders = new List<TimeBlock>();
 
@@ -76,22 +72,30 @@ namespace NeptunScheduler.Scheduler
         private void Backtrack(Course[] result, int level)
         {
             // Optional Courses of the current Subject
-            List<Course> courses = subjects[level].Courses.Where(c => !c.Fix).ToList();
-
+            List<Course> courses = subjects[level].Courses.Where(c => !c.Fix && c.Slots > 0 && !c.Ignored).ToList();
             if (courses.Count == 0)
                 courses.Add(new Course() { Day = -1, Start = 0, End = 0, Collidable = true });
             
             for (int i = 0; i < courses.Count; i++)
             {
                 result[level] = courses[i];
-
                 if (IsValid(result, level))
                 {
                     if (level == result.Length - 1)
                     {
-                        List<Course> res = result.ToList();
+                        List<Course> res = result.Where(x => x.Day != -1).ToList();
                         res.AddRange(fixCourses);
-                        finalResults.Add(res.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList());
+                        res = res.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList();
+                        int wastedMinutes = WastedMinutes(res);
+                        if (wastedMinutes <= bestWastedMinutes)
+                        {
+                            if (wastedMinutes < bestWastedMinutes)
+                            {
+                                finalResults = new List<List<Course>>();
+                                bestWastedMinutes = wastedMinutes;
+                            }
+                            finalResults.Add(res);
+                        }
                     }
                     else
                         Backtrack(result, level + 1);
@@ -122,11 +126,23 @@ namespace NeptunScheduler.Scheduler
         private bool DoCollide(TimeBlock a, TimeBlock b)
         {
             if (a is Course && b is Course && (a as Course).Collidable && (b as Course).Collidable)
-            {
                 return false;
-            }
-
             return a.Day == b.Day && !(a.End < b.Start || a.Start > b.End);
+        }
+
+        public int WastedMinutes(List<Course> result) {
+            int totalMinutes = 0;
+            int activeMinutes = 0;
+            Course first = null;
+            for (int i = 0; i < result.Count; i++)
+            {
+                activeMinutes += result[i].End - result[i].Start;
+                if (i == 0 || result[i-1].Day != result[i].Day)
+                    first = result[i];
+                if (i == result.Count - 1 || result[i+1].Day != result[i].Day)
+                    totalMinutes += result[i].End - first.Start;
+            }
+            return totalMinutes - activeMinutes;
         }
     }
 }

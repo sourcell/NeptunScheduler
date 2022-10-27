@@ -1,16 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
-import { BusyTimeblockDto } from '../x-dto/busy-timeblock-dto';
-import { RestService } from '../rest.service';
-import { BusyTimeblockVm } from '../x-vm/busy-timeblock-vm';
-import { Router } from '@angular/router';
+import { RestService } from '../../services/rest.service';
+import { BusyTimeblockDto } from '../../x-dto/busy-timeblock-dto';
+import { BusyTimeblockVm } from '../../x-vm/busy-timeblock-vm';
 
 @Component({
     selector: 'app-busy-time-blocks',
     templateUrl: './busy-timeblocks.component.html',
     styleUrls: ['./busy-timeblocks.component.css']
 })
-export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, BusyTimeblockDto> implements OnInit {
+export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, BusyTimeblockDto> {
 
     public models: Array<BusyTimeblockVm> = new Array<BusyTimeblockVm>();
     public model: BusyTimeblockVm = new BusyTimeblockVm();
@@ -18,13 +17,9 @@ export class BusyTimeblocksComponent extends CrudComponent<BusyTimeblockVm, Busy
 
     protected endpoint: string = '/schedule/busytimeblocks';
 
-    constructor(rest: RestService, router: Router) {
-        super(rest, router);
+    constructor(rest: RestService) {
+        super(rest);
     }
-
-    // public async ngOnInit(): Promise<void> {
-    //     await this.fetch();
-    // }
 
     public processGetResult(res: Array<BusyTimeblockDto>): void {
         this.models = res.map(b => Object.assign(new BusyTimeblockDto(), b).toVm());

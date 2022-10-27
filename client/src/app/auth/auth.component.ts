@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { RestService } from '../rest.service';
+import { RestService } from '../services/rest.service';
 
 @Component({
     selector: 'app-auth',
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.css']
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent {
 
     public loginDto: UserDto;
     public registerDto: UserDto;
@@ -34,9 +34,6 @@ export class AuthComponent implements OnInit {
         this.registerDto = new UserDto();
     }
 
-    public ngOnInit(): void {
-    }
-
     public async register(): Promise<void> {
         if (this.registerDto.password != this.passconf) {
             this.registerErrorMsg = 'Password confirmation failed.';
@@ -47,7 +44,7 @@ export class AuthComponent implements OnInit {
 
         this.registerLoad = true;
 
-        await this.rest._post<UserResult>('/auth/register', this.registerDto)
+        await this.rest.post<UserResult>('/auth/register', this.registerDto)
             .then(res => {
                 this.registerResult = res;
                 this.registerErrorMsg = '';
@@ -63,7 +60,7 @@ export class AuthComponent implements OnInit {
     public async login(): Promise<void> {
         this.loginLoad = true;
 
-        await this.rest._post<UserResult>('/auth/login', this.loginDto)
+        await this.rest.post<UserResult>('/auth/login', this.loginDto)
             .then(res => {
                 sessionStorage.setItem('username', res.username);
                 sessionStorage.setItem('token', res.token);
@@ -92,12 +89,12 @@ export class AuthComponent implements OnInit {
 
 }
 
-export class UserDto {
+class UserDto {
     username: string = '';
     password: string = '';
 }
 
-export class UserResult {
+class UserResult {
     id: string = '';
     username: string = '';
     roles: string = '';

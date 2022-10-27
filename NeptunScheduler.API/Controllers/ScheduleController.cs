@@ -40,6 +40,13 @@ namespace NeptunScheduler.API.Controllers
             return _subjectRepo.Add(user.Id, dto);
         }
 
+        [HttpPost("subjects/all")]
+        public ActionResult<List<Subject>> CreateSubject(List<Subject> subjects)
+        {
+            User user = GetUser();
+            return _subjectRepo.AddAll(user, subjects);
+        }
+
         [HttpGet("subjects")]
         public ActionResult<List<Subject>> GetSubjects()
         {
@@ -136,6 +143,14 @@ namespace NeptunScheduler.API.Controllers
             return _courseRepo.Delete(user.Id, id);
         }
 
+        [HttpPatch("courses")]
+        public ActionResult DeleteCourse(List<string> courseIds)
+        {
+            User user = GetUser();
+            _courseRepo.DeleteAll(user.Id, courseIds);
+            return Ok();
+        }
+
         [HttpPost("busytimeblocks")]
         public ActionResult<BusyTimeblock> CreateBusyTimeblock(BusyTimeblock dto)
         {
@@ -207,7 +222,7 @@ namespace NeptunScheduler.API.Controllers
         }
 
         [HttpGet("generate")]
-        public ActionResult<List<List<Course>>> GenerateSchedules() // TODO: separate result model (course needs subject name)
+        public ActionResult<List<List<TimetableUnit>>> GenerateSchedules()
         {
             User user = GetUser();
 
@@ -215,9 +230,49 @@ namespace NeptunScheduler.API.Controllers
             List<BusyTimeblock> busyTimeblocks = _busyTimeblockRepo.GetAll(user.Id).ToList();
 
             Backtracking bt = new Backtracking(subjects, busyTimeblocks);
-            var results = bt.PossibleResults();
 
-            return results.Take(10).ToList();
+            try
+            {
+                List<List<Course>> results = bt.PossibleResults();
+                List<List<TimetableUnit>> timetables = new List<List<TimetableUnit>>();
+                results.ForEach(result => {
+                    List<TimetableUnit> timetable = new List<TimetableUnit>();
+                    result.ForEach(course => {
+                        timetable.Add(new TimetableUnit() {
+                            Title = course.Subject.Title,
+                            Code = course.Code,
+                            Slots = course.Slots,
+                            Day = course.Day,
+                            Start = course.Start,
+                            End = course.End,
+                            Teachers = course.Teachers,
+                            Fix = course.Fix,
+                            Collidable = course.Collidable,
+                            Priority = course.Priority,
+                            IsCourse = true
+                        });
+                    });
+                    busyTimeblocks.ForEach(busy => {
+                        timetable.Add(new TimetableUnit() {
+                            Title = busy.Title,
+                            Day = busy.Day,
+                            Start = busy.Start,
+                            End = busy.End,
+                            IsCourse = false
+                        });
+                    });
+                    timetables.Add(timetable.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList());
+                });
+                return timetables.Take(10).ToList();
+            }
+            catch (ConflictException)
+            {
+                return BadRequest("There are conflicts between the fix timeblocks (fix courses, busy timeblocks)");
+            }
+            catch (NoResultException)
+            {
+                return BadRequest("No possible result are found");
+            }
         }
 
         private User GetUser()

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { RestService } from '../rest.service';
+import { RestService } from 'src/app/services/rest.service';
 
 @Component({
     selector: 'app-crud',
@@ -20,17 +19,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
 
     protected abstract endpoint: string;
 
-    protected readonly rest: RestService;
-    protected readonly router: Router;
-
-    constructor(rest: RestService, router: Router) {
-        this.rest = rest;
-        this.router = router;
-
-        if (sessionStorage.getItem('username') == null || sessionStorage.getItem('token') == null) {
-            this.router.navigate(['auth']);
-        }
-    }
+    constructor(protected readonly rest: RestService) {}
 
     public async ngOnInit(): Promise<void> {
         await this.fetch();
@@ -39,7 +28,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     public async fetch(): Promise<void> {
         this.loading = true;
 
-        await this.rest._get<Array<DTO>>(this.endpoint)
+        await this.rest.get<Array<DTO>>(this.endpoint)
             .then(res => {
                 this.errorMsg = '';
                 this.processGetResult(res);
@@ -58,7 +47,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     public async add(model: DTO): Promise<void> {
         this.loading = true;
 
-        await this.rest._post<DTO>(this.endpoint, model)
+        await this.rest.post<DTO>(this.endpoint, model)
             .then(res => {
                 this.errorMsg = '';
                 this.processPostResult(res);
@@ -73,7 +62,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     public async addAll(model: Array<DTO>): Promise<void> {
         this.loading = true;
 
-        await this.rest._post<Array<DTO>>(this.endpoint, model)
+        await this.rest.post<Array<DTO>>(this.endpoint, model)
             .then(res => {
                 this.errorMsg = '';
                 this.processPostResults(res);
@@ -94,7 +83,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
     public async update(id: string, model: DTO): Promise<void> {
         this.loading = true;
 
-        await this.rest._put<DTO>(this.endpoint + '/' + id, model)
+        await this.rest.put<DTO>(this.endpoint + '/' + id, model)
             .then(res => {
                 this.errorMsg = '';
                 this.processPutResult(res);
@@ -112,7 +101,7 @@ export abstract class CrudComponent<VM, DTO> implements OnInit {
         this.loading = true;
         this.clickedDelete = false;
 
-        await this.rest._delete<DTO>(this.endpoint + '/' + id)
+        await this.rest.delete<DTO>(this.endpoint + '/' + id)
             .then(res => {
                 this.errorMsg = '';
                 this.processDeleteResult(res);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using NeptunScheduler.Data;
@@ -29,6 +30,23 @@ namespace NeptunScheduler.Repository
 
             // Result.
             return _context.Subjects.FirstOrDefault(x => x.Id == newSubject.Id);
+        }
+
+        public List<Subject> AddAll(User user, List<Subject> subjects)
+        {
+            List<Subject> newSubjects = new List<Subject>();
+            foreach (Subject dto in subjects)
+            {
+                Subject subject = new Subject()
+                {
+                    Title = dto.Title,
+                    User = user
+                };
+                newSubjects.Add(subject);
+            }
+            _context.Subjects.AddRange(newSubjects);
+            _context.SaveChanges();
+            return newSubjects;
         }
 
         public IQueryable<Subject> GetAll(string userId)

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
-import { CourseDto } from '../x-dto/course-dto';
-import { SubjectDto } from '../x-dto/subject-dto';
-import { RestService } from '../rest.service';
-import { CourseVm } from '../x-vm/course-vm';
-import { SubjectVm } from '../x-vm/subject-vm';
-import { ActivatedRoute, Router } from '@angular/router';
-import * as XLSX from 'xlsx';
+import { ActivatedRoute } from '@angular/router';
+import { CourseVm } from 'src/app/x-vm/course-vm';
+import { CourseDto } from 'src/app/x-dto/course-dto';
+import { SubjectVm } from 'src/app/x-vm/subject-vm';
+import { RestService } from 'src/app/services/rest.service';
+import { XlsxService } from 'src/app/services/xlsx.service';
+import { SubjectDto } from 'src/app/x-dto/subject-dto';
 
 @Component({
     selector: 'app-courses',
@@ -20,17 +20,18 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     public tempModel: CourseVm = new CourseVm();
 
     public subject: SubjectVm = new SubjectVm();
+    public importWarning = false;
 
     protected endpoint: string;
-    private route: ActivatedRoute;
     private subjectId: string;
 
-    constructor(rest: RestService, router: Router, route: ActivatedRoute) {
-        super(rest, router);
-        this.route = route;
-
-        this.subjectId = this.route.snapshot.paramMap.get('id')!;
-        this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
+    constructor(
+        rest: RestService,
+        private readonly route: ActivatedRoute,
+        private readonly xlsxService: XlsxService) {
+            super(rest);
+            this.subjectId = this.route.snapshot.paramMap.get('id')!;
+            this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
     }
 
     public override async ngOnInit(): Promise<void> {
@@ -39,7 +40,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     }
 
     public async fetchSubject(): Promise<void> {
-        await this.rest._get<SubjectDto>('/schedule/subjects/' + this.subjectId)
+        await this.rest.get<SubjectDto>('/schedule/subjects/' + this.subjectId)
             .then(res => {
                 const result = Object.assign(new SubjectDto(), res);
                 this.subject = result.toVm();
@@ -69,32 +70,14 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
         this.intention = 'add';
     }
 
-    public async addCoursesViaXlsx(files: FileList | null) {
+    public async addCoursesViaXlsx(files: FileList | null): Promise<void> {
         const file = files?.item(0);
-        const data = await file?.arrayBuffer();
-        const workbook = XLSX.read(data);
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows: Array<any> = XLSX.utils.sheet_to_json(worksheet);
-        const models: Array<CourseDto> = [];
-        rows.forEach(row => {
-            this.tempModel.code = row['Kurzus kódja'];
-            // TODO: this.tempModel.slots = ...
-            const dayCodes = ['', 'H', 'K', 'SZE', 'CS', 'P', ''];
-            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const fullTimeData = row['Órarend infó'];
-            const timeData: string = fullTimeData.slice(0, fullTimeData.indexOf(' '));
-            if (timeData !== '') {
-                const endOfDay = timeData.indexOf(':');
-                this.tempModel.day = dayNames[dayCodes.indexOf(timeData.slice(0, endOfDay))];
-                this.tempModel.start = timeData.slice(endOfDay + 1, endOfDay + 6);
-                this.tempModel.end = timeData.slice(endOfDay + 7, endOfDay + 12);
-                this.tempModel.teachers = row['Oktatók'];
-                this.tempModel.fix = row['Kurzus típusa'] === 'Elmélet';
-                models.push(this.tempModel.toDto());
-            }
-        });
-        this.tempModel = new CourseVm();
+        if (!file) {
+            return;
+        }
+        const models = await this.xlsxService.importCourses(file);
         this.addAll(models);
+        this.importWarning = true;
     }
 
     public processPostResult(res: CourseDto): void {
@@ -121,6 +104,14 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
 
     public processDeleteResult(res: CourseDto): void {
         this.models = this.models.filter(s => s.id != res.id);
+    }
+
+    public async removeAllCourses(): Promise<void> {
+        this.loading = true;
+        const courseIds = this.models.map(course => course.id);
+        await this.rest.deleteModel<Array<string>>('/schedule/courses', courseIds);
+        this.models = [];
+        this.loading = false;
     }
 
 }
