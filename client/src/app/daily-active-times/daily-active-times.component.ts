@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
+import { RestService } from '../services/rest.service';
 import { DailyActiveTimeDto } from '../x-dto/daily-active-time-dto';
-import { RestService } from '../rest.service';
 import { DailyActiveTimeVm } from '../x-vm/daily-active-time-vm';
 
 @Component({

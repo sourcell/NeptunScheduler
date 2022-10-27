@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
+import { RestService } from '../services/rest.service';
 import { CourseDto } from '../x-dto/course-dto';
-import { RestService } from '../rest.service';
 import { CourseVm } from '../x-vm/course-vm';
 
 @Component({

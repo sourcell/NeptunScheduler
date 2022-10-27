@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
+import { RestService } from '../services/rest.service';
 import { BusyTimeblockDto } from '../x-dto/busy-timeblock-dto';
-import { RestService } from '../rest.service';
 import { BusyTimeblockVm } from '../x-vm/busy-timeblock-vm';
 
 @Component({
