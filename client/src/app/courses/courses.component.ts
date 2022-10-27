@@ -40,7 +40,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     }
 
     public async fetchSubject(): Promise<void> {
-        await this.rest._get<SubjectDto>('/schedule/subjects/' + this.subjectId)
+        await this.rest.get<SubjectDto>('/schedule/subjects/' + this.subjectId)
             .then(res => {
                 const result = Object.assign(new SubjectDto(), res);
                 this.subject = result.toVm();

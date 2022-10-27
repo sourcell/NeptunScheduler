@@ -42,10 +42,10 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> {
             subject.title = name;
             return subject;
         });
-        const newSubjects = await this.rest._post<Array<SubjectDto>>('/schedule/subjects/all', subjects);
+        const newSubjects = await this.rest.post<Array<SubjectDto>>('/schedule/subjects/all', subjects);
         for (const subject of newSubjects) {
             const courses = await this.xlsxService.importCoursesByFileName(files, subject.title);
-            await this.rest._post<Array<CourseDto>>('/schedule/subjects/' + subject.id + '/courses/all', courses);
+            await this.rest.post<Array<CourseDto>>('/schedule/subjects/' + subject.id + '/courses/all', courses);
         }
         this.models = this.models.concat(newSubjects.map(subject => Object.assign(new SubjectDto(), subject).toVm()));
         this.loading = false;

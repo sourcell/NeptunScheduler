@@ -44,7 +44,7 @@ export class AuthComponent {
 
         this.registerLoad = true;
 
-        await this.rest._post<UserResult>('/auth/register', this.registerDto)
+        await this.rest.post<UserResult>('/auth/register', this.registerDto)
             .then(res => {
                 this.registerResult = res;
                 this.registerErrorMsg = '';
@@ -60,7 +60,7 @@ export class AuthComponent {
     public async login(): Promise<void> {
         this.loginLoad = true;
 
-        await this.rest._post<UserResult>('/auth/login', this.loginDto)
+        await this.rest.post<UserResult>('/auth/login', this.loginDto)
             .then(res => {
                 sessionStorage.setItem('username', res.username);
                 sessionStorage.setItem('token', res.token);

@@ -39,7 +39,7 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
         this.loading = true;
         this.isGenerating = true;
 
-        await this.rest._get<Array<Array<CourseDto>>>('/schedule/generate')
+        await this.rest.get<Array<Array<CourseDto>>>('/schedule/generate')
         .then(res => {
             res.forEach(timetable => {
                 timetable.forEach(course => {
