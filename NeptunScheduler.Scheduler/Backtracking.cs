@@ -19,12 +19,12 @@ namespace NeptunScheduler.Scheduler
             this.busyTimeBlocks = busies;
             this.fixCourses = new List<Course>();
 
-            this.subjects.ForEach(s =>
+            this.subjects.ForEach(subject =>
             {
-                s.Courses.ForEach(c =>
+                subject.Courses.ForEach(course =>
                 {
-                    if (c.Fix)
-                        fixCourses.Add(c);
+                    if (course.Fix && !course.Ignored)
+                        fixCourses.Add(course);
                 });
             });
         }
@@ -46,8 +46,8 @@ namespace NeptunScheduler.Scheduler
         private List<TimeBlock> CheckCollisions()
         {
             List<TimeBlock> timeBlocks = new List<TimeBlock>();
-            fixCourses.ForEach(c => timeBlocks.Add(c));
-            busyTimeBlocks.ForEach(b => timeBlocks.Add(b));
+            timeBlocks.AddRange(fixCourses);
+            timeBlocks.AddRange(busyTimeBlocks);
 
             List<TimeBlock> colliders = new List<TimeBlock>();
 
@@ -67,8 +67,10 @@ namespace NeptunScheduler.Scheduler
         private void Backtrack(Course[] result, int level)
         {
             // Optional Courses of the current Subject
-            List<Course> courses = subjects[level].Courses.Where(c => !c.Fix && c.Slots > 0).OrderByDescending(c => c.Priority).ToList();
-
+            List<Course> courses = subjects[level].Courses
+                                    .Where(c => !c.Fix && c.Slots > 0 && !c.Ignored)
+                                    .OrderByDescending(c => c.Priority)
+                                    .ToList();
             if (courses.Count == 0)
                 courses.Add(new Course() { Day = -1, Start = 0, End = 0, Collidable = true });
             
@@ -122,10 +124,7 @@ namespace NeptunScheduler.Scheduler
         private bool DoCollide(TimeBlock a, TimeBlock b)
         {
             if (a is Course && b is Course && (a as Course).Collidable && (b as Course).Collidable)
-            {
                 return false;
-            }
-
             return a.Day == b.Day && !(a.End < b.Start || a.Start > b.End);
         }
 
