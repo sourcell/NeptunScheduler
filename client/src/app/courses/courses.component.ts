@@ -5,7 +5,7 @@ import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
 import { CourseVm } from '../x-vm/course-vm';
 import { SubjectVm } from '../x-vm/subject-vm';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { XlsxService } from '../services/xlsx.service';
 
 @Component({
@@ -27,10 +27,9 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
 
     constructor(
         rest: RestService,
-        router: Router,
         private readonly route: ActivatedRoute,
         private readonly xlsxService: XlsxService) {
-            super(rest, router);
+            super(rest);
             this.subjectId = this.route.snapshot.paramMap.get('id')!;
             this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
     }

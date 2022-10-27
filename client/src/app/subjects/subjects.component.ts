@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
 import { SubjectDto } from '../x-dto/subject-dto';
 import { RestService } from '../rest.service';
 import { SubjectVm } from '../x-vm/subject-vm';
-import { Router } from '@angular/router';
 import { XlsxService } from '../services/xlsx.service';
 import { CourseDto } from '../x-dto/course-dto';
 
@@ -12,7 +11,7 @@ import { CourseDto } from '../x-dto/course-dto';
     templateUrl: './subjects.component.html',
     styleUrls: ['./subjects.component.css']
 })
-export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> implements OnInit {
+export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> {
 
     public models: Array<SubjectVm> = new Array<SubjectVm>();
     public model: SubjectVm = new SubjectVm();
@@ -22,9 +21,8 @@ export class SubjectsComponent extends CrudComponent<SubjectVm, SubjectDto> impl
 
     constructor(
         rest: RestService,
-        router: Router,
         private readonly xlsxService: XlsxService) {
-            super(rest, router);
+            super(rest);
     }
 
     public processGetResult(res: Array<SubjectDto>): void {

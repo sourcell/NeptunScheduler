@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { RestService } from '../rest.service';
 
@@ -7,7 +7,7 @@ import { RestService } from '../rest.service';
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.css']
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent {
 
     public loginDto: UserDto;
     public registerDto: UserDto;
@@ -32,9 +32,6 @@ export class AuthComponent implements OnInit {
 
         this.loginDto = new UserDto();
         this.registerDto = new UserDto();
-    }
-
-    public ngOnInit(): void {
     }
 
     public async register(): Promise<void> {

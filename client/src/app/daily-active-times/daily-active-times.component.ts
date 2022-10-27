@@ -1,16 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
 import { DailyActiveTimeDto } from '../x-dto/daily-active-time-dto';
 import { RestService } from '../rest.service';
 import { DailyActiveTimeVm } from '../x-vm/daily-active-time-vm';
-import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-daily-active-times',
     templateUrl: './daily-active-times.component.html',
     styleUrls: ['./daily-active-times.component.css']
 })
-export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, DailyActiveTimeDto> implements OnInit {
+export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, DailyActiveTimeDto> {
 
     public models: Array<DailyActiveTimeVm> = new Array<DailyActiveTimeVm>();
     public model: DailyActiveTimeVm = new DailyActiveTimeVm();
@@ -18,12 +17,9 @@ export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, 
 
     protected endpoint: string = '/schedule/dailyactivetimes';
 
-    constructor(rest: RestService, router: Router) {
-        super(rest, router);
+    constructor(rest: RestService) {
+        super(rest);
     }
-
-    // ngOnInit(): void {
-    // }
 
     public processGetResult(res: Array<DailyActiveTimeDto>): void {
         this.models = res.map(x => Object.assign(new DailyActiveTimeDto(), x).toVm());
