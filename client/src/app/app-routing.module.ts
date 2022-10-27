@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthComponent } from './auth/auth.component';
-import { BusyTimeblocksComponent } from './busy-timeblocks/busy-timeblocks.component';
-import { CoursesComponent } from './courses/courses.component';
-import { DailyActiveTimesComponent } from './daily-active-times/daily-active-times.component';
-import { GeneratingComponent } from './generating/generating.component';
+import { BusyTimeblocksComponent } from './components/busy-timeblocks/busy-timeblocks.component';
+import { CoursesComponent } from './components/courses/courses.component';
+import { DailyActiveTimesComponent } from './components/daily-active-times/daily-active-times.component';
+import { GeneratingComponent } from './components/generating/generating.component';
+import { SubjectsComponent } from './components/subjects/subjects.component';
 import { AuthGuard } from './guards/auth.guard';
-import { SubjectsComponent } from './subjects/subjects.component';
 
 const routes: Routes = [
     {

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
-import { RestService } from '../services/rest.service';
-import { BusyTimeblockDto } from '../x-dto/busy-timeblock-dto';
-import { BusyTimeblockVm } from '../x-vm/busy-timeblock-vm';
+import { RestService } from '../../services/rest.service';
+import { BusyTimeblockDto } from '../../x-dto/busy-timeblock-dto';
+import { BusyTimeblockVm } from '../../x-vm/busy-timeblock-vm';
 
 @Component({
     selector: 'app-busy-time-blocks',

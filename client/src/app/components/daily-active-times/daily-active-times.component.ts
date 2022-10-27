@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
+import { RestService } from 'src/app/services/rest.service';
+import { DailyActiveTimeDto } from 'src/app/x-dto/daily-active-time-dto';
+import { DailyActiveTimeVm } from 'src/app/x-vm/daily-active-time-vm';
 import { CrudComponent } from '../crud/crud.component';
-import { RestService } from '../services/rest.service';
-import { DailyActiveTimeDto } from '../x-dto/daily-active-time-dto';
-import { DailyActiveTimeVm } from '../x-vm/daily-active-time-vm';
 
 @Component({
     selector: 'app-daily-active-times',

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { RestService } from 'src/app/services/rest.service';
+import { CourseDto } from 'src/app/x-dto/course-dto';
+import { CourseVm } from 'src/app/x-vm/course-vm';
 import { CrudComponent } from '../crud/crud.component';
-import { RestService } from '../services/rest.service';
-import { CourseDto } from '../x-dto/course-dto';
-import { CourseVm } from '../x-vm/course-vm';
 
 @Component({
     selector: 'app-generating',

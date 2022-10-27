@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudComponent } from '../crud/crud.component';
-import { CourseDto } from '../x-dto/course-dto';
-import { SubjectDto } from '../x-dto/subject-dto';
-import { CourseVm } from '../x-vm/course-vm';
-import { SubjectVm } from '../x-vm/subject-vm';
 import { ActivatedRoute } from '@angular/router';
-import { XlsxService } from '../services/xlsx.service';
-import { RestService } from '../services/rest.service';
+import { CourseVm } from 'src/app/x-vm/course-vm';
+import { CourseDto } from 'src/app/x-dto/course-dto';
+import { SubjectVm } from 'src/app/x-vm/subject-vm';
+import { RestService } from 'src/app/services/rest.service';
+import { XlsxService } from 'src/app/services/xlsx.service';
+import { SubjectDto } from 'src/app/x-dto/subject-dto';
 
 @Component({
     selector: 'app-courses',

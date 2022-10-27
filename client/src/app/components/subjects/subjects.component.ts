@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
+import { RestService } from 'src/app/services/rest.service';
+import { XlsxService } from 'src/app/services/xlsx.service';
+import { CourseDto } from 'src/app/x-dto/course-dto';
+import { SubjectDto } from 'src/app/x-dto/subject-dto';
+import { SubjectVm } from 'src/app/x-vm/subject-vm';
 import { CrudComponent } from '../crud/crud.component';
-import { SubjectDto } from '../x-dto/subject-dto';
-import { SubjectVm } from '../x-vm/subject-vm';
-import { XlsxService } from '../services/xlsx.service';
-import { CourseDto } from '../x-dto/course-dto';
-import { RestService } from '../services/rest.service';
 
 @Component({
     selector: 'app-subjects',
