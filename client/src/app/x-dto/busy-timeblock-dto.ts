@@ -3,6 +3,7 @@ import { DataTransferObject } from "./data-transfer-object";
 
 export class BusyTimeblockDto implements DataTransferObject {
     public id: string = '';
+    public title: string = '';
     public day: number = 0;
     public start: number = 0;
     public end: number = 0;

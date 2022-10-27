@@ -18,6 +18,7 @@ namespace NeptunScheduler.Repository
             // Create.
             BusyTimeblock newBusyTimeblock = new BusyTimeblock()
             {
+                Title = item.Title,
                 Day = item.Day,
                 Start = item.Start,
                 End = item.End,
@@ -48,6 +49,7 @@ namespace NeptunScheduler.Repository
                 return null;
 
             // Update.
+            old.Title = item.Title;
             old.Day = item.Day;
             old.Start = item.Start;
             old.End = item.End;
