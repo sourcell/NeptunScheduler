@@ -23,6 +23,7 @@ namespace NeptunScheduler.Scheduler
             {
                 subject.Courses.ForEach(course =>
                 {
+                    course.SubjectTitle = subject.Title;
                     if (course.Fix && !course.Ignored)
                         fixCourses.Add(course);
                 });

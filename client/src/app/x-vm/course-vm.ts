@@ -3,6 +3,7 @@ import { ViewModel } from "./view-model";
 
 export class CourseVm implements ViewModel {
     public id: string = '';
+    public subjectTitle: string = '';
     public code: string = '';
     public slots: number = 0;
     public day: string = '';

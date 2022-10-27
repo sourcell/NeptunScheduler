@@ -3,6 +3,7 @@ import { DataTransferObject } from "./data-transfer-object";
 
 export class CourseDto implements DataTransferObject {
     public id: string = '';
+    public subjectTitle: string = '';
     public code: string = '';
     public slots: number = 0;
     public day: number = 0;

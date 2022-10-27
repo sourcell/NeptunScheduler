@@ -32,6 +32,7 @@
                     <table class="table table-sm small">
                         <thead>
                             <tr>
+                                <th>Subject</th>
                                 <th>Code</th>
                                 <th>Slots</th>
                                 <th>Day</th>
@@ -44,6 +45,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let course of this.pageContent">
+                                <td>{{ course.subjectTitle }}</td>
                                 <td>{{ course.code }}</td>
                                 <td>{{ course.slots }}</td>
                                 <td>{{ course.day }}</td>

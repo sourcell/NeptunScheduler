@@ -7,6 +7,8 @@ namespace NeptunScheduler.Models
     {
         public string Id { get; set; }
 
+        public string SubjectTitle { get; set; }
+
         public string Code { get; set; }
 
         public int Slots { get; set; }
