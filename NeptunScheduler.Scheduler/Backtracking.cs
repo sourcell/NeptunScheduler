@@ -45,7 +45,7 @@ namespace NeptunScheduler.Scheduler
             if (finalResults == null)
                 throw new NoResultException();
             Console.WriteLine("found results: " + finalResults.Count);
-            return finalResults;
+            return finalResults.OrderByDescending(res => res.Sum(x => x.Priority)).ToList();
         }
 
         private List<TimeBlock> CheckCollisions()
@@ -72,10 +72,7 @@ namespace NeptunScheduler.Scheduler
         private void Backtrack(Course[] result, int level)
         {
             // Optional Courses of the current Subject
-            List<Course> courses = subjects[level].Courses
-                                    .Where(c => !c.Fix && c.Slots > 0 && !c.Ignored)
-                                    .OrderByDescending(c => c.Priority)
-                                    .ToList();
+            List<Course> courses = subjects[level].Courses.Where(c => !c.Fix && c.Slots > 0 && !c.Ignored).ToList();
             if (courses.Count == 0)
                 courses.Add(new Course() { Day = -1, Start = 0, End = 0, Collidable = true });
             
