@@ -44,21 +44,28 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let course of this.pageContent">
-                                <td>{{ course.subjectTitle }}</td>
-                                <td>{{ course.code }}</td>
-                                <td>{{ course.slots }}</td>
-                                <td>{{ course.day }}</td>
-                                <td>{{ course.start }}-{{ course.end }}</td>
-                                <td>{{ course.teachers }}</td>
-                                <td>
-                                    <svg *ngIf="course.fix" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
-                                </td>
-                                <td>
-                                    <svg *ngIf="course.collidable" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
-                                </td>
-                                <td>{{ course.priority }}</td>
-                            </tr>
+                            <ng-container *ngFor="let course of this.pageContent">
+                                <tr *ngIf="course.isCourse">
+                                    <td>{{ course.title }}</td>
+                                    <td>{{ course.code }}</td>
+                                    <td>{{ course.slots }}</td>
+                                    <td>{{ course.day }}</td>
+                                    <td>{{ course.start }}-{{ course.end }}</td>
+                                    <td>{{ course.teachers }}</td>
+                                    <td>
+                                        <svg *ngIf="course.fix" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
+                                    </td>
+                                    <td>
+                                        <svg *ngIf="course.collidable" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
+                                    </td>
+                                    <td>{{ course.priority }}</td>
+                                </tr>
+                                <tr *ngIf="!course.isCourse" class="table-warning">
+                                    <td colspan="9" class="p-3">
+                                        {{ course.title }} <i class="text-secondary">at {{ course.day }} {{ course.start }}-{{ course.end }}</i>
+                                    </td>
+                                </tr>
+                            </ng-container>
                         </tbody>
                     </table>
                 </div>

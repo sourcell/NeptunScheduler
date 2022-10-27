@@ -222,7 +222,7 @@ namespace NeptunScheduler.API.Controllers
         }
 
         [HttpGet("generate")]
-        public ActionResult<List<List<Course>>> GenerateSchedules() // TODO: separate result model (course needs subject name)
+        public ActionResult<List<List<TimetableUnit>>> GenerateSchedules()
         {
             User user = GetUser();
 
@@ -233,8 +233,37 @@ namespace NeptunScheduler.API.Controllers
 
             try
             {
-                var results = bt.PossibleResults();
-                return results.Take(10).ToList();
+                List<List<Course>> results = bt.PossibleResults();
+                List<List<TimetableUnit>> timetables = new List<List<TimetableUnit>>();
+                results.ForEach(result => {
+                    List<TimetableUnit> timetable = new List<TimetableUnit>();
+                    result.ForEach(course => {
+                        timetable.Add(new TimetableUnit() {
+                            Title = course.Subject.Title,
+                            Code = course.Code,
+                            Slots = course.Slots,
+                            Day = course.Day,
+                            Start = course.Start,
+                            End = course.End,
+                            Teachers = course.Teachers,
+                            Fix = course.Fix,
+                            Collidable = course.Collidable,
+                            Priority = course.Priority,
+                            IsCourse = true
+                        });
+                    });
+                    busyTimeblocks.ForEach(busy => {
+                        timetable.Add(new TimetableUnit() {
+                            Title = busy.Title,
+                            Day = busy.Day,
+                            Start = busy.Start,
+                            End = busy.End,
+                            IsCourse = false
+                        });
+                    });
+                    timetables.Add(timetable.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList());
+                });
+                return timetables.Take(10).ToList();
             }
             catch (ConflictException)
             {

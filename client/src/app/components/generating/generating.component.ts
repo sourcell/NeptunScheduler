@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from 'src/app/services/rest.service';
-import { CourseDto } from 'src/app/x-dto/course-dto';
-import { CourseVm } from 'src/app/x-vm/course-vm';
+import { TimetableUnitDto } from 'src/app/x-dto/timetable-unit-dto';
+import { TimetableUnitVm } from 'src/app/x-vm/timetable-unit-vm';
 import { CrudComponent } from '../crud/crud.component';
 
 @Component({
@@ -9,15 +9,15 @@ import { CrudComponent } from '../crud/crud.component';
     templateUrl: './generating.component.html',
     styleUrls: ['./generating.component.css']
 })
-export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> implements OnInit {
+export class GeneratingComponent extends CrudComponent<TimetableUnitVm, TimetableUnitDto> implements OnInit {
 
-    public models: Array<CourseVm> = new Array<CourseVm>();
-    public model: CourseVm = new CourseVm();
-    public tempModel: CourseVm = new CourseVm();
+    public models: Array<TimetableUnitVm> = new Array<TimetableUnitVm>();
+    public model: TimetableUnitVm = new TimetableUnitVm();
+    public tempModel: TimetableUnitVm = new TimetableUnitVm();
 
     public isGenerating = false;
 
-    public pageContent: Array<CourseVm> = new Array<CourseVm>();
+    public pageContent: Array<TimetableUnitVm> = new Array<TimetableUnitVm>();
     public pageSize: number = 0;
     public pageNumbers: Array<number> = new Array<number>();
     public pageNumber: number = 0;
@@ -39,11 +39,11 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
         this.loading = true;
         this.isGenerating = true;
 
-        await this.rest.get<Array<Array<CourseDto>>>('/schedule/generate')
+        await this.rest.get<Array<Array<TimetableUnitDto>>>('/schedule/generate')
         .then(res => {
             res.forEach(timetable => {
-                timetable.forEach(course => {
-                    this.models.push(Object.assign(new CourseDto(), course).toVm());
+                timetable.forEach(unit => {
+                    this.models.push(Object.assign(new TimetableUnitDto(), unit).toVm());
                 });
             });
             this.pageSize = res[0].length;
@@ -82,19 +82,19 @@ export class GeneratingComponent extends CrudComponent<CourseVm, CourseDto> impl
         this.setPageContent();
     }
 
-    public processGetResult(res: Array<CourseDto>): void {}
+    public processGetResult(res: Array<TimetableUnitDto>): void {}
 
     public aboutToAdd(): void {}
 
-    public processPostResult(res: CourseDto): void {}
+    public processPostResult(res: TimetableUnitDto): void {}
 
-    public processPostResults(res: CourseDto[]): void {}
+    public processPostResults(res: TimetableUnitDto[]): void {}
 
-    public aboutToEdit(viewModel: CourseVm): void {}
+    public aboutToEdit(viewModel: TimetableUnitVm): void {}
 
-    public processPutResult(res: CourseDto): void {}
+    public processPutResult(res: TimetableUnitDto): void {}
 
-    public processDeleteResult(res: CourseDto): void {}
+    public processDeleteResult(res: TimetableUnitDto): void {}
 
     private setPageContent(): void {
         const fromIdx = (this.pageNumber - 1)*this.pageSize;
