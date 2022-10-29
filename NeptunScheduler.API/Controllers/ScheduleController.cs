@@ -265,13 +265,51 @@ namespace NeptunScheduler.API.Controllers
                 });
                 return timetables.Take(10).ToList();
             }
-            catch (ConflictException)
+            catch (ConflictException exception)
             {
-                return BadRequest("There are conflicts between the fix timeblocks (fix courses, busy timeblocks)");
+                List<TimetableUnit> colliders = new List<TimetableUnit>();
+                exception.Colliders.ForEach(timeBlock => {
+                    if (timeBlock is Course)
+                    {
+                        Course course = timeBlock as Course;
+                        colliders.Add(new TimetableUnit() {
+                            Title = course.Subject.Title,
+                            Code = course.Code,
+                            Slots = course.Slots,
+                            Day = course.Day,
+                            Start = course.Start,
+                            End = course.End,
+                            Teachers = course.Teachers,
+                            Fix = course.Fix,
+                            Collidable = course.Collidable,
+                            Priority = course.Priority,
+                            IsCourse = true
+                        });
+                    }
+                    else
+                    {
+                        BusyTimeblock busy = timeBlock as BusyTimeblock;
+                        colliders.Add(new TimetableUnit() {
+                            Title = busy.Title,
+                            Day = busy.Day,
+                            Start = busy.Start,
+                            End = busy.End,
+                            IsCourse = false
+                        });
+                    }
+                });
+                return BadRequest(new ErrorResponse() {
+                    Id = "conflict",
+                    Message = "There are conflicts between the fix timeblocks (fix courses + busy timeblocks).",
+                    Conflicts = colliders.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList()
+                });
             }
             catch (NoResultException)
             {
-                return BadRequest("No possible result are found");
+                return BadRequest(new ErrorResponse() {
+                    Id = "no-result",
+                    Message = "No possible results are found."
+                });
             }
         }
 

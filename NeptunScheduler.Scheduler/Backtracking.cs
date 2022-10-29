@@ -37,7 +37,9 @@ namespace NeptunScheduler.Scheduler
             // Check if there is collision between fix timeblocks
             List<TimeBlock> colliders = CheckCollisions();
             if (colliders.Count > 0)
-                throw new ConflictException();
+                throw new ConflictException() {
+                    Colliders = colliders
+                };
 
             // Temporary result array to work with
             Course[] result = new Course[subjects.Count];
