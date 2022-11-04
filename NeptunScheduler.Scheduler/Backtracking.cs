@@ -81,26 +81,25 @@ namespace NeptunScheduler.Scheduler
             for (int i = 0; i < courses.Count; i++)
             {
                 result[level] = courses[i];
-                if (IsValid(result, level))
+                if (!IsValid(result, level))
+                    continue;
+                if (level != result.Length - 1)
                 {
-                    if (level == result.Length - 1)
+                    Backtrack(result, level + 1);
+                    continue;
+                }
+                List<Course> res = result.Where(x => x.Day != -1).ToList();
+                res.AddRange(fixCourses);
+                res = res.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList();
+                int wastedMinutes = WastedMinutes(res);
+                if (wastedMinutes <= bestWastedMinutes)
+                {
+                    if (wastedMinutes < bestWastedMinutes)
                     {
-                        List<Course> res = result.Where(x => x.Day != -1).ToList();
-                        res.AddRange(fixCourses);
-                        res = res.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList();
-                        int wastedMinutes = WastedMinutes(res);
-                        if (wastedMinutes <= bestWastedMinutes)
-                        {
-                            if (wastedMinutes < bestWastedMinutes)
-                            {
-                                finalResults = new List<List<Course>>();
-                                bestWastedMinutes = wastedMinutes;
-                            }
-                            finalResults.Add(res);
-                        }
+                        finalResults = new List<List<Course>>();
+                        bestWastedMinutes = wastedMinutes;
                     }
-                    else
-                        Backtrack(result, level + 1);
+                    finalResults.Add(res);
                 }
             }
         }
