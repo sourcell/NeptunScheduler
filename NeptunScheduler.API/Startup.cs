@@ -26,7 +26,7 @@ namespace NeptunScheduler.API
         {
 
             services.AddControllers();
-            services.AddDbContext<ScheduleDbContext>(opt => opt.UseSqlite("Data Source=Database.db;Cache=Shared", x => x.MigrationsAssembly("NeptunScheduler.API")));
+            services.AddDbContext<ScheduleDbContext>(opt => opt.UseSqlite("Data Source=../NeptunScheduler.Data/Database.db;Cache=Shared"));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISubjectRepository, SubjectRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();

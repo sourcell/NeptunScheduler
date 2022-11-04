@@ -15,9 +15,19 @@ namespace NeptunScheduler.Data
 
         public DbSet<DailyActiveTime> DailyActiveTimes { get; set; }
 
+        public ScheduleDbContext()
+        {
+        }
+
         public ScheduleDbContext(DbContextOptions<ScheduleDbContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlite("Data Source=../NeptunScheduler.Data/Database.db;Cache=Shared");
         }
     }
 }
