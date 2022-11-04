@@ -232,39 +232,10 @@ namespace NeptunScheduler.API.Controllers
 
             Backtracking bt = new Backtracking(subjects, busyTimeblocks, dailyActiveTimes);
 
+            List<List<Course>> results;
             try
             {
-                List<List<Course>> results = bt.PossibleResults();
-                List<List<TimetableUnit>> timetables = new List<List<TimetableUnit>>();
-                results.ForEach(result => {
-                    List<TimetableUnit> timetable = new List<TimetableUnit>();
-                    result.ForEach(course => {
-                        timetable.Add(new TimetableUnit() {
-                            Title = course.Subject.Title,
-                            Code = course.Code,
-                            Slots = course.Slots,
-                            Day = course.Day,
-                            Start = course.Start,
-                            End = course.End,
-                            Teachers = course.Teachers,
-                            Fix = course.Fix,
-                            Collidable = course.Collidable,
-                            Priority = course.Priority,
-                            IsCourse = true
-                        });
-                    });
-                    busyTimeblocks.ForEach(busy => {
-                        timetable.Add(new TimetableUnit() {
-                            Title = busy.Title,
-                            Day = busy.Day,
-                            Start = busy.Start,
-                            End = busy.End,
-                            IsCourse = false
-                        });
-                    });
-                    timetables.Add(timetable.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList());
-                });
-                return timetables.Take(10).ToList();
+                results = bt.PossibleResults();
             }
             catch (ConflictException exception)
             {
@@ -312,6 +283,37 @@ namespace NeptunScheduler.API.Controllers
                     Message = "No possible results are found."
                 });
             }
+
+            List<List<TimetableUnit>> timetables = new List<List<TimetableUnit>>();
+                results.ForEach(result => {
+                    List<TimetableUnit> timetable = new List<TimetableUnit>();
+                    result.ForEach(course => {
+                        timetable.Add(new TimetableUnit() {
+                            Title = course.Subject.Title,
+                            Code = course.Code,
+                            Slots = course.Slots,
+                            Day = course.Day,
+                            Start = course.Start,
+                            End = course.End,
+                            Teachers = course.Teachers,
+                            Fix = course.Fix,
+                            Collidable = course.Collidable,
+                            Priority = course.Priority,
+                            IsCourse = true
+                        });
+                    });
+                    busyTimeblocks.ForEach(busy => {
+                        timetable.Add(new TimetableUnit() {
+                            Title = busy.Title,
+                            Day = busy.Day,
+                            Start = busy.Start,
+                            End = busy.End,
+                            IsCourse = false
+                        });
+                    });
+                    timetables.Add(timetable.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList());
+                });
+                return timetables.Take(10).ToList();
         }
 
         private User GetUser()
