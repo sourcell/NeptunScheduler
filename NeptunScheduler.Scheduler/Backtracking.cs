@@ -11,13 +11,15 @@ namespace NeptunScheduler.Scheduler
         List<Subject> subjects;
         List<BusyTimeblock> busyTimeBlocks;
         List<Course> fixCourses;
+        List<DailyActiveTime> dailyActiveTimes;
         int bestWastedMinutes = int.MaxValue;
 
-        public Backtracking(List<Subject> subjects, List<BusyTimeblock> busies)
+        public Backtracking(List<Subject> subjects, List<BusyTimeblock> busies, List<DailyActiveTime> dailyActiveTimes)
         {
             this.subjects = subjects;
             this.busyTimeBlocks = busies;
             this.fixCourses = new List<Course>();
+            this.dailyActiveTimes = dailyActiveTimes;
 
             this.subjects.ForEach(subject =>
             {
@@ -83,14 +85,20 @@ namespace NeptunScheduler.Scheduler
                 result[level] = courses[i];
                 if (!IsValid(result, level))
                     continue;
+
                 if (level != result.Length - 1)
                 {
                     Backtrack(result, level + 1);
                     continue;
                 }
+
                 List<Course> res = result.Where(x => x.Day != -1).ToList();
                 res.AddRange(fixCourses);
                 res = res.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList();
+
+                if (!IsValidDailyActiveTimes(res))
+                    continue;
+
                 int wastedMinutes = WastedMinutes(res);
                 if (wastedMinutes <= bestWastedMinutes)
                 {
@@ -106,17 +114,14 @@ namespace NeptunScheduler.Scheduler
 
         private bool IsValid(Course[] result, int level)
         {
-            // Check collision with lower levels
             for (int i = 0; i < level; i++)
                 if (DoCollide(result[i], result[level]))
                     return false;
 
-            // Check collision with the fix courses
             foreach (Course fixCourse in fixCourses)
                 if (DoCollide(fixCourse, result[level]))
                     return false;
 
-            // Check collision with the busy timeblocks
             foreach (BusyTimeblock busyTimeBlock in busyTimeBlocks)
                 if (DoCollide(busyTimeBlock, result[level]))
                     return false;
@@ -129,6 +134,24 @@ namespace NeptunScheduler.Scheduler
             if (a is Course && b is Course && (a as Course).Collidable && (b as Course).Collidable)
                 return false;
             return a.Day == b.Day && !(a.End < b.Start || a.Start > b.End);
+        }
+
+        private bool IsValidDailyActiveTimes(List<Course> result)
+        {
+            int activeMinutes = 0;
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (i == 0 || result[i-1].Day != result[i].Day)
+                    activeMinutes = 0;
+                activeMinutes += result[i].End - result[i].Start;
+                if (i == result.Count - 1 || result[i+1].Day != result[i].Day)
+                {
+                    DailyActiveTime boundary = dailyActiveTimes[result[i].Day];
+                    if (activeMinutes < boundary.Min || activeMinutes > boundary.Max)
+                        return false;
+                }
+            }
+            return true;
         }
 
         public int WastedMinutes(List<Course> result) {

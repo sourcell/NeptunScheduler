@@ -228,8 +228,9 @@ namespace NeptunScheduler.API.Controllers
 
             List<Subject> subjects = _subjectRepo.GetAllWithCourses(user.Id).ToList();
             List<BusyTimeblock> busyTimeblocks = _busyTimeblockRepo.GetAll(user.Id).ToList();
+            List<DailyActiveTime> dailyActiveTimes = _dailyActiveTimeRepo.GetAll(user.Id).ToList();
 
-            Backtracking bt = new Backtracking(subjects, busyTimeblocks);
+            Backtracking bt = new Backtracking(subjects, busyTimeblocks, dailyActiveTimes);
 
             try
             {
