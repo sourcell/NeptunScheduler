@@ -189,26 +189,7 @@ namespace NeptunScheduler.API.Controllers
         public ActionResult<List<DailyActiveTime>> GetDailyActiveTimes()
         {
             User user = GetUser();
-            var res = _dailyActiveTimeRepo.GetAll(user.Id);
-
-            if (res.Count() == 0)
-            {
-                // Initialize Daily Active Times.
-                for (int i = 0; i < 7; i++)
-                {
-                    DailyActiveTime x = new DailyActiveTime()
-                    {
-                        Day = i,
-                        Min = 0,
-                        Max = 1440,
-                        User = user
-                    };
-                    _dailyActiveTimeRepo.Add(user.Id, x);
-                }
-                res = _dailyActiveTimeRepo.GetAll(user.Id);
-            }
-
-            return res.ToList();
+            return _dailyActiveTimeRepo.GetAll(user.Id).ToList();
         }
 
         [HttpPut("dailyactivetimes/{id}")]
