@@ -189,26 +189,7 @@ namespace NeptunScheduler.API.Controllers
         public ActionResult<List<DailyActiveTime>> GetDailyActiveTimes()
         {
             User user = GetUser();
-            var res = _dailyActiveTimeRepo.GetAll(user.Id);
-
-            if (res.Count() == 0)
-            {
-                // Initialize Daily Active Times.
-                for (int i = 0; i < 7; i++)
-                {
-                    DailyActiveTime x = new DailyActiveTime()
-                    {
-                        Day = i,
-                        Min = 0,
-                        Max = 1440,
-                        User = user
-                    };
-                    _dailyActiveTimeRepo.Add(user.Id, x);
-                }
-                res = _dailyActiveTimeRepo.GetAll(user.Id);
-            }
-
-            return res.ToList();
+            return _dailyActiveTimeRepo.GetAll(user.Id).ToList();
         }
 
         [HttpPut("dailyactivetimes/{id}")]
@@ -228,13 +209,63 @@ namespace NeptunScheduler.API.Controllers
 
             List<Subject> subjects = _subjectRepo.GetAllWithCourses(user.Id).ToList();
             List<BusyTimeblock> busyTimeblocks = _busyTimeblockRepo.GetAll(user.Id).ToList();
+            List<DailyActiveTime> dailyActiveTimes = _dailyActiveTimeRepo.GetAll(user.Id).ToList();
 
-            Backtracking bt = new Backtracking(subjects, busyTimeblocks);
+            Backtracking bt = new Backtracking(subjects, busyTimeblocks, dailyActiveTimes);
 
+            List<List<Course>> results;
             try
             {
-                List<List<Course>> results = bt.PossibleResults();
-                List<List<TimetableUnit>> timetables = new List<List<TimetableUnit>>();
+                results = bt.PossibleResults();
+            }
+            catch (ConflictException exception)
+            {
+                List<TimetableUnit> colliders = new List<TimetableUnit>();
+                exception.Colliders.ForEach(timeBlock => {
+                    if (timeBlock is Course)
+                    {
+                        Course course = timeBlock as Course;
+                        colliders.Add(new TimetableUnit() {
+                            Title = course.Subject.Title,
+                            Code = course.Code,
+                            Slots = course.Slots,
+                            Day = course.Day,
+                            Start = course.Start,
+                            End = course.End,
+                            Teachers = course.Teachers,
+                            Fix = course.Fix,
+                            Collidable = course.Collidable,
+                            Priority = course.Priority,
+                            IsCourse = true
+                        });
+                    }
+                    else
+                    {
+                        BusyTimeblock busy = timeBlock as BusyTimeblock;
+                        colliders.Add(new TimetableUnit() {
+                            Title = busy.Title,
+                            Day = busy.Day,
+                            Start = busy.Start,
+                            End = busy.End,
+                            IsCourse = false
+                        });
+                    }
+                });
+                return BadRequest(new ErrorResponse() {
+                    Id = "conflict",
+                    Message = "There are conflicts between the fix timeblocks (fix courses + busy timeblocks).",
+                    Conflicts = colliders.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList()
+                });
+            }
+            catch (NoResultException)
+            {
+                return BadRequest(new ErrorResponse() {
+                    Id = "no-result",
+                    Message = "No possible results are found."
+                });
+            }
+
+            List<List<TimetableUnit>> timetables = new List<List<TimetableUnit>>();
                 results.ForEach(result => {
                     List<TimetableUnit> timetable = new List<TimetableUnit>();
                     result.ForEach(course => {
@@ -264,15 +295,6 @@ namespace NeptunScheduler.API.Controllers
                     timetables.Add(timetable.OrderBy(x => x.Day).ThenBy(x => x.Start).ToList());
                 });
                 return timetables.Take(10).ToList();
-            }
-            catch (ConflictException)
-            {
-                return BadRequest("There are conflicts between the fix timeblocks (fix courses, busy timeblocks)");
-            }
-            catch (NoResultException)
-            {
-                return BadRequest("No possible result are found");
-            }
         }
 
         private User GetUser()

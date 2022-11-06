@@ -9,12 +9,6 @@
                     </h5>
                 </div>
                 <div class="col-md text-end">
-                    <button class="btn btn-primary mx-2" *ngIf="!this.loading" (click)="this.fetch()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
-                    </button>
-                    <button class="btn btn-primary mx-2" disabled *ngIf="this.loading">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
-                    </button>
                     <button class="btn btn-primary" *ngIf="!this.loading" (click)="this.generate()">Generate Schedules!</button>
                     <button class="btn btn-primary" disabled *ngIf="this.loading">
                         <span class="spinner-border spinner-border-sm" *ngIf="this.isGenerating"></span>
@@ -26,6 +20,9 @@
         <li class="list-group-item p-4">
             <div class="alert alert-danger text-center small" role="alert" *ngIf="this.errorMsg != ''">
                 {{ this.errorMsg }}
+                <a href="javascript:void(0)" class="alert-link" data-bs-toggle="modal" data-bs-target="#conflicts-modal" *ngIf="this.conflicts.length > 0">
+                    Show conflicts
+                </a>
             </div>
             <div class="text-center mb-5">
                 <div class="table-responsive">
@@ -44,25 +41,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <ng-container *ngFor="let course of this.pageContent">
-                                <tr *ngIf="course.isCourse">
-                                    <td>{{ course.title }}</td>
-                                    <td>{{ course.code }}</td>
-                                    <td>{{ course.slots }}</td>
-                                    <td>{{ course.day }}</td>
-                                    <td>{{ course.start }}-{{ course.end }}</td>
-                                    <td>{{ course.teachers }}</td>
+                            <ng-container *ngFor="let unit of this.pageContent">
+                                <tr *ngIf="unit.isCourse">
+                                    <td>{{ unit.title }}</td>
+                                    <td>{{ unit.code }}</td>
+                                    <td>{{ unit.slots }}</td>
+                                    <td>{{ unit.day }}</td>
+                                    <td>{{ unit.start }}-{{ unit.end }}</td>
+                                    <td>{{ unit.teachers }}</td>
                                     <td>
-                                        <svg *ngIf="course.fix" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
+                                        <svg *ngIf="unit.fix" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
                                     </td>
                                     <td>
-                                        <svg *ngIf="course.collidable" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
+                                        <svg *ngIf="unit.collidable" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
                                     </td>
-                                    <td>{{ course.priority }}</td>
+                                    <td>{{ unit.priority }}</td>
                                 </tr>
-                                <tr *ngIf="!course.isCourse" class="table-warning">
+                                <tr *ngIf="!unit.isCourse" class="table-warning">
                                     <td colspan="9" class="p-3">
-                                        {{ course.title }} <i class="text-secondary">at {{ course.day }} {{ course.start }}-{{ course.end }}</i>
+                                        {{ unit.title }} <i class="text-secondary">at {{ unit.day }} {{ unit.start }}-{{ unit.end }}</i>
                                     </td>
                                 </tr>
                             </ng-container>
@@ -96,4 +93,56 @@
             </nav>
         </li>
     </ul>
+</div>
+
+<!-- Conflicts modal -->
+<div class="modal fade" id="conflicts-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Conflicts</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="table-responsive">
+                        <table class="table table-sm small">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Code</th>
+                                    <th>Day</th>
+                                    <th>Time</th>
+                                    <th>Fix</th>
+                                    <th>Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let course of this.conflicts">
+                                    <tr *ngIf="course.isCourse">
+                                        <td>{{ course.title }}</td>
+                                        <td>{{ course.code }}</td>
+                                        <td>{{ course.day }}</td>
+                                        <td>{{ course.start }}-{{ course.end }}</td>
+                                        <td>
+                                            <svg *ngIf="course.fix" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" /></svg>
+                                        </td>
+                                        <td>{{ course.priority }}</td>
+                                    </tr>
+                                    <tr *ngIf="!course.isCourse" class="table-warning">
+                                        <td colspan="6" class="p-3">
+                                            {{ course.title }} <i class="text-secondary">at {{ course.day }} {{ course.start }}-{{ course.end }}</i>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>

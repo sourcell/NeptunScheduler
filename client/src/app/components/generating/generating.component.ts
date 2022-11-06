@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from 'src/app/services/rest.service';
+import { ErrorResponse } from 'src/app/x-dto/error-response';
 import { TimetableUnitDto } from 'src/app/x-dto/timetable-unit-dto';
 import { TimetableUnitVm } from 'src/app/x-vm/timetable-unit-vm';
 import { CrudComponent } from '../crud/crud.component';
@@ -21,6 +22,8 @@ export class GeneratingComponent extends CrudComponent<TimetableUnitVm, Timetabl
     public pageSize: number = 0;
     public pageNumbers: Array<number> = new Array<number>();
     public pageNumber: number = 0;
+
+    conflicts: Array<TimetableUnitVm> = [];
 
     protected endpoint: string = '/schedule/generating';
 
@@ -51,7 +54,13 @@ export class GeneratingComponent extends CrudComponent<TimetableUnitVm, Timetabl
         })
         .catch(err => {
             if (err.status == 400) {
-                this.errorMsg = err.error;
+                const error: ErrorResponse = err.error;
+                if (error.id === 'conflict') {
+                    this.conflicts = error.conflicts.map(x => Object.assign(new TimetableUnitDto(), x).toVm());
+                    this.errorMsg = error.message;
+                } else if (error.id === 'no-result') {
+                    this.errorMsg = error.message;
+                }
             } else {
                 this.errorMsg = 'Something went wrong.';
             }

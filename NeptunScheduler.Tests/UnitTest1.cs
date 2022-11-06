@@ -13,7 +13,8 @@ public class UnitTest1
         // ARRANGE
         List<Subject> subjects = new List<Subject>();
         List<BusyTimeblock> busies = new List<BusyTimeblock>();
-        Backtracking bt = new Backtracking(subjects, busies);
+        List<DailyActiveTime> dailyActiveTimes = new List<DailyActiveTime>();
+        Backtracking bt = new Backtracking(subjects, busies, dailyActiveTimes);
         List<Course> courses = new List<Course>();
         courses.Add(new Course() {
             Day = 1,

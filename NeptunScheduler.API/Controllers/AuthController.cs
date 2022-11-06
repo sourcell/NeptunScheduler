@@ -15,10 +15,12 @@ namespace NeptunScheduler.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserRepository _userRepo;
+        private readonly IDailyActiveTimeRepository _dailyActiveTimeRepo;
 
-        public AuthController(IUserRepository userRepo)
+        public AuthController(IUserRepository userRepo, IDailyActiveTimeRepository dailyActiveTimeRepo)
         {
             _userRepo = userRepo;
+            _dailyActiveTimeRepo = dailyActiveTimeRepo;
         }
 
         [HttpPost("register")]
@@ -44,7 +46,21 @@ namespace NeptunScheduler.API.Controllers
             }
 
             // Add and return user.
-            return _userRepo.Add(newUser);
+            User savedUser = _userRepo.Add(newUser);
+
+            // Initialize Daily Active Times.
+            for (int i = 0; i < 7; i++)
+            {
+                DailyActiveTime x = new DailyActiveTime()
+                {
+                    Day = i,
+                    Min = 0,
+                    Max = 1440
+                };
+                _dailyActiveTimeRepo.Add(savedUser.Id, x);
+            }
+
+            return savedUser;
         }
 
         [HttpPost("login")]
