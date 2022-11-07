@@ -8,6 +8,6 @@ namespace NeptunScheduler.API
 
         public string Message { get; set; }
 
-        public List<TimetableUnit> Conflicts { get; set; }
+        public List<ScheduleUnit> Conflicts { get; set; }
     }
 }

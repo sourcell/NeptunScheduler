@@ -1,6 +1,6 @@
-import { TimetableUnitDto } from "../x-dto/timetable-unit-dto";
+import { ScheduleUnitDto } from "../x-dto/schedule-unit-dto";
 
-export class TimetableUnitVm {
+export class ScheduleUnitVm {
     public title: string = '';
     public code: string = '';
     public slots: number = 0;
@@ -13,8 +13,8 @@ export class TimetableUnitVm {
     public priority: number = 0;
     public isCourse: boolean =  false;
 
-    public toDto(): TimetableUnitDto {
-        let dto: TimetableUnitDto = new TimetableUnitDto();
+    public toDto(): ScheduleUnitDto {
+        let dto: ScheduleUnitDto = new ScheduleUnitDto();
         Object.assign(dto, this);
 
         dto.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(this.day);

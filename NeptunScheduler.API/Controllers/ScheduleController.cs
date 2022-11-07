@@ -31,7 +31,7 @@ namespace NeptunScheduler.API.Controllers
         }
 
         [HttpGet("generate")]
-        public ActionResult<List<List<TimetableUnit>>> GenerateSchedules()
+        public ActionResult<List<List<ScheduleUnit>>> GenerateSchedules()
         {
             User user = GetUser();
 
@@ -48,12 +48,12 @@ namespace NeptunScheduler.API.Controllers
             }
             catch (ConflictException exception)
             {
-                List<TimetableUnit> colliders = new List<TimetableUnit>();
+                List<ScheduleUnit> colliders = new List<ScheduleUnit>();
                 exception.Colliders.ForEach(timeBlock => {
                     if (timeBlock is Course)
                     {
                         Course course = timeBlock as Course;
-                        colliders.Add(new TimetableUnit() {
+                        colliders.Add(new ScheduleUnit() {
                             Title = course.Subject.Title,
                             Code = course.Code,
                             Slots = course.Slots,
@@ -70,7 +70,7 @@ namespace NeptunScheduler.API.Controllers
                     else
                     {
                         BusyTimeblock busy = timeBlock as BusyTimeblock;
-                        colliders.Add(new TimetableUnit() {
+                        colliders.Add(new ScheduleUnit() {
                             Title = busy.Title,
                             Day = busy.Day,
                             Start = busy.Start,
@@ -93,11 +93,11 @@ namespace NeptunScheduler.API.Controllers
                 });
             }
 
-            List<List<TimetableUnit>> timetables = new List<List<TimetableUnit>>();
+            List<List<ScheduleUnit>> timetables = new List<List<ScheduleUnit>>();
                 results.ForEach(result => {
-                    List<TimetableUnit> timetable = new List<TimetableUnit>();
+                    List<ScheduleUnit> timetable = new List<ScheduleUnit>();
                     result.ForEach(course => {
-                        timetable.Add(new TimetableUnit() {
+                        timetable.Add(new ScheduleUnit() {
                             Title = course.Subject.Title,
                             Code = course.Code,
                             Slots = course.Slots,
@@ -112,7 +112,7 @@ namespace NeptunScheduler.API.Controllers
                         });
                     });
                     busyTimeblocks.ForEach(busy => {
-                        timetable.Add(new TimetableUnit() {
+                        timetable.Add(new ScheduleUnit() {
                             Title = busy.Title,
                             Day = busy.Day,
                             Start = busy.Start,
