@@ -69,10 +69,10 @@
             </div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item" *ngIf="this.pageNumber != 1">
+                    <li class="page-item" *ngIf="this.pageNumber >= 2">
                         <button class="page-link" (click)="this.decPageNumber()">Previous</button>
                     </li>
-                    <li class="page-item disabled" *ngIf="this.pageNumber == 1">
+                    <li class="page-item disabled" *ngIf="!(this.pageNumber >= 2)">
                         <button class="page-link">Previous</button>
                     </li>
                     <ng-container *ngFor="let n of this.pageNumbers">
@@ -83,10 +83,10 @@
                             <button class="page-link" (click)="this.setPageNumber(n)">{{ n }}</button>
                         </li>
                     </ng-container>
-                    <li class="page-item" *ngIf="this.pageNumber != 10">
+                    <li class="page-item" *ngIf="this.pageNumber < this.pageNumbers[this.pageNumbers.length - 1]">
                         <button class="page-link" (click)="this.incPageNumber()">Next</button>
                     </li>
-                    <li class="page-item disabled" *ngIf="this.pageNumber == 10">
+                    <li class="page-item disabled" *ngIf="!(this.pageNumber < this.pageNumbers[this.pageNumbers.length - 1])">
                         <button class="page-link">Next</button>
                     </li>
                 </ul>

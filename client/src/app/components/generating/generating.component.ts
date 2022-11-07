@@ -29,10 +29,6 @@ export class GeneratingComponent extends CrudComponent<ScheduleUnitVm, ScheduleU
 
     constructor(rest: RestService) {
         super(rest);
-
-        for (let i = 1; i <= 10; i++) {
-            this.pageNumbers.push(i);
-        }
     }
 
     public override async ngOnInit(): Promise<void> {
@@ -41,6 +37,7 @@ export class GeneratingComponent extends CrudComponent<ScheduleUnitVm, ScheduleU
     public async generate(): Promise<void> {
         this.loading = true;
         this.isGenerating = true;
+        let numberOfPages = 0;
 
         await this.rest.get<Array<Array<ScheduleUnitDto>>>('/schedule/generate')
         .then(res => {
@@ -50,6 +47,7 @@ export class GeneratingComponent extends CrudComponent<ScheduleUnitVm, ScheduleU
                 });
             });
             this.pageSize = res[0].length;
+            numberOfPages = res.length;
             this.setPageNumber(1);
         })
         .catch(err => {
@@ -65,6 +63,10 @@ export class GeneratingComponent extends CrudComponent<ScheduleUnitVm, ScheduleU
                 this.errorMsg = 'Something went wrong.';
             }
         });
+
+        for (let i = 1; i <= numberOfPages; i++) {
+            this.pageNumbers.push(i);
+        }
 
         this.isGenerating = false;
         this.loading = false;
