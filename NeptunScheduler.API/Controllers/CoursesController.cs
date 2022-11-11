@@ -50,7 +50,7 @@ namespace NeptunScheduler.API.Controllers
         }
 
         [HttpPatch("")]
-        public ActionResult DeleteCourse(List<string> courseIds)
+        public ActionResult DeleteCourses(List<string> courseIds)
         {
             User user = GetUser();
             _courseRepo.DeleteAll(user.Id, courseIds);
