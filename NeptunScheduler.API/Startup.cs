@@ -59,7 +59,6 @@ namespace NeptunScheduler.API
 
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseCors(cors => cors.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseEndpoints(endpoints =>
