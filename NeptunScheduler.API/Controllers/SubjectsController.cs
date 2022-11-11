@@ -77,12 +77,12 @@ namespace NeptunScheduler.API.Controllers
             return res;
         }
 
-        [HttpPost("{subjectId}/courses")]
-        public ActionResult<Course> CreateCourse(string subjectId, Course dto)
+        [HttpPost("{id}/courses")]
+        public ActionResult<Course> CreateCourse(string id, Course dto)
         {
             // Find Subject.
             User user = GetUser();
-            Subject subject = _subjectRepo.Get(user.Id, subjectId);
+            Subject subject = _subjectRepo.Get(user.Id, id);
             if (subject == null)
                 return BadRequest("The User has no Subject with this id.");
 
@@ -90,12 +90,12 @@ namespace NeptunScheduler.API.Controllers
             return _courseRepo.AddToSubject(user, subject, dto);
         }
 
-        [HttpPost("{subjectId}/courses/all")]
-        public ActionResult<List<Course>> CreateAllCourses(string subjectId, Course[] courses)
+        [HttpPost("{id}/courses/all")]
+        public ActionResult<List<Course>> CreateAllCourses(string id, Course[] courses)
         {
             // Find Subject.
             User user = GetUser();
-            Subject subject = _subjectRepo.Get(user.Id, subjectId);
+            Subject subject = _subjectRepo.Get(user.Id, id);
             if (subject == null)
                 return BadRequest("The User has no Subject with this id.");
 
@@ -103,11 +103,11 @@ namespace NeptunScheduler.API.Controllers
             return _courseRepo.AddAllCoursesToSubject(user, subject, courses);
         }
 
-        [HttpGet("{subjectId}/courses")]
-        public ActionResult<List<Course>> GetCourses(string subjectId)
+        [HttpGet("{id}/courses")]
+        public ActionResult<List<Course>> GetCourses(string id)
         {
             User user = GetUser();
-            return _courseRepo.GetCoursesBySubjectId(user.Id, subjectId);
+            return _courseRepo.GetCoursesBySubjectId(user.Id, id);
         }
 
         private User GetUser()
