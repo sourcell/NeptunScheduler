@@ -59,7 +59,7 @@
                                 </tr>
                                 <tr *ngIf="!unit.isCourse" class="table-warning">
                                     <td colspan="9" class="p-3">
-                                        {{ unit.title }} <i class="text-secondary">at {{ unit.day }} {{ unit.start }}-{{ unit.end }}</i>
+                                        {{ unit.title }} <i class="text-secondary">({{ unit.day }} {{ unit.start }}-{{ unit.end }})</i>
                                     </td>
                                 </tr>
                             </ng-container>
@@ -131,7 +131,7 @@
                                     </tr>
                                     <tr *ngIf="!course.isCourse" class="table-warning">
                                         <td colspan="6" class="p-3">
-                                            {{ course.title }} <i class="text-secondary">at {{ course.day }} {{ course.start }}-{{ course.end }}</i>
+                                            {{ course.title }} <i class="text-secondary">({{ course.day }} {{ course.start }}-{{ course.end }})</i>
                                         </td>
                                     </tr>
                                 </ng-container>
