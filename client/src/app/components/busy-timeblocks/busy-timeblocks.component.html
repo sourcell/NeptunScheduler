@@ -31,7 +31,7 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" *ngFor="let btb of this.models">
                     <div class="row">
-                        <div class="col-md text-start">{{ btb.title }} <i class="text-secondary">at {{ btb.day }} {{ btb.start }}-{{ btb.end }}</i></div>
+                        <div class="col-md text-start">{{ btb.title }} <i class="text-secondary">({{ btb.day }} {{ btb.start }}-{{ btb.end }})</i></div>
                         <div class="col-md text-end">
                             <a class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#modal" (click)="this.aboutToEdit(btb.copy())">Edit</a>
                         </div>

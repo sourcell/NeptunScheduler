@@ -15,7 +15,7 @@ export class DailyActiveTimesComponent extends CrudComponent<DailyActiveTimeVm, 
     public model: DailyActiveTimeVm = new DailyActiveTimeVm();
     public tempModel: DailyActiveTimeVm = new DailyActiveTimeVm();
 
-    protected endpoint: string = '/schedule/dailyactivetimes';
+    protected endpoint: string = '/preferences/dailyactivetimes';
 
     constructor(rest: RestService) {
         super(rest);

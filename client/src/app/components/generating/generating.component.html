@@ -59,7 +59,7 @@
                                 </tr>
                                 <tr *ngIf="!unit.isCourse" class="table-warning">
                                     <td colspan="9" class="p-3">
-                                        {{ unit.title }} <i class="text-secondary">at {{ unit.day }} {{ unit.start }}-{{ unit.end }}</i>
+                                        {{ unit.title }} <i class="text-secondary">({{ unit.day }} {{ unit.start }}-{{ unit.end }})</i>
                                     </td>
                                 </tr>
                             </ng-container>
@@ -69,10 +69,10 @@
             </div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item" *ngIf="this.pageNumber != 1">
+                    <li class="page-item" *ngIf="this.pageNumber >= 2">
                         <button class="page-link" (click)="this.decPageNumber()">Previous</button>
                     </li>
-                    <li class="page-item disabled" *ngIf="this.pageNumber == 1">
+                    <li class="page-item disabled" *ngIf="!(this.pageNumber >= 2)">
                         <button class="page-link">Previous</button>
                     </li>
                     <ng-container *ngFor="let n of this.pageNumbers">
@@ -83,10 +83,10 @@
                             <button class="page-link" (click)="this.setPageNumber(n)">{{ n }}</button>
                         </li>
                     </ng-container>
-                    <li class="page-item" *ngIf="this.pageNumber != 10">
+                    <li class="page-item" *ngIf="this.pageNumber < this.pageNumbers[this.pageNumbers.length - 1]">
                         <button class="page-link" (click)="this.incPageNumber()">Next</button>
                     </li>
-                    <li class="page-item disabled" *ngIf="this.pageNumber == 10">
+                    <li class="page-item disabled" *ngIf="!(this.pageNumber < this.pageNumbers[this.pageNumbers.length - 1])">
                         <button class="page-link">Next</button>
                     </li>
                 </ul>
@@ -131,7 +131,7 @@
                                     </tr>
                                     <tr *ngIf="!course.isCourse" class="table-warning">
                                         <td colspan="6" class="p-3">
-                                            {{ course.title }} <i class="text-secondary">at {{ course.day }} {{ course.start }}-{{ course.end }}</i>
+                                            {{ course.title }} <i class="text-secondary">({{ course.day }} {{ course.start }}-{{ course.end }})</i>
                                         </td>
                                     </tr>
                                 </ng-container>

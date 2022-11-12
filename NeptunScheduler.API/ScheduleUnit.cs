@@ -1,6 +1,6 @@
 namespace NeptunScheduler.API
 {
-    public class TimetableUnit
+    public class ScheduleUnit
     {
         public string Title { get; set; }
 

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from 'src/app/services/rest.service';
 import { ErrorResponse } from 'src/app/x-dto/error-response';
-import { TimetableUnitDto } from 'src/app/x-dto/timetable-unit-dto';
-import { TimetableUnitVm } from 'src/app/x-vm/timetable-unit-vm';
+import { ScheduleUnitDto } from 'src/app/x-dto/schedule-unit-dto';
+import { ScheduleUnitVm } from 'src/app/x-vm/schedule-unit-vm';
 import { CrudComponent } from '../crud/crud.component';
 
 @Component({
@@ -10,29 +10,25 @@ import { CrudComponent } from '../crud/crud.component';
     templateUrl: './generating.component.html',
     styleUrls: ['./generating.component.css']
 })
-export class GeneratingComponent extends CrudComponent<TimetableUnitVm, TimetableUnitDto> implements OnInit {
+export class GeneratingComponent extends CrudComponent<ScheduleUnitVm, ScheduleUnitDto> implements OnInit {
 
-    public models: Array<TimetableUnitVm> = new Array<TimetableUnitVm>();
-    public model: TimetableUnitVm = new TimetableUnitVm();
-    public tempModel: TimetableUnitVm = new TimetableUnitVm();
+    public models: Array<ScheduleUnitVm> = new Array<ScheduleUnitVm>();
+    public model: ScheduleUnitVm = new ScheduleUnitVm();
+    public tempModel: ScheduleUnitVm = new ScheduleUnitVm();
 
     public isGenerating = false;
 
-    public pageContent: Array<TimetableUnitVm> = new Array<TimetableUnitVm>();
+    public pageContent: Array<ScheduleUnitVm> = new Array<ScheduleUnitVm>();
     public pageSize: number = 0;
     public pageNumbers: Array<number> = new Array<number>();
     public pageNumber: number = 0;
 
-    conflicts: Array<TimetableUnitVm> = [];
+    conflicts: Array<ScheduleUnitVm> = [];
 
     protected endpoint: string = '/schedule/generating';
 
     constructor(rest: RestService) {
         super(rest);
-
-        for (let i = 1; i <= 10; i++) {
-            this.pageNumbers.push(i);
-        }
     }
 
     public override async ngOnInit(): Promise<void> {
@@ -41,22 +37,24 @@ export class GeneratingComponent extends CrudComponent<TimetableUnitVm, Timetabl
     public async generate(): Promise<void> {
         this.loading = true;
         this.isGenerating = true;
+        let numberOfPages = 0;
 
-        await this.rest.get<Array<Array<TimetableUnitDto>>>('/schedule/generate')
+        await this.rest.get<Array<Array<ScheduleUnitDto>>>('/schedule/generate')
         .then(res => {
             res.forEach(timetable => {
                 timetable.forEach(unit => {
-                    this.models.push(Object.assign(new TimetableUnitDto(), unit).toVm());
+                    this.models.push(Object.assign(new ScheduleUnitDto(), unit).toVm());
                 });
             });
             this.pageSize = res[0].length;
+            numberOfPages = res.length;
             this.setPageNumber(1);
         })
         .catch(err => {
             if (err.status == 400) {
                 const error: ErrorResponse = err.error;
                 if (error.id === 'conflict') {
-                    this.conflicts = error.conflicts.map(x => Object.assign(new TimetableUnitDto(), x).toVm());
+                    this.conflicts = error.conflicts.map(x => Object.assign(new ScheduleUnitDto(), x).toVm());
                     this.errorMsg = error.message;
                 } else if (error.id === 'no-result') {
                     this.errorMsg = error.message;
@@ -65,6 +63,10 @@ export class GeneratingComponent extends CrudComponent<TimetableUnitVm, Timetabl
                 this.errorMsg = 'Something went wrong.';
             }
         });
+
+        for (let i = 1; i <= numberOfPages; i++) {
+            this.pageNumbers.push(i);
+        }
 
         this.isGenerating = false;
         this.loading = false;
@@ -91,19 +93,19 @@ export class GeneratingComponent extends CrudComponent<TimetableUnitVm, Timetabl
         this.setPageContent();
     }
 
-    public processGetResult(res: Array<TimetableUnitDto>): void {}
+    public processGetResult(res: Array<ScheduleUnitDto>): void {}
 
     public aboutToAdd(): void {}
 
-    public processPostResult(res: TimetableUnitDto): void {}
+    public processPostResult(res: ScheduleUnitDto): void {}
 
-    public processPostResults(res: TimetableUnitDto[]): void {}
+    public processPostResults(res: ScheduleUnitDto[]): void {}
 
-    public aboutToEdit(viewModel: TimetableUnitVm): void {}
+    public aboutToEdit(viewModel: ScheduleUnitVm): void {}
 
-    public processPutResult(res: TimetableUnitDto): void {}
+    public processPutResult(res: ScheduleUnitDto): void {}
 
-    public processDeleteResult(res: TimetableUnitDto): void {}
+    public processDeleteResult(res: ScheduleUnitDto): void {}
 
     private setPageContent(): void {
         const fromIdx = (this.pageNumber - 1)*this.pageSize;

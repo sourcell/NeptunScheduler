@@ -31,7 +31,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
         private readonly xlsxService: XlsxService) {
             super(rest);
             this.subjectId = this.route.snapshot.paramMap.get('id')!;
-            this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
+            this.endpoint = '/subjects/' + this.subjectId + '/courses';
     }
 
     public override async ngOnInit(): Promise<void> {
@@ -40,7 +40,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     }
 
     public async fetchSubject(): Promise<void> {
-        await this.rest.get<SubjectDto>('/schedule/subjects/' + this.subjectId)
+        await this.rest.get<SubjectDto>('/subjects/' + this.subjectId)
             .then(res => {
                 const result = Object.assign(new SubjectDto(), res);
                 this.subject = result.toVm();
@@ -51,7 +51,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     }
 
     public getCourses(): void {
-        this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
+        this.endpoint = '/subjects/' + this.subjectId + '/courses';
         this.fetch();
     }
 
@@ -60,13 +60,13 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     }
 
     public aboutToAdd(): void {
-        this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses';
+        this.endpoint = '/subjects/' + this.subjectId + '/courses';
         this.intention = 'add';
         this.tempModel = new CourseVm();
     }
 
     public aboutToAddAll(): void {
-        this.endpoint = '/schedule/subjects/' + this.subjectId + '/courses/all';
+        this.endpoint = '/subjects/' + this.subjectId + '/courses/all';
         this.intention = 'add';
     }
 
@@ -92,7 +92,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     }
 
     public aboutToEdit(courseVm: CourseVm): void {
-        this.endpoint = '/schedule/courses';
+        this.endpoint = '/courses';
         this.intention = 'edit';
         this.tempModel = courseVm;
     }
@@ -109,7 +109,7 @@ export class CoursesComponent extends CrudComponent<CourseVm, CourseDto> impleme
     public async removeAllCourses(): Promise<void> {
         this.loading = true;
         const courseIds = this.models.map(course => course.id);
-        await this.rest.deleteModel<Array<string>>('/schedule/courses', courseIds);
+        await this.rest.deleteModel<Array<string>>('/courses', courseIds);
         this.models = [];
         this.loading = false;
     }

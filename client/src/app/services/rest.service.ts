@@ -15,43 +15,23 @@ export class RestService {
     }
 
     public async get<T>(endpoint: string): Promise<T> {
-        const result = await firstValueFrom(this.http.get<T>(this.url + endpoint, {
-            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
-        }));
-
-        return result;
+        return await firstValueFrom(this.http.get<T>(this.url + endpoint));
     }
 
     public async post<T>(endpoint: string, item: any): Promise<T> {
-        const result = await firstValueFrom(this.http.post<T>(this.url + endpoint, item, {
-            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
-        }));
-
-        return result;
+        return await firstValueFrom(this.http.post<T>(this.url + endpoint, item));
     }
 
     public async put<T>(endpoint: string, item: any): Promise<T> {
-        const result = await firstValueFrom(this.http.put<T>(this.url + endpoint, item, {
-            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
-        }));
-
-        return result;
+        return await firstValueFrom(this.http.put<T>(this.url + endpoint, item));
     }
 
     public async delete<T>(endpoint: string): Promise<T> {
-        const result = await firstValueFrom(this.http.delete<T>(this.url + endpoint, {
-            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
-        }));
-
-        return result;
+        return await firstValueFrom(this.http.delete<T>(this.url + endpoint));
     }
 
     public async deleteModel<T>(endpoint: string, model: T): Promise<T> {
-        const result = await firstValueFrom(this.http.patch<T>(this.url + endpoint, model, {
-            headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('token') }
-        }));
-
-        return result;
+        return await firstValueFrom(this.http.patch<T>(this.url + endpoint, model));
     }
 
 }

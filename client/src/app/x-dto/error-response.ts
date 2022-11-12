@@ -1,7 +1,7 @@
-import { TimetableUnitDto } from "./timetable-unit-dto";
+import { ScheduleUnitDto } from "./schedule-unit-dto";
 
 export interface ErrorResponse {
     id: string;
     message: string;
-    conflicts: Array<TimetableUnitDto>;
+    conflicts: Array<ScheduleUnitDto>;
 }

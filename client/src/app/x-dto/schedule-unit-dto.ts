@@ -1,6 +1,6 @@
-import { TimetableUnitVm } from "../x-vm/timetable-unit-vm";
+import { ScheduleUnitVm } from "../x-vm/schedule-unit-vm";
 
-export class TimetableUnitDto {
+export class ScheduleUnitDto {
     public title: string = '';
     public code: string = '';
     public slots: number = 0;
@@ -13,8 +13,8 @@ export class TimetableUnitDto {
     public priority: number = 0;
     public isCourse: boolean =  false;
 
-    public toVm(): TimetableUnitVm {
-        let vm: TimetableUnitVm = new TimetableUnitVm();
+    public toVm(): ScheduleUnitVm {
+        let vm: ScheduleUnitVm = new ScheduleUnitVm();
         Object.assign(vm, this);
 
         vm.day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][this.day];
