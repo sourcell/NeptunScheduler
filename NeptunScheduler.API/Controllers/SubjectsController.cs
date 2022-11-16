@@ -107,7 +107,7 @@ namespace NeptunScheduler.API.Controllers
         public ActionResult<List<Course>> GetCourses(string id)
         {
             User user = GetUser();
-            return _courseRepo.GetCoursesBySubjectId(user.Id, id);
+            return _courseRepo.GetCoursesBySubjectId(user.Id, id).OrderBy(x => x.Day).ThenBy(x => x.Start).ToList();
         }
 
         private User GetUser()
