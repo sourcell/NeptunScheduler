@@ -64,6 +64,7 @@ export class GeneratingComponent extends CrudComponent<ScheduleUnitVm, ScheduleU
             }
         });
 
+        this.pageNumbers = [];
         for (let i = 1; i <= numberOfPages; i++) {
             this.pageNumbers.push(i);
         }
