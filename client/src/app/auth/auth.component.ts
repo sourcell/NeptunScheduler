@@ -51,7 +51,7 @@ export class AuthComponent {
                 this.reset();
             })
             .catch(err => {
-                this.registerErrorMsg = 'Failed to register.';
+                this.registerErrorMsg = err.error;
             });
 
         this.registerLoad = false;
@@ -67,7 +67,7 @@ export class AuthComponent {
                 this.router.navigate(['subjects']);
             })
             .catch(err => {
-                this.loginErrorMsg = 'Failed to login.';
+                this.loginErrorMsg = err.error;
             });
 
         this.loginLoad = false;
