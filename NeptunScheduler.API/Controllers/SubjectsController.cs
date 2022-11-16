@@ -44,7 +44,7 @@ namespace NeptunScheduler.API.Controllers
         public ActionResult<List<Subject>> GetSubjects()
         {
             User user = GetUser();
-            return _subjectRepo.GetAll(user.Id).ToList();
+            return _subjectRepo.GetAll(user.Id).OrderByDescending(x => x.Credits).ThenBy(x => x.Title).ToList();
         }
 
         [HttpGet("{id}")]
