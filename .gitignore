@@ -32,4 +32,5 @@ NeptunScheduler.ConsoleApp/
 NeptunScheduler.API/Migrations/
 Migrations/
 Database.db*
-
+node_modules
+*.png
