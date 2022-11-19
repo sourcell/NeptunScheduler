@@ -20,7 +20,10 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
                         <li>
-                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#import-modal">Import Subjects</button>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#neptun-modal">Import via Neptun</button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#import-modal">Import via xlsx files</button>
                         </li>
                         <li>
                             <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#add-one-modal" (click)="this.aboutToAdd()">Add one Subject</button>
@@ -45,6 +48,36 @@
             </ul>
         </li>
     </ul>
+</div>
+
+<!-- Neptun modal -->
+<div class="modal fade" id="neptun-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Importing via Neptun</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Neptun username</label>
+                    <input type="text" class="form-control" [(ngModel)]="this.neptunUsername">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Neptun password</label>
+                    <input type="password" class="form-control" [(ngModel)]="this.neptunPassword">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Subject codes (separated by spaces)</label>
+                    <input type="text" class="form-control" [(ngModel)]="this.neptunCodes">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="importViaNeptun()">Add!</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Import modal -->
