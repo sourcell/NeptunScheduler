@@ -105,9 +105,12 @@ function processTimeStr(timeStr) {
 //  EXPRESS API
 // =============
 const app = require('express')();
+const cors = require('cors');
 const PORT = 3000;
 const bodyParser = require('body-parser');
 const json = bodyParser.json();
+
+app.use(cors());
 
 app.post('/', json, async (req, res) => {
     const result = await fetchNeptunData(req.body);

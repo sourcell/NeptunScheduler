@@ -40,6 +40,7 @@ namespace NeptunScheduler.Repository
                 Subject subject = new Subject()
                 {
                     Title = dto.Title,
+                    Credits = dto.Credits,
                     User = user
                 };
                 newSubjects.Add(subject);
