@@ -1,6 +1,11 @@
 const puppeteer = require('puppeteer');
 
-async function pup(options) {
+async function fetchNeptunData(options) {
+
+    const result = {
+        subjects: [],
+        courses: []
+    };
     
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -25,37 +30,70 @@ async function pup(options) {
     const links = await page.evaluate(() => {
         return [...document.querySelectorAll('.scrollablebody tr')]
             .map(row => {
+                const cols = row.querySelectorAll('td');
                 return {
-                    neptunCode: row.querySelectorAll('td')[2].innerText,
+                    title: cols[1].innerText,
+                    credits: Number(cols[6].innerText),
+                    neptunCode: cols[2].innerText,
                     selector: `#${row.id} > td:nth-child(2) > span`
                 };
             });
     });
-    console.log(links);
 
     const processedSubjects = [];
-
     for (let link of links.filter(x => options.neptunCodes.includes(x.neptunCode))) {
-        console.log(`processing ${link.neptunCode} ...`);
         if (processedSubjects.includes(link.neptunCode)) {
-            console.log(`  already processed ${link.neptunCode}, skipping`);
             continue;
         }
+        console.log(`processing ${link.neptunCode} ...`);
+        result.subjects.push({
+            title: link.title,
+            credits: link.credits
+        });
         await page.click(link.selector);
         await page.waitForSelector('.ui-button-icon-primary');
-        await page.screenshot({
-            path: `${link.neptunCode}.png`,
-            fullPage: true
-        });
 
-        const courseRows = await page.evaluate(() => document.querySelectorAll('#Addsubject_course1_gridCourses_bodytable > tbody'));
+        const tds = await page.evaluate(() => {
+            return [...document.querySelectorAll('#Addsubject_course1_gridCourses_bodytable > tbody td')]
+                .map(td => td.innerText);
+        });
+        const rows = [];
+        for (let i = 0; i < tds.length; i += 13) {
+            rows.push(tds.slice(i, i+13));
+        }
+
+        for (let row of rows) {
+            const courseDto = {};
+            courseDto.subjectTitle = link.title;
+            courseDto.code = row[1];
+            const slotsData = row[3].split('/');
+            courseDto.slots = +slotsData[2] - +slotsData[0];
+            courseDto.teachers = row[7];
+            courseDto.fix = row[2] === 'Elmélet';
+            const days = ['V', 'H', 'K', 'SZE', 'CS', 'P', 'SZO'];
+            const fullTimeData = row[6];
+            const timeData = fullTimeData.slice(0, fullTimeData.indexOf(' '));
+            if (timeData !== '') {
+                const endOfDay = timeData.indexOf(':');
+                const dayCode = timeData.slice(0, endOfDay);
+                courseDto.day = days.indexOf(dayCode);
+                courseDto.start = processTimeStr(timeData.slice(endOfDay + 1, endOfDay + 6));
+                courseDto.end = processTimeStr(timeData.slice(endOfDay + 7, endOfDay + 12));
+                result.courses.push(courseDto);
+            }
+        }
 
         await page.click('.ui-button-icon-primary');
         processedSubjects.push(link.neptunCode);
     }
     
     await browser.close();
+    return result;
+}
 
+function processTimeStr(timeStr) {
+    const data = timeStr.split(':');
+    return +data[0] * 60 + +data[1];
 }
 
 
@@ -72,8 +110,7 @@ const bodyParser = require('body-parser');
 const json = bodyParser.json();
 
 app.post('/', json, async (req, res) => {
-    //console.log(req.body);
-    await pup(req.body);
-    res.send('ok');
+    const result = await fetchNeptunData(req.body);
+    res.send(result);
 });
 app.listen(PORT, () => console.log(`listening on port ${PORT}...`));
